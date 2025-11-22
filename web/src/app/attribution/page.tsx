@@ -33,7 +33,7 @@ export default function Attribution() {
 
                     <div className="space-y-4 font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#d0d0d0]">
                         <p>
-                            <strong>Honkingversion.net</strong> uses data provided by the{' '}
+                            <strong>Honkingversion.runfoo.run</strong> uses data provided by the{' '}
                             <a href="https://elgoose.net" target="_blank" rel="noopener noreferrer" className="text-[#ff6b35] hover:underline">
                                 El Goose API
                             </a>
@@ -74,7 +74,7 @@ export default function Attribution() {
                         <div>
                             <p className="font-bold mb-2 text-[#ff6b35]">Usage Approach:</p>
                             <ul className="list-disc list-inside space-y-1 text-[#a0a0a0]">
-                                <li>Honkingversion.net uses El Goose as a data source, not a service</li>
+                                <li>Honkingversion.runfoo.run uses El Goose as a data source, not a service</li>
                                 <li>Data is fetched server-side and displayed with proper attribution</li>
                                 <li>All external links point back to El Goose for original source verification</li>
                                 <li>No data modification or republishing without attribution</li>
@@ -110,7 +110,7 @@ export default function Attribution() {
 
                     <div className="space-y-4 font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#d0d0d0]">
                         <p>
-                            Honkingversion.net operates under the assumption that the publicly available El Goose API is intended for third-party usage
+                            Honkingversion.runfoo.run operates under the assumption that the publicly available El Goose API is intended for third-party usage
                             based on its public accessibility and lack of authentication requirements.
                         </p>
 

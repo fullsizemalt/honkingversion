@@ -13,7 +13,7 @@ export default function Footer() {
                         <Link href="/attribution" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Attribution</Link>
                     </div>
                     <div className="text-[#a0a0a0] text-xs font-[family-name:var(--font-ibm-plex-mono)]">
-                        © {new Date().getFullYear()} Honkingversion.net
+                        © {new Date().getFullYear()} Honkingversion.runfoo.run
                     </div>
                 </div>
 

@@ -1,4 +1,4 @@
-# API Usage Policy - Honkingversion.net
+# API Usage Policy - Honkingversion.runfoo.run
 
 **Last Updated**: November 22, 2025
 **Status**: Active
@@ -8,7 +8,7 @@
 
 ## Overview
 
-Honkingversion.net is a fan site dedicated to the band Goose. This project uses the **El Goose API** as its primary data source for setlist information, performance history, and venue data.
+Honkingversion.runfoo.run is a fan site dedicated to the band Goose. This project uses the **El Goose API** as its primary data source for setlist information, performance history, and venue data.
 
 This document outlines:
 - The rationale for using the El Goose API
@@ -200,7 +200,7 @@ All pages using El Goose data include:
 ## Legal Compliance
 
 ### Assumptions
-Honkingversion.net operates under the reasonable assumption that:
+Honkingversion.runfoo.run operates under the reasonable assumption that:
 1. Public, unauthenticated APIs are intended for third-party use
 2. The El Goose API's lack of restrictions indicates approval for responsible use
 3. Proper attribution satisfies any implicit licensing requirements
@@ -229,7 +229,7 @@ If you are affiliated with El Goose and have:
 
 **Please reach out:**
 - Project Repository: https://git.runfoo.run/runfoo/honkingversion
-- Public Attribution Page: https://honkingversion.net/attribution
+- Public Attribution Page: https://honkingversion.runfoo.run/attribution
 
 ---
 
@@ -294,4 +294,4 @@ uvicorn api.main:app --reload
 
 ---
 
-**This policy is offered in good faith to demonstrate responsible and transparent use of the El Goose API. The Honkingversion.net team respects the work of the El Goose community and is committed to proper attribution and ethical API usage.**
+**This policy is offered in good faith to demonstrate responsible and transparent use of the El Goose API. The Honkingversion.runfoo.run team respects the work of the El Goose community and is committed to proper attribution and ethical API usage.**
