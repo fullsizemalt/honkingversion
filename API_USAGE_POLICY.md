@@ -67,21 +67,75 @@ El Goose was selected because:
 
 **Server-Side Integration**
 ```
-Frontend → Next.js API Routes → El Goose API
+Frontend → Next.js API Routes → Local Database
+                                    ↓
+                          (on-demand) El Goose API
 ```
 
 - All API calls are made from the server (not from client browsers)
-- Reduces exposure of direct external API calls
+- Data is stored in local database to minimize repeated API calls
+- On-demand fetching prevents the need for aggressive bulk scraping
 - Allows for caching and rate control
 
+### Population Strategy
+
+#### Option 1: Bulk Initial Population (Recommended for Full History)
+For accessing the entire Goose history:
+
+```bash
+# Populate last year of shows
+python api/seed_from_elgoose.py
+
+# Or specify custom date range
+python api/seed_from_elgoose.py --start 2016-01-01 --end 2024-12-31
+
+# Or limit for testing
+python api/seed_from_elgoose.py --limit 50
+```
+
+**Rationale for Bulk Scrape:**
+- El Goose API provides public access with no authentication
+- One-time population is a reasonable use of the API
+- Iterating through historical dates (one per request) is minimal load
+- Data is cached locally, eliminating future API calls
+
+**Implementation:**
+- Script: `api/seed_from_elgoose.py`
+- Validates and parses El Goose API responses
+- Creates Show, Song, and SongPerformance records
+- Logs progress and statistics
+
+#### Option 2: On-Demand Population (Automatic, Zero Setup)
+Shows are automatically fetched and cached when users request them:
+
+1. User visits `/shows/2024-11-22`
+2. API checks local database
+3. If not found, fetches from El Goose API
+4. Populates database with show data
+5. Returns to user (subsequent requests use cache)
+
+**Benefits:**
+- No setup required
+- Minimal API load (only requested shows)
+- Database grows organically with user activity
+- Can be combined with bulk scraping for coverage
+
+**Implementation:**
+- Module: `api/services/show_fetcher.py`
+- Route: `api/routes/shows.py` (uses `ShowFetcher.get_or_fetch_show()`)
+- Handles concurrent requests gracefully
+
 ### Code Location
-- **Client**: `/web/src/services/elgoose.py` (API client)
+- **Bulk Scraper**: `/api/seed_from_elgoose.py` (one-time population)
+- **Show Fetcher**: `/api/services/show_fetcher.py` (on-demand population)
 - **Routes**: `/api/routes/shows.py` (endpoint handlers)
 - **Components**: Uses data from `/api/shows` endpoints
 
 ### Caching Strategy
-- Server-side responses use `cache: 'no-store'` for dynamic data
-- No aggressive or redundant API calls
+- Initial population (bulk scrape): Single API call per show
+- On-demand: Minimal calls (only requested shows, one per show)
+- Local database caching: All subsequent access is from database
+- No client-side caching of external data
 - Reasonable request frequency aligned with user activity
 
 ---
@@ -101,11 +155,26 @@ Frontend → Next.js API Routes → El Goose API
 4. **No Republishing**: Data is not redistributed or repackaged
 
 ### Scraping Policy
-- ❌ **No**: Automated mass scraping
-- ❌ **No**: Data harvesting for external distribution
-- ❌ **No**: Caching data for long-term offline use without attribution
-- ✅ **Yes**: Displaying data with proper attribution
-- ✅ **Yes**: Linking to original sources
+
+**One-Time Bulk Population (Authorized):**
+- ✅ **Yes**: Single bulk scrape to populate historical database
+- ✅ **Rationale**: Public API, no authentication, one-time operation
+- ✅ **Scope**: Historical Goose shows (date range based)
+- ✅ **Frequency**: One-time only during setup
+- ✅ **Implementation**: `api/seed_from_elgoose.py`
+
+**Ongoing On-Demand Fetching (Minimal Load):**
+- ✅ **Yes**: Fetch shows as users request them
+- ✅ **Rationale**: Lazy population, minimal API pressure
+- ✅ **Load**: One request per unique show requested
+- ✅ **Caching**: Data stored locally, no repeated API calls
+- ✅ **Implementation**: `api/services/show_fetcher.py`
+
+**Prohibited Practices:**
+- ❌ **No**: Repeated/aggressive scraping of the same shows
+- ❌ **No**: Mass data harvesting for external distribution
+- ❌ **No**: Caching data long-term for offline use without attribution
+- ❌ **No**: Using El Goose data in competing services without permission
 
 ---
 
@@ -173,7 +242,50 @@ If you are affiliated with El Goose and have:
 
 ---
 
+## Deployment & Setup
+
+### First-Time Setup
+
+When deploying Honkingversion to a new environment:
+
+```bash
+# 1. Install dependencies
+pip install -r api/requirements.txt
+
+# 2. Create database tables
+python -c "from api.database import create_db_and_tables; create_db_and_tables()"
+
+# 3. Populate initial data (choose one approach)
+
+# Option A: Populate last year of shows (recommended for full feature set)
+python api/seed_from_elgoose.py
+
+# Option B: Populate entire history (2016-2024, may take 5-10 minutes)
+python api/seed_from_elgoose.py --start 2016-01-01 --end 2024-12-31
+
+# Option C: Start empty and let on-demand fetching populate as users browse
+# (No action required - shows will be fetched automatically)
+
+# 4. Start the API server
+uvicorn api.main:app --reload
+```
+
+### Production Considerations
+
+- **Database Size**: Full Goose history (~1500 shows) = ~20MB database
+- **API Load**: One-time bulk scrape uses ~1500 API requests over 30-60 minutes
+- **On-Demand**: After bulk scrape, El Goose API is only called for new shows
+- **Network**: Bulk scrape should run on server (not from user requests)
+- **Monitoring**: Check logs during bulk scrape for any failed fetches
+
 ## Version History
+
+- **2025-11-22**: Added bulk scraping and on-demand fetching strategies
+  - `api/seed_from_elgoose.py`: Bulk population script
+  - `api/services/show_fetcher.py`: On-demand fetcher module
+  - Updated routes to support automatic population
+  - Documented both approaches in policy
+  - Added deployment instructions
 
 - **2025-11-22**: Initial policy document created
   - Comprehensive documentation of El Goose API usage

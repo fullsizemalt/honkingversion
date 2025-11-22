@@ -4,39 +4,56 @@ from typing import List, Optional
 
 from ..database import get_session
 from ..models import Show
-from ..services.elgoose import SetlistClient
+from ..services.show_fetcher import ShowFetcher
 from ..services.date_parser import parse_date
 
 router = APIRouter(prefix="/shows", tags=["shows"])
 
 @router.get("/{date_str}")
 def get_show(date_str: str, session: Session = Depends(get_session)):
-    # 1. Check DB
-    statement = select(Show).where(Show.date == date_str)
-    show = session.exec(statement).first()
-    
-    if show:
-        return show
-        
-    # 2. Fetch from El Goose
+    """
+    Get show details by date.
+
+    - Checks database first
+    - If not found, fetches from El Goose API and populates database
+    - Returns full show data with setlist
+
+    Args:
+        date_str: Date in YYYY-MM-DD format
+
+    Returns:
+        Show object with venue, location, setlist data, and performances
+
+    Raises:
+        400: Invalid date format
+        404: Show not found in either database or El Goose API
+    """
     try:
+        # Validate date format
         date_obj = parse_date(date_str)
         if not date_obj:
-             raise HTTPException(status_code=400, detail="Invalid date format")
-             
-        setlist_text = SetlistClient.get_setlist(date_obj)
-        if not setlist_text:
-            raise HTTPException(status_code=404, detail="Show not found")
-            
-        # In a real implementation, we would parse the detailed JSON from El Goose 
-        # and save it to our DB. For now, we just return the text.
-        return {"date": date_str, "setlist": setlist_text, "source": "elgoose_api"}
-        
+            raise HTTPException(status_code=400, detail="Invalid date format (use YYYY-MM-DD)")
+
+        # Get or fetch show (on-demand population)
+        show = ShowFetcher.get_or_fetch_show(session, date_str)
+
+        if not show:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No show found for {date_str}"
+            )
+
+        return show
+
+    except HTTPException:
+        raise
     except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid date format")
+        raise HTTPException(status_code=400, detail="Invalid date format (use YYYY-MM-DD)")
     except Exception as e:
-        print(f"Error fetching show {date_str}: {e}") # Log the error
-        raise HTTPException(status_code=404, detail="Show not found")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching show: {str(e)}"
+        )
 
 @router.get("/")
 def list_shows(session: Session = Depends(get_session)):
