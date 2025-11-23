@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import ProfileHeader from "@/components/ProfileHeader"
 import ActivityFeed from "@/components/ActivityFeed"
 import ListCard from "@/components/ListCard"
+import ListEditor from "@/components/ListEditor"
 import { User, Review } from "@/types"
 import { UserList } from "@/types/list"
 
@@ -19,6 +20,7 @@ export default function ProfilePage() {
     const [reviews, setReviews] = useState<Review[]>([])
     const [lists, setLists] = useState<UserList[]>([])
     const [loading, setLoading] = useState(true)
+    const [showListEditor, setShowListEditor] = useState(false)
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -90,9 +92,17 @@ export default function ProfilePage() {
                                 <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] uppercase">
                                     Your Lists
                                 </h3>
-                                <a href={`/u/${user.username}/lists`} className="text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] hover:text-[var(--accent-primary)] uppercase tracking-wider">
-                                    View All
-                                </a>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setShowListEditor(true)}
+                                        className="bg-[#ff6b35] text-[#0a0a0a] px-3 py-1 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[#f7931e]"
+                                    >
+                                        + New
+                                    </button>
+                                    <a href={`/u/${user.username}/lists`} className="text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] hover:text-[var(--accent-primary)] uppercase tracking-wider flex items-center">
+                                        View All
+                                    </a>
+                                </div>
                             </div>
                             <div className="space-y-4">
                                 {lists.length > 0 ? (
@@ -101,13 +111,22 @@ export default function ProfilePage() {
                                     ))
                                 ) : (
                                     <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                                        No lists yet.
+                                        No lists yet. Create one to get started!
                                     </p>
                                 )}
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <ListEditor
+                    isOpen={showListEditor}
+                    onClose={() => setShowListEditor(false)}
+                    onListSaved={(newList) => {
+                        setLists([newList, ...lists]);
+                        setShowListEditor(false);
+                    }}
+                />
             </div>
         </div>
     )

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Tag } from '@/types/tag';
 import { getApiEndpoint } from '@/lib/api';
 import TagBadge from './TagBadge';
+import TagManager from './TagManager';
 
 interface TagSelectorProps {
     selectedTags: Tag[];
@@ -15,21 +16,28 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
     const [availableTags, setAvailableTags] = useState<Tag[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
+    const [showTagManager, setShowTagManager] = useState(false);
 
     useEffect(() => {
-        const fetchTags = async () => {
-            try {
-                const res = await fetch(getApiEndpoint('/tags'));
-                if (res.ok) {
-                    const data = await res.json();
-                    setAvailableTags(data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch tags', error);
-            }
-        };
         fetchTags();
     }, []);
+
+    const fetchTags = async () => {
+        try {
+            const res = await fetch(getApiEndpoint('/tags'));
+            if (res.ok) {
+                const data = await res.json();
+                setAvailableTags(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch tags', error);
+        }
+    };
+
+    const handleTagCreated = (newTag: Tag) => {
+        setAvailableTags([...availableTags, newTag]);
+        onAddTag(newTag);
+    };
 
     const filteredTags = availableTags.filter(tag =>
         tag.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -44,18 +52,27 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
                 ))}
             </div>
 
-            <input
-                type="text"
-                placeholder="Add a tag..."
-                className="w-full bg-[#1a1a1a] border border-[#333] text-[#f5f5f5] px-3 py-2 text-sm focus:outline-none focus:border-[#ff6b35]"
-                value={searchTerm}
-                onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setShowDropdown(true);
-                }}
-                onFocus={() => setShowDropdown(true)}
-                onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-            />
+            <div className="flex gap-2">
+                <input
+                    type="text"
+                    placeholder="Add a tag..."
+                    className="flex-1 bg-[#1a1a1a] border border-[#333] text-[#f5f5f5] px-3 py-2 text-sm focus:outline-none focus:border-[#ff6b35]"
+                    value={searchTerm}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setShowDropdown(true);
+                    }}
+                    onFocus={() => setShowDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                />
+                <button
+                    type="button"
+                    onClick={() => setShowTagManager(true)}
+                    className="bg-[#ff6b35] text-[#0a0a0a] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[#f7931e] whitespace-nowrap"
+                >
+                    + New Tag
+                </button>
+            </div>
 
             {showDropdown && searchTerm && (
                 <div className="absolute z-10 w-full bg-[#1a1a1a] border border-[#333] mt-1 max-h-40 overflow-y-auto shadow-lg">
@@ -81,6 +98,12 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
                     )}
                 </div>
             )}
+
+            <TagManager
+                isOpen={showTagManager}
+                onClose={() => setShowTagManager(false)}
+                onTagCreated={handleTagCreated}
+            />
         </div>
     );
 }
