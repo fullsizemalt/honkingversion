@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getApiEndpoint } from '@/lib/api';
 import { UserList } from '@/types/list';
 import { Show, Performance, Song } from '@/types';
+import ItemTags from '@/components/ItemTags';
 import ListEditor from '@/components/ListEditor';
 
 export default function ListDetailPage() {
@@ -249,6 +250,7 @@ export default function ListDetailPage() {
                                     <Link key={index} href={`/shows/${s.date}`} className="block bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5] hover:border-[#00d9ff]">
                                         <div className="font-semibold">{s.date} @ {s.venue}</div>
                                         <div className="text-sm text-[#9ca3af]">{s.location}</div>
+                                        <ItemTags type="show" id={s.id!} />
                                     </Link>
                                 );
                             }
@@ -259,6 +261,7 @@ export default function ListDetailPage() {
                                         <div className="font-semibold">{p.song.name}</div>
                                         <div className="text-sm text-[#9ca3af]">{p.show.date} @ {p.show.venue}</div>
                                         <div className="text-xs text-[#6b7280]">Set {p.set_number} • Position {p.position}</div>
+                                        <ItemTags type="performance" id={p.id} />
                                     </div>
                                 );
                             }
