@@ -4,11 +4,7 @@ import SongHeader from '@/components/SongHeader';
 import TopVersion from '@/components/TopVersion';
 import PerformanceTimeline from '@/components/PerformanceTimeline';
 
-import { Song, Performance } from '@/types';
-
-interface SongData extends Song {
-    performances: Performance[];
-}
+import { Performance } from '@/types';
 
 export default async function SongPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -23,7 +19,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 </section>
             );
         }
-        const song: SongData = await songRes.json();
+        const song = await songRes.json();
 
         const perfRes = await fetch(getApiEndpoint(`/songs/${slug}/performances`), { cache: 'no-store' });
         const rawPerformances = perfRes.ok ? await perfRes.json() : [];
