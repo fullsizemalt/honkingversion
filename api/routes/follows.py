@@ -7,6 +7,7 @@ from datetime import datetime
 from database import get_session
 from models import User, UserFollow
 from routes.auth import get_current_user
+from services.notifications import create_notification
 
 router = APIRouter(prefix="/follows", tags=["follows"])
 
@@ -49,6 +50,15 @@ def follow_user(
     )
     session.add(follow)
     session.commit()
+
+    create_notification(
+        session,
+        user_id=target_user.id,
+        actor_id=current_user.id,
+        type="follow",
+        object_type="user",
+        object_id=current_user.id,
+    )
     return {"message": "Followed successfully"}
 
 @router.delete("/{username}")

@@ -12,6 +12,11 @@ class User(SQLModel, table=True):
     votes: List["Vote"] = Relationship(back_populates="user")
     lists: List["UserList"] = Relationship(back_populates="user")
     attended_shows: List["UserShowAttendance"] = Relationship(back_populates="user")
+    notifications: List["Notification"] = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"foreign_keys": "Notification.user_id"}
+    )
+    review_comments: List["ReviewComment"] = Relationship(back_populates="user")
 
 class Show(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -81,6 +86,7 @@ class Vote(SQLModel, table=True):
     user: User = Relationship(back_populates="votes")
     show: Optional["Show"] = Relationship(back_populates="votes")
     performance: Optional[SongPerformance] = Relationship(back_populates="votes")
+    comments: List["ReviewComment"] = Relationship(back_populates="vote")
 
 class UserList(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -134,3 +140,48 @@ class UserRead(SQLModel):
     created_at: datetime
     stats: Optional[UserStats] = None
     is_following: bool = False
+
+class ReviewComment(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    vote_id: int = Field(foreign_key="vote.id", index=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    parent_id: Optional[int] = Field(default=None, foreign_key="reviewcomment.id", index=True)
+    body: str
+    upvotes: int = Field(default=0)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    user: User = Relationship(back_populates="review_comments")
+    vote: Vote = Relationship(back_populates="comments")
+    parent: Optional["ReviewComment"] = Relationship(
+        back_populates="replies",
+        sa_relationship_kwargs={"remote_side": "ReviewComment.id"}
+    )
+    replies: List["ReviewComment"] = Relationship(back_populates="parent")
+    votes: List["CommentVote"] = Relationship(back_populates="comment")
+
+class CommentVote(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    comment_id: int = Field(foreign_key="reviewcomment.id", index=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    is_upvote: bool = Field(default=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    comment: ReviewComment = Relationship(back_populates="votes")
+
+class Notification(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", index=True)  # recipient
+    type: str = Field(index=True)  # e.g. comment, reply, follow
+    actor_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    object_type: str  # vote, comment, user
+    object_id: int
+    read_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    user: User = Relationship(
+        back_populates="notifications",
+        sa_relationship_kwargs={"foreign_keys": [user_id]}
+    )
+    actor: Optional[User] = Relationship(
+        sa_relationship_kwargs={"foreign_keys": [actor_id]}
+    )

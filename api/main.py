@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from routes import auth, shows, users, votes, lists, songs, performances, search, tags, attended, follows, export, venues
+from routes import auth, shows, users, votes, lists, songs, performances, search, tags, attended, follows, export, venues, comments, notifications
 from database import create_db_and_tables
 
 # ... (previous code)
@@ -41,6 +41,8 @@ app.include_router(attended.router)
 app.include_router(follows.router)
 app.include_router(export.router)
 app.include_router(venues.router)
+app.include_router(comments.router)
+app.include_router(notifications.router)
 
 @app.get("/")
 def read_root():

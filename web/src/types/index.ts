@@ -60,3 +60,25 @@ export interface Review {
     full_review?: string;
     created_at: string;
 }
+
+export interface Comment {
+    id: number;
+    vote_id: number;
+    user_id: number;
+    username: string;
+    body: string;
+    upvotes: number;
+    parent_id?: number | null;
+    created_at: string;
+    replies?: Comment[];
+}
+
+export interface Notification {
+    id: number;
+    type: string;
+    actor_username?: string | null;
+    object_type: string;
+    object_id: number;
+    read_at?: string | null;
+    created_at: string;
+}

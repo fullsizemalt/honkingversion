@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { Review } from '@/types';
+import TagBadge from './TagBadge';
+import CommentThread from './CommentThread';
 
 interface ReviewCardProps {
     review: Review;
@@ -10,8 +12,8 @@ export default function ReviewCard({ review, showContext = false }: ReviewCardPr
     const date = new Date(review.created_at).toLocaleDateString();
 
     return (
-        <div className="border border-[#333] bg-[#1a1a1a] p-4 hover:border-[#00d9ff] transition-colors group">
-            <div className="flex justify-between items-start mb-3">
+        <div className="border border-[#333] bg-[#1a1a1a] p-4 hover:border-[#00d9ff] transition-colors group space-y-3">
+            <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-[#333] rounded-full flex items-center justify-center">
                         <span className="font-[family-name:var(--font-space-grotesk)] text-xs text-[#f5f5f5] uppercase">
@@ -35,13 +37,9 @@ export default function ReviewCard({ review, showContext = false }: ReviewCardPr
                 </div>
             </div>
 
-            import TagBadge from './TagBadge';
-
-            // ...
-
             {showContext && (review.show || review.performance) && (
-                <div className="mb-3 pb-3 border-b border-[#333]">
-                    <div className="flex items-center justify-between mb-2">
+                <div className="pb-3 border-b border-[#333] space-y-2">
+                    <div className="flex items-center justify-between">
                         <div>
                             <span className="text-[#707070] text-xs uppercase tracking-wider mr-2">Reviewing:</span>
                             {review.show ? (
@@ -56,7 +54,6 @@ export default function ReviewCard({ review, showContext = false }: ReviewCardPr
                         </div>
                     </div>
 
-                    {/* Tags Display */}
                     {(review.performance?.tags && review.performance.tags.length > 0) && (
                         <div className="flex flex-wrap gap-1 mt-1">
                             {review.performance.tags.map(tag => (
@@ -75,7 +72,7 @@ export default function ReviewCard({ review, showContext = false }: ReviewCardPr
             )}
 
             {review.blurb && (
-                <p className="text-[#a0a0a0] text-sm mb-2 italic">
+                <p className="text-[#a0a0a0] text-sm italic">
                     "{review.blurb}"
                 </p>
             )}
@@ -85,6 +82,10 @@ export default function ReviewCard({ review, showContext = false }: ReviewCardPr
                     {review.full_review}
                 </p>
             )}
+
+            <div className="pt-3 border-t border-[#222]">
+                <CommentThread voteId={review.id} />
+            </div>
         </div>
     );
 }
