@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 import ProfileHeader from "@/components/ProfileHeader";
 import ActivityFeed from "@/components/ActivityFeed";
-import { getApiUrl } from '@/lib/api';
+import { getApiEndpoint } from '@/lib/api';
 import { User, Review } from "@/types";
 
 // Mock data fetcher (replace with API call)
 async function getUser(username: string): Promise<User | null> {
     try {
-        const res = await fetch(getApiUrl(`/users/${username}`), { cache: 'no-store' });
+        const res = await fetch(getApiEndpoint(`/ users / ${username} `), { cache: 'no-store' });
         if (!res.ok) return null;
         return res.json();
     } catch (error) {
@@ -18,7 +18,7 @@ async function getUser(username: string): Promise<User | null> {
 
 async function getUserReviews(username: string): Promise<Review[]> {
     try {
-        const res = await fetch(getApiUrl(`/votes/user/${username}`), { cache: 'no-store' });
+        const res = await fetch(getApiEndpoint(`/ votes / user / ${username} `), { cache: 'no-store' });
         if (!res.ok) return [];
         return res.json();
     } catch (error) {
@@ -48,8 +48,8 @@ export default async function PublicProfilePage({ params }: PageProps) {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">
-                        <ActivityFeed activities={reviews} title={`${user.username}'s Activity`} />
-                    </div>
+                        <ActivityFeed activities={reviews} title={`${user.username} 's Activity`} />
+                    </div >
 
                     <div className="lg:col-span-1">
                         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6">
@@ -76,8 +76,8 @@ export default async function PublicProfilePage({ params }: PageProps) {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     );
 }

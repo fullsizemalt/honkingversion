@@ -1,12 +1,13 @@
-import { getApiUrl } from '@/lib/api';
 'use client'
 
+import { getApiEndpoint } from '@/lib/api';
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import ProfileHeader from "@/components/ProfileHeader"
 import ActivityFeed from "@/components/ActivityFeed"
 import { User, Review } from "@/types"
+
 
 export default function ProfilePage() {
     const { data: session, status } = useSession()
@@ -26,7 +27,7 @@ export default function ProfilePage() {
     const fetchUserData = async () => {
         try {
             // Fetch user data from API
-            const userRes = await fetch(getApiUrl('/users/me'));
+            const userRes = await fetch(getApiEndpoint('/users/me'));
             if (!userRes.ok) {
                 throw new Error('Failed to fetch user');
             }
@@ -35,7 +36,7 @@ export default function ProfilePage() {
 
             // Fetch user reviews
             if (userData.username) {
-                const reviewsRes = await fetch(getApiUrl(`/votes/user/${userData.username}`));
+                const reviewsRes = await fetch(getApiEndpoint(`/votes/user/${userData.username}`));
                 if (reviewsRes.ok) {
                     const reviewsData = await reviewsRes.json();
                     setReviews(reviewsData);

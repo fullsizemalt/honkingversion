@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useSession, signOut } from "next-auth/react"
 import { useState } from 'react'
 import ThemeToggle from './ThemeToggle'
+import SearchBar from './SearchBar'
 
 export default function Navbar() {
     const { data: session } = useSession()
@@ -20,7 +21,7 @@ export default function Navbar() {
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex gap-6 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider">
+                    <div className="hidden md:flex gap-6 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider items-center">
                         <Link href="/shows" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Shows</Link>
                         <Link href="/attribution" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Attribution</Link>
                         <Link href="/songs" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">
@@ -29,6 +30,7 @@ export default function Navbar() {
                         <Link href="/lists" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">
                             Lists
                         </Link>
+                        <SearchBar />
                     </div>
 
                     {/* Auth & Theme */}
@@ -74,6 +76,9 @@ export default function Navbar() {
                 isMenuOpen && (
                     <div className="md:hidden border-t border-[#333] bg-[#0a0a0a]">
                         <div className="px-4 py-3 space-y-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase">
+                            <div className="py-2">
+                                <SearchBar />
+                            </div>
                             <Link href="/shows" className="block py-2 text-[#a0a0a0] hover:text-[#ff6b35] border-l-2 border-transparent hover:border-[#ff6b35] pl-2">Shows</Link>
                             <Link href="/attribution" className="block py-2 text-[#a0a0a0] hover:text-[#ff6b35] border-l-2 border-transparent hover:border-[#ff6b35] pl-2">Attribution</Link>
                             {session ? (

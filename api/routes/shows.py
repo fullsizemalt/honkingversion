@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from typing import List, Optional
 
 from database import get_session
-from models import Show
+from models import Show, SongPerformance, Song
 from services.show_fetcher import ShowFetcher
 from services.date_parser import parse_date
 
@@ -60,3 +60,44 @@ def list_shows(session: Session = Depends(get_session)):
     statement = select(Show).limit(10)
     shows = session.exec(statement).all()
     return shows
+
+@router.get("/{date_str}/performances")
+def get_show_performances(date_str: str, session: Session = Depends(get_session)):
+    """
+    Get all performances for a show by date.
+    Returns performances with song details, ordered by set and position.
+    """
+    # First get the show
+    statement = select(Show).where(Show.date == date_str)
+    show = session.exec(statement).first()
+    
+    if not show:
+        raise HTTPException(status_code=404, detail="Show not found")
+    
+    # Get performances with song details
+    perf_statement = (
+        select(SongPerformance, Song)
+        .join(Song, SongPerformance.song_id == Song.id)
+        .where(SongPerformance.show_id == show.id)
+        .order_by(SongPerformance.set_number, SongPerformance.position)
+    )
+    
+    results = session.exec(perf_statement).all()
+    
+    performances = []
+    for perf, song in results:
+        performances.append({
+            "id": perf.id,
+            "position": perf.position,
+            "set_number": perf.set_number,
+            "notes": perf.notes,
+            "song": {
+                "id": song.id,
+                "name": song.name,
+                "slug": song.slug,
+                "is_cover": song.is_cover,
+                "original_artist": song.original_artist
+            }
+        })
+    
+    return performances

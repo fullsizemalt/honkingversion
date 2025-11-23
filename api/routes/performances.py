@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List, Optional
+from pydantic import BaseModel
 
 from database import get_session
-from models import SongPerformance, Song, Show, Vote
+from models import SongPerformance, Song, Show, Vote, User
+from routes.auth import get_current_user
 
 router = APIRouter(prefix="/performances", tags=["performances"])
 
@@ -95,3 +97,93 @@ def get_performance(
         "vote_count": len(votes),
         "avg_rating": round(avg_rating, 1) if avg_rating else None
     }
+
+class PerformanceVoteCreate(BaseModel):
+    rating: int
+    blurb: Optional[str] = None
+    full_review: Optional[str] = None
+
+@router.get("/{performance_id}/rating")
+def get_performance_rating(
+    performance_id: int,
+    session: Session = Depends(get_session),
+    current_user: Optional[User] = Depends(get_current_user)
+):
+    """Get rating stats for a performance"""
+    # Verify performance exists
+    perf = session.get(SongPerformance, performance_id)
+    if not perf:
+        raise HTTPException(status_code=404, detail="Performance not found")
+    
+    # Get all votes
+    vote_statement = select(Vote).where(Vote.performance_id == performance_id)
+    votes = session.exec(vote_statement).all()
+    
+    avg_rating = None
+    if votes:
+        avg_rating = sum(v.rating for v in votes) / len(votes)
+    
+    # Get user's vote if authenticated
+    user_vote = None
+    if current_user:
+        user_vote_statement = select(Vote).where(
+            Vote.performance_id == performance_id,
+            Vote.user_id == current_user.id
+        )
+        user_vote_obj = session.exec(user_vote_statement).first()
+        if user_vote_obj:
+            user_vote = user_vote_obj.rating
+    
+    return {
+        "performance_id": performance_id,
+        "avg_rating": round(avg_rating, 1) if avg_rating else None,
+        "vote_count": len(votes),
+        "user_vote": user_vote
+    }
+
+@router.post("/{performance_id}/vote")
+def vote_on_performance(
+    performance_id: int,
+    vote_data: PerformanceVoteCreate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """Vote on a specific performance"""
+    # Verify performance exists
+    perf = session.get(SongPerformance, performance_id)
+    if not perf:
+        raise HTTPException(status_code=404, detail="Performance not found")
+    
+    # Validate rating
+    if vote_data.rating < 1 or vote_data.rating > 10:
+        raise HTTPException(status_code=400, detail="Rating must be between 1 and 10")
+    
+    # Check if user already voted
+    existing_vote_statement = select(Vote).where(
+        Vote.performance_id == performance_id,
+        Vote.user_id == current_user.id
+    )
+    existing_vote = session.exec(existing_vote_statement).first()
+    
+    if existing_vote:
+        # Update existing vote
+        existing_vote.rating = vote_data.rating
+        existing_vote.blurb = vote_data.blurb
+        existing_vote.full_review = vote_data.full_review
+        session.add(existing_vote)
+        session.commit()
+        session.refresh(existing_vote)
+        return {"message": "Vote updated", "vote_id": existing_vote.id, "rating": existing_vote.rating}
+    else:
+        # Create new vote
+        new_vote = Vote(
+            user_id=current_user.id,
+            performance_id=performance_id,
+            rating=vote_data.rating,
+            blurb=vote_data.blurb,
+            full_review=vote_data.full_review
+        )
+        session.add(new_vote)
+        session.commit()
+        session.refresh(new_vote)
+        return {"message": "Vote created", "vote_id": new_vote.id, "rating": new_vote.rating}

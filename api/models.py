@@ -22,6 +22,7 @@ class Show(SQLModel, table=True):
     
     votes: List["Vote"] = Relationship(back_populates="show")
     performances: List["SongPerformance"] = Relationship(back_populates="show")
+    show_tags: List["ShowTag"] = Relationship(back_populates="show")
 
 class Song(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -68,6 +69,7 @@ class Vote(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     user: User = Relationship(back_populates="votes")
+    show: Optional["Show"] = Relationship(back_populates="votes")
     performance: Optional[SongPerformance] = Relationship(back_populates="votes")
 
 class UserList(SQLModel, table=True):
@@ -106,7 +108,6 @@ class ShowTag(SQLModel, table=True):
     tag_id: int = Field(foreign_key="tag.id", index=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
-    show: Show = Relationship(back_populates="show_tags")
     show: Show = Relationship(back_populates="show_tags")
     tag: Tag = Relationship(back_populates="show_tags")
 
