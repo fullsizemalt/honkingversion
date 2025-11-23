@@ -5,14 +5,7 @@ import { useSession } from 'next-auth/react';
 import { getApiEndpoint } from '@/lib/api';
 import TagBadge from '@/components/TagBadge';
 import TagManager from '@/components/TagManager';
-
-interface Tag {
-    id: number;
-    name: string;
-    color: string;
-    description?: string;
-    category?: string;
-}
+import { Tag } from '@/types/tag';
 
 export default function TagsPage() {
     const { data: session } = useSession();

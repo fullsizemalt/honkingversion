@@ -3,14 +3,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { getApiEndpoint } from '@/lib/api';
-
-interface Tag {
-    id?: number;
-    name: string;
-    color: string;
-    description?: string;
-    category?: string;
-}
+import { Tag } from '@/types/tag';
 
 interface TagManagerProps {
     isOpen: boolean;
