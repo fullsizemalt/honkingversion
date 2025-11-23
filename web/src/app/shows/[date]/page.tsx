@@ -2,6 +2,7 @@ import { Show } from '@/types';
 import VoteControl from '@/components/VoteControl';
 import SetlistDisplay from '@/components/SetlistDisplay';
 import AttendedButton from '@/components/AttendedButton';
+import ShowTags from '@/components/ShowTags';
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { notFound } from 'next/navigation';
@@ -105,6 +106,9 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
                             <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070]">
                                 {votes.length} votes
                             </p>
+                            <div className="mt-2 w-full min-w-[220px]">
+                                <ShowTags showId={show.id} />
+                            </div>
                         </div>
                     </div>
                 </div>

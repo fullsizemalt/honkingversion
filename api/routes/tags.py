@@ -34,6 +34,36 @@ def get_tags(
         query = query.where(Tag.category == category)
     return session.exec(query).all()
 
+@router.get("/performance/{performance_id}", response_model=List[Tag])
+def get_performance_tags(
+    performance_id: int,
+    session: Session = Depends(get_session)
+):
+    performance = session.get(SongPerformance, performance_id)
+    if not performance:
+        raise HTTPException(status_code=404, detail="Performance not found")
+    tags = session.exec(
+        select(Tag)
+        .join(PerformanceTag, PerformanceTag.tag_id == Tag.id)
+        .where(PerformanceTag.performance_id == performance_id)
+    ).all()
+    return tags
+
+@router.get("/show/{show_id}", response_model=List[Tag])
+def get_show_tags(
+    show_id: int,
+    session: Session = Depends(get_session)
+):
+    show = session.get(Show, show_id)
+    if not show:
+        raise HTTPException(status_code=404, detail="Show not found")
+    tags = session.exec(
+        select(Tag)
+        .join(ShowTag, ShowTag.tag_id == Tag.id)
+        .where(ShowTag.show_id == show_id)
+    ).all()
+    return tags
+
 @router.post("/performance/{performance_id}", response_model=PerformanceTag)
 def add_tag_to_performance(
     performance_id: int,
