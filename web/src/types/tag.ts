@@ -3,5 +3,5 @@ export interface Tag {
     name: string;
     category: string;
     color?: string;
-    created_at: string;
+    created_at?: string;
 }
