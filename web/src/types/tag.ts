@@ -3,5 +3,6 @@ export interface Tag {
     name: string;
     category?: string;
     color?: string;
+    description?: string;
     created_at?: string;
 }
