@@ -197,7 +197,7 @@ export default function ListDetailPage() {
                     isOpen={showListEditor}
                     onClose={() => setShowListEditor(false)}
                     onListSaved={(updatedList) => {
-                        setList(updatedList);
+                        setList((prev) => prev ? { ...prev, ...updatedList } : updatedList as UserList);
                         setShowListEditor(false);
                     }}
                     editList={list}
