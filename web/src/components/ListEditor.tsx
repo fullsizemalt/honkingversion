@@ -8,7 +8,7 @@ interface UserList {
     id?: number;
     title: string;
     description?: string;
-    list_type?: string;
+    list_type?: 'shows' | 'performances' | 'songs';
     items?: any[];
 }
 
