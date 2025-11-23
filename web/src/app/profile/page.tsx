@@ -33,7 +33,7 @@ export default function ProfilePage() {
         try {
             // Fetch user data from API
             const userRes = await fetch(getApiEndpoint('/users/me'), {
-                headers: { 'Authorization': `Bearer ${session?.accessToken}` }
+                headers: { 'Authorization': `Bearer ${session?.user?.accessToken}` }
             });
             if (!userRes.ok) {
                 throw new Error('Failed to fetch user');
