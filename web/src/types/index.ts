@@ -1,5 +1,15 @@
 import { Tag } from './tag';
 
+export interface Song {
+    id?: number;
+    name: string;
+    slug: string;
+    artist?: string;
+    is_cover?: boolean;
+    original_artist?: string;
+    tags?: Tag[];
+}
+
 export interface Show {
     id?: number;
     elgoose_id?: number;
