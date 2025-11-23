@@ -266,7 +266,7 @@ export default function ListDetailPage() {
                                 );
                             }
                             if (entry.type === 'song') {
-                                const sg = entry.data as Song;
+                                const sg = entry.data as any;
                                 return (
                                     <Link key={index} href={`/songs/${sg.slug}`} className="block bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5] hover:border-[#00d9ff]">
                                         <div className="font-semibold">{sg.name}</div>
