@@ -27,6 +27,9 @@ export default function Navbar() {
                     {/* Desktop Menu */}
                     <div className="hidden md:flex gap-6 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider items-center">
                         <Link href="/shows" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Shows</Link>
+                        <Link href="/venues" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Venues</Link>
+                        <Link href="/performance-comparisons" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Comparisons</Link>
+                        <Link href="/streaming" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Streaming</Link>
                         <Link href="/attribution" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Attribution</Link>
                         <Link href="/songs" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">
                             Songs
@@ -84,6 +87,9 @@ export default function Navbar() {
                                 <SearchBar />
                             </div>
                             <Link href="/shows" className="block py-2 text-[#a0a0a0] hover:text-[#ff6b35] border-l-2 border-transparent hover:border-[#ff6b35] pl-2">Shows</Link>
+                            <Link href="/venues" className="block py-2 text-[#a0a0a0] hover:text-[#ff6b35] border-l-2 border-transparent hover:border-[#ff6b35] pl-2">Venues</Link>
+                            <Link href="/performance-comparisons" className="block py-2 text-[#a0a0a0] hover:text-[#ff6b35] border-l-2 border-transparent hover:border-[#ff6b35] pl-2">Comparisons</Link>
+                            <Link href="/streaming" className="block py-2 text-[#a0a0a0] hover:text-[#ff6b35] border-l-2 border-transparent hover:border-[#ff6b35] pl-2">Streaming</Link>
                             <Link href="/attribution" className="block py-2 text-[#a0a0a0] hover:text-[#ff6b35] border-l-2 border-transparent hover:border-[#ff6b35] pl-2">Attribution</Link>
                             {session ? (
                                 <button

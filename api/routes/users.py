@@ -4,7 +4,7 @@ from typing import List
 
 from database import get_session
 from database import get_session
-from models import User, UserList, UserRead, UserStats, Vote, UserFollow
+from models import User, UserList, UserRead, UserStats, Vote, UserFollow, UserShowAttendance
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -16,9 +16,10 @@ def read_users_me(current_user: User = Depends(get_current_user), session: Sessi
     reviews_count = session.exec(select(Vote).where(Vote.user_id == current_user.id)).all()
     followers_count = session.exec(select(UserFollow).where(UserFollow.followed_id == current_user.id)).all()
     following_count = session.exec(select(UserFollow).where(UserFollow.follower_id == current_user.id)).all()
-    
+    shows_attended = session.exec(select(UserShowAttendance).where(UserShowAttendance.user_id == current_user.id)).all()
+
     stats = UserStats(
-        shows_attended=0, # TODO: Implement logic
+        shows_attended=len(shows_attended),
         reviews_count=len(reviews_count),
         followers_count=len(followers_count),
         following_count=len(following_count)
@@ -48,7 +49,8 @@ def read_user(
     reviews_count = session.exec(select(Vote).where(Vote.user_id == user.id)).all()
     followers_count = session.exec(select(UserFollow).where(UserFollow.followed_id == user.id)).all()
     following_count = session.exec(select(UserFollow).where(UserFollow.follower_id == user.id)).all()
-    
+    shows_attended = session.exec(select(UserShowAttendance).where(UserShowAttendance.user_id == user.id)).all()
+
     is_following = False
     if current_user:
         follow_check = session.exec(
@@ -61,7 +63,7 @@ def read_user(
             is_following = True
 
     stats = UserStats(
-        shows_attended=0,
+        shows_attended=len(shows_attended),
         reviews_count=len(reviews_count),
         followers_count=len(followers_count),
         following_count=len(following_count)
