@@ -24,6 +24,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
     const [title, setTitle] = useState(editList?.title || '');
     const [description, setDescription] = useState(editList?.description || '');
     const [listType, setListType] = useState(editList?.list_type || 'shows');
+    const [items, setItems] = useState<any[]>(Array.isArray(editList?.items) ? editList?.items ?? [] : []);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -32,6 +33,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
             setTitle(editList.title);
             setDescription(editList.description || '');
             setListType(editList.list_type || 'shows');
+            setItems(Array.isArray(editList.items) ? editList.items : []);
         }
     }, [editList]);
 
@@ -51,7 +53,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                 title,
                 description,
                 list_type: listType,
-                items: editList?.items || []
+                items
             };
 
             const url = editList
@@ -101,6 +103,54 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] mb-2 uppercase">
+                            Items
+                        </label>
+                        <div className="flex gap-2 mb-2">
+                            <input
+                                type="text"
+                                placeholder={`Add ${listType.slice(0, -1)} ID`}
+                                className="flex-1 bg-[#0a0a0a] border border-[#333] text-[#f5f5f5] px-3 py-2 focus:border-[#ff6b35] focus:outline-none"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        const val = (e.target as HTMLInputElement).value.trim();
+                                        if (!val) return;
+                                        setItems([...items, Number.isNaN(Number(val)) ? val : Number(val)]);
+                                        (e.target as HTMLInputElement).value = '';
+                                    }
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setItems([])}
+                                className="border border-[#333] text-[#a0a0a0] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[#ff6b35] hover:text-[#ff6b35]"
+                            >
+                                Clear
+                            </button>
+                        </div>
+                        {items.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {items.map((item, idx) => (
+                                    <span
+                                        key={`${item}-${idx}`}
+                                        className="flex items-center gap-2 px-2 py-1 bg-[#0a0a0a] border border-[#333] text-[#f5f5f5] text-xs rounded"
+                                    >
+                                        {String(item)}
+                                        <button
+                                            type="button"
+                                            className="text-[#ff6b35] hover:text-[#f7931e]"
+                                            onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                                        >
+                                            ✕
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                     <div>
                         <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] mb-2 uppercase">
                             List Title *
