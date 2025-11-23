@@ -9,6 +9,8 @@ interface ListsData {
     username: string;
     show_count: number;
     created_at?: string;
+    items?: string | any[];
+    list_type?: string;
 }
 
 async function getLists(): Promise<ListsData[]> {
@@ -48,7 +50,15 @@ export default async function ListsPage() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {lists.map((list) => (
-                            <ListCard key={list.id} list={list} />
+                            <ListCard
+                                key={list.id}
+                                list={{
+                                    ...list,
+                                    items: list.items || '[]',
+                                    list_type: (list.list_type as any) || 'shows',
+                                    user_id: 0,
+                                }}
+                            />
                         ))}
                     </div>
                 )}

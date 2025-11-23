@@ -40,7 +40,7 @@ export default function Home() {
         try {
           const res = await fetch(getApiEndpoint('/users/me/feed'), {
             headers: {
-              'Authorization': `Bearer ${session.accessToken}`
+              'Authorization': `Bearer ${session?.user?.accessToken ?? ''}`
             }
           });
           if (res.ok) {
