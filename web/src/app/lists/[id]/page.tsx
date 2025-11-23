@@ -109,10 +109,11 @@ export default function ListDetailPage() {
         );
     }
 
-    const items = (() => {
+    const parsedItems: any[] = (() => {
         if (!list.items) return [];
+        if (Array.isArray(list.items)) return list.items;
         try {
-            return typeof list.items === 'string' ? JSON.parse(list.items) : list.items;
+            return JSON.parse(list.items);
         } catch (e) {
             console.error('Failed to parse list items', e);
             return [];
@@ -189,8 +190,8 @@ export default function ListDetailPage() {
                 </div>
 
                 <div className="space-y-4">
-                    {items.length > 0 ? (
-                        items.map((item: any, index: number) => {
+                    {parsedItems.length > 0 ? (
+                        parsedItems.map((item: any, index: number) => {
                             const itemId = typeof item === 'object' && item?.id ? item.id : item;
                             return (
                                 <div key={index} className="bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5]">
@@ -224,7 +225,7 @@ export default function ListDetailPage() {
                         });
                         setShowListEditor(false);
                     }}
-                    editList={list}
+                    editList={{ ...list, items: parsedItems }}
                 />
             </div>
         </div>
