@@ -22,6 +22,8 @@
   --rating-gold: #ffd700;
   
   /* Typography */
+  --font-space-grotesk: "Space Grotesk", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-display: var(--font-space-grotesk);
   --font-mono: var(--font-ibm-plex-mono);
 }
