@@ -16,12 +16,13 @@ export default function FollowButton({ username, initialIsFollowing = false }: F
 
     useEffect(() => {
         const checkFollowing = async () => {
-            if (!session?.accessToken) return;
+            const token = session?.user?.accessToken;
+            if (!token) return;
 
             try {
                 const res = await fetch(getApiEndpoint(`/follows/check/${username}`), {
                     headers: {
-                        'Authorization': `Bearer ${session.accessToken}`
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -38,7 +39,8 @@ export default function FollowButton({ username, initialIsFollowing = false }: F
     }, [session, username]);
 
     const toggleFollow = async () => {
-        if (!session?.accessToken) return;
+        const token = session?.user?.accessToken;
+        if (!token) return;
 
         setLoading(true);
         try {
@@ -46,7 +48,7 @@ export default function FollowButton({ username, initialIsFollowing = false }: F
             const res = await fetch(getApiEndpoint(`/follows/${username}`), {
                 method,
                 headers: {
-                    'Authorization': `Bearer ${session.accessToken}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
 

@@ -53,7 +53,13 @@ export default function ProfilePage() {
                 const listsRes = await fetch(getApiEndpoint(`/lists/user/${userData.username}`));
                 if (listsRes.ok) {
                     const listsData = await listsRes.json();
-                    setLists(listsData);
+                    const normalized = (listsData || []).map((l: any) => ({
+                        ...l,
+                        items: l.items || '[]',
+                        list_type: l.list_type || 'shows',
+                        user_id: l.user_id ?? 0,
+                    }));
+                    setLists(normalized);
                 }
             }
         } catch (error) {
@@ -122,7 +128,13 @@ export default function ProfilePage() {
                     isOpen={showListEditor}
                     onClose={() => setShowListEditor(false)}
                     onListSaved={(newList) => {
-                        setLists([newList, ...lists]);
+                        const normalized = {
+                            ...newList,
+                            items: newList.items || '[]',
+                            list_type: newList.list_type || 'shows',
+                            user_id: newList.user_id ?? user?.id ?? 0,
+                        };
+                        setLists([normalized as UserList, ...lists]);
                         setShowListEditor(false);
                     }}
                 />

@@ -43,7 +43,7 @@ export default function CommentThread({ voteId }: CommentThreadProps) {
     }
 
     const handleSubmit = async () => {
-        if (!session) {
+        if (!session?.user?.accessToken) {
             router.push('/auth/signin')
             return
         }

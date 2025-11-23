@@ -15,12 +15,13 @@ export default function AttendedButton({ showId }: AttendedButtonProps) {
 
     useEffect(() => {
         const checkAttendance = async () => {
-            if (!session?.accessToken) return;
+            const token = session?.user?.accessToken;
+            if (!token) return;
 
             try {
                 const res = await fetch(getApiEndpoint(`/attended/check/${showId}`), {
                     headers: {
-                        'Authorization': `Bearer ${session.accessToken}`
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -37,7 +38,8 @@ export default function AttendedButton({ showId }: AttendedButtonProps) {
     }, [session, showId]);
 
     const toggleAttendance = async () => {
-        if (!session?.accessToken) return;
+        const token = session?.user?.accessToken;
+        if (!token) return;
 
         setLoading(true);
         try {
@@ -45,7 +47,7 @@ export default function AttendedButton({ showId }: AttendedButtonProps) {
             const res = await fetch(getApiEndpoint(`/attended/${showId}`), {
                 method,
                 headers: {
-                    'Authorization': `Bearer ${session.accessToken}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
