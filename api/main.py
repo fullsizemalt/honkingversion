@@ -19,8 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from api.routes import auth, shows, users, votes, lists, songs, performances, search, tags, attended, follows, export, venues, comments, notifications, stats, tours
-from api.database import create_db_and_tables
+from routes import auth, shows, users, votes, lists, songs, performances, search, tags, attended, follows, export, venues, comments, notifications, stats, tours
+from database import create_db_and_tables
 
 # ... (previous code)
 

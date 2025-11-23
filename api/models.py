@@ -183,8 +183,8 @@ class Notification(SQLModel, table=True):
 
     user: User = Relationship(
         back_populates="notifications",
-        sa_relationship_kwargs={"foreign_keys": [user_id]}
+        sa_relationship_kwargs={"foreign_keys": "Notification.user_id"}
     )
     actor: Optional[User] = Relationship(
-        sa_relationship_kwargs={"foreign_keys": [actor_id]}
+        sa_relationship_kwargs={"foreign_keys": "Notification.actor_id"}
     )

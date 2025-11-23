@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from ..database import get_session
-from ..models import Show
+from database import get_session
+from models import Show
 from typing import List, Dict
 import re
 

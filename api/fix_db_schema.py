@@ -1,7 +1,10 @@
 import sqlite3
 
 def fix_schema():
-    conn = sqlite3.connect('database.db')
+    import os
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    db_path = os.path.join(BASE_DIR, "database.db")
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
     try:
@@ -15,6 +18,12 @@ def fix_schema():
         print("Added full_review column.")
     except Exception as e:
         print(f"Error adding full_review: {e}")
+
+    try:
+        cursor.execute("ALTER TABLE show ADD COLUMN tour TEXT")
+        print("Added tour column.")
+    except Exception as e:
+        print(f"Error adding tour: {e}")
 
     conn.commit()
     conn.close()
