@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 from typing import List, Optional
 
 from database import get_session
@@ -59,6 +59,25 @@ def get_show(date_str: str, session: Session = Depends(get_session)):
 def list_shows(session: Session = Depends(get_session)):
     statement = select(Show).limit(10)
     shows = session.exec(statement).all()
+    return shows
+
+@router.get("/years")
+def list_years(session: Session = Depends(get_session)):
+    years = session.exec(
+        select(func.substr(Show.date, 1, 4)).distinct().order_by(func.substr(Show.date, 1, 4).desc())
+    ).all()
+    return [y for y in years if y]
+
+@router.get("/years/{year}")
+def shows_by_year(year: str, session: Session = Depends(get_session)):
+    statement = (
+        select(Show)
+        .where(Show.date.like(f"{year}-%"))
+        .order_by(Show.date.asc())
+    )
+    shows = session.exec(statement).all()
+    if not shows:
+        raise HTTPException(status_code=404, detail="No shows for year")
     return shows
 
 @router.get("/{date_str}/performances")

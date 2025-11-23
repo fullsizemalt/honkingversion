@@ -82,3 +82,20 @@ export interface Notification {
     read_at?: string | null;
     created_at: string;
 }
+
+export interface StatsResponse {
+    top_songs: { name: string; slug: string; plays: number }[];
+    top_venues: { venue: string; show_count: number }[];
+    trending_performances: {
+        performance_id: number;
+        song_name: string;
+        date: string;
+        venue: string;
+        votes_last_30d: number;
+        avg_rating?: number | null;
+    }[];
+    leaderboards: {
+        votes_cast: { username: string; votes: number }[];
+        followers: { username: string; followers: number }[];
+    };
+}
