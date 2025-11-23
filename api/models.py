@@ -95,6 +95,8 @@ class UserList(SQLModel, table=True):
     description: Optional[str] = None
     items: str # JSON string of list items (performance_ids or show_ids for now)
     list_type: str = Field(default="performances")  # "performances" or "shows" for backward compat
+    share_token: Optional[str] = Field(default=None, index=True, unique=True)
+    is_public: bool = Field(default=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     user: User = Relationship(back_populates="lists")

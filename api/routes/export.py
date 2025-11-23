@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session, select
 from ..database import get_session
 from ..models import User, Vote, Show, SongPerformance, Song, UserShowAttendance, UserFollow, UserList
+from routes.auth import get_current_user, get_current_user_optional
 import csv
 import io
 import json
@@ -62,8 +63,11 @@ def generate_user_csv(user_id: int, session: Session) -> io.BytesIO:
 
     return io.BytesIO(output.getvalue().encode("utf-8"))
 
-@router.get("/csv", response_class=StreamingResponse)
-async def export_user_data(session: Session = Depends(get_session), user: User = Depends(...)):
+@router.get("/me/csv", response_class=StreamingResponse)
+async def export_user_data(
+    session: Session = Depends(get_session),
+    user: User = Depends(get_current_user),
+):
     """Export the authenticated user's data as a CSV file.
     The `user` dependency should be provided by authentication middleware.
     """
@@ -72,3 +76,38 @@ async def export_user_data(session: Session = Depends(get_session), user: User =
         "Content-Disposition": f"attachment; filename=user_{user.id}_data.csv"
     }
     return StreamingResponse(csv_bytes, media_type="text/csv", headers=headers)
+
+
+@router.get("/list/{list_id}", response_class=StreamingResponse)
+async def export_list(
+    list_id: int,
+    token: str | None = Query(default=None),
+    session: Session = Depends(get_session),
+    current_user: User | None = Depends(get_current_user_optional),
+):
+    user_list = session.get(UserList, list_id)
+    if not user_list:
+        raise HTTPException(status_code=404, detail="List not found")
+
+    is_owner = current_user and current_user.id == user_list.user_id
+    token_ok = token and user_list.share_token and token == user_list.share_token
+
+    if not (is_owner or token_ok or user_list.is_public):
+        raise HTTPException(status_code=403, detail="Not authorized to export this list")
+
+    items = []
+    try:
+        items = json.loads(user_list.items or "[]")
+    except json.JSONDecodeError:
+        items = []
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["list_id", "title", "list_type", "item_id"])
+    for item_id in items:
+        writer.writerow([user_list.id, user_list.title, user_list.list_type, item_id])
+
+    headers = {
+        "Content-Disposition": f"attachment; filename=list_{user_list.id}.csv"
+    }
+    return StreamingResponse(io.BytesIO(output.getvalue().encode("utf-8")), media_type="text/csv", headers=headers)

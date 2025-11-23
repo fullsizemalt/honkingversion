@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { getApiEndpoint } from '@/lib/api';
@@ -11,17 +11,21 @@ import ListEditor from '@/components/ListEditor';
 export default function ListDetailPage() {
     const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { data: session } = useSession();
     const id = params.id as string;
     const [list, setList] = useState<UserList | null>(null);
     const [loading, setLoading] = useState(true);
     const [showListEditor, setShowListEditor] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
+    const [shareToken, setShareToken] = useState<string | null>(null);
+    const [sharing, setSharing] = useState(false);
 
     useEffect(() => {
         const fetchList = async () => {
             try {
-                const res = await fetch(getApiEndpoint(`/lists/${id}`));
+                const tokenParam = searchParams.get('token');
+                const res = await fetch(getApiEndpoint(`/lists/${id}${tokenParam ? `?token=${tokenParam}` : ''}`));
                 if (res.ok) {
                     const data = await res.json();
                     setList(data);
@@ -29,6 +33,9 @@ export default function ListDetailPage() {
                     // Check if current user is owner
                     if (session?.user?.id) {
                         setIsOwner(data.user_id === session.user.id);
+                    }
+                    if (data.share_token) {
+                        setShareToken(data.share_token);
                     }
                 }
             } catch (error) {
@@ -44,13 +51,13 @@ export default function ListDetailPage() {
     }, [id, session]);
 
     const handleDelete = async () => {
-        if (!session?.accessToken || !confirm('Are you sure you want to delete this list?')) return;
+        if (!session?.user?.accessToken || !confirm('Are you sure you want to delete this list?')) return;
 
         try {
             const res = await fetch(getApiEndpoint(`/lists/${id}`), {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${session.accessToken}`
+                    'Authorization': `Bearer ${session.user.accessToken}`
                 }
             });
 
@@ -59,6 +66,30 @@ export default function ListDetailPage() {
             }
         } catch (error) {
             console.error('Failed to delete list', error);
+        }
+    };
+
+    const handleShare = async () => {
+        if (!session?.user?.accessToken) {
+            router.push('/auth/signin');
+            return;
+        }
+        setSharing(true);
+        try {
+            const res = await fetch(getApiEndpoint(`/lists/${id}/share`), {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${session.user.accessToken}`
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setShareToken(data.share_token);
+            }
+        } catch (error) {
+            console.error('Failed to share list', error);
+        } finally {
+            setSharing(false);
         }
     };
 
@@ -96,19 +127,49 @@ export default function ListDetailPage() {
                             )}
                         </div>
                         {isOwner && (
-                            <div className="flex gap-2 ml-4">
-                                <button
-                                    onClick={() => setShowListEditor(true)}
-                                    className="border border-[#333] text-[#a0a0a0] px-3 py-1 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[#ff6b35] hover:text-[#ff6b35]"
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={handleDelete}
-                                    className="border border-[#333] text-[#a0a0a0] px-3 py-1 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-red-500 hover:text-red-500"
-                                >
-                                    Delete
-                                </button>
+                            <div className="flex flex-col gap-2 ml-4">
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setShowListEditor(true)}
+                                        className="border border-[#333] text-[#a0a0a0] px-3 py-1 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[#ff6b35] hover:text-[#ff6b35]"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={handleDelete}
+                                        className="border border-[#333] text-[#a0a0a0] px-3 py-1 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-red-500 hover:text-red-500"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                    <button
+                                        onClick={handleShare}
+                                        disabled={sharing}
+                                        className="border border-[#333] text-[#a0a0a0] px-3 py-1 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[#00d9ff] hover:text-white disabled:opacity-50"
+                                    >
+                                        {shareToken ? 'Regenerate Link' : 'Share Link'}
+                                    </button>
+                                    {shareToken && (
+                                        <>
+                                            <span className="text-xs text-[#9ca3af]">Token ready</span>
+                                            <a
+                                                href={`/lists/${id}?token=${shareToken}`}
+                                                className="text-xs text-[#00d9ff] underline"
+                                                target="_blank"
+                                            >
+                                                Open link
+                                            </a>
+                                            <a
+                                                href={`${getApiEndpoint(`/export/list/${id}`)}?token=${shareToken}`}
+                                                className="text-xs text-[#9ca3af] underline"
+                                                target="_blank"
+                                            >
+                                                Export CSV
+                                            </a>
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>
