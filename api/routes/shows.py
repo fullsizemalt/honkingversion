@@ -61,6 +61,13 @@ def list_shows(session: Session = Depends(get_session)):
     shows = session.exec(statement).all()
     return shows
 
+@router.get("/id/{show_id}")
+def get_show_by_id(show_id: int, session: Session = Depends(get_session)):
+    show = session.get(Show, show_id)
+    if not show:
+        raise HTTPException(status_code=404, detail="Show not found")
+    return show
+
 @router.get("/years")
 def list_years(session: Session = Depends(get_session)):
     years = session.exec(

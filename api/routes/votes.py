@@ -8,6 +8,8 @@ from database import get_session
 from models import User, Vote, Show, UserRead
 from routes.auth import get_current_user
 from datetime import datetime
+from services.notifications import create_notification
+from models import UserFollow
 
 router = APIRouter(prefix="/votes", tags=["votes"])
 
@@ -49,6 +51,7 @@ def create_vote(
         session.add(existing_vote)
         session.commit()
         session.refresh(existing_vote)
+        notify_new_vote(session, existing_vote.id, current_user.id)
         return VoteRead(
             id=existing_vote.id,
             user_id=existing_vote.user_id,
@@ -68,6 +71,7 @@ def create_vote(
         session.add(vote)
         session.commit()
         session.refresh(vote)
+        notify_new_vote(session, vote.id, current_user.id)
         return VoteRead(
             id=vote.id,
             user_id=vote.user_id,
@@ -183,3 +187,21 @@ def get_user_votes(username: str, session: Session = Depends(get_session)):
             created_at=vote.created_at
         ))
     return results
+
+def notify_new_vote(session: Session, vote_id: int, actor_id: int):
+    follower_ids = session.exec(
+        select(UserFollow.follower_id)
+        .where(UserFollow.followed_id == actor_id)
+    ).all()
+    if not follower_ids:
+        return
+    follower_ids = [fid for fid, in follower_ids] if isinstance(follower_ids[0], tuple) else follower_ids
+    for uid in follower_ids:
+        create_notification(
+            session,
+            user_id=uid,
+            actor_id=actor_id,
+            type="review",
+            object_type="vote",
+            object_id=vote_id,
+        )

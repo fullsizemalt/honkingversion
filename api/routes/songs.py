@@ -67,6 +67,13 @@ def get_song(slug: str, session: Session = Depends(get_session)):
         "times_played": len(performances)
     }
 
+@router.get("/id/{song_id}")
+def get_song_by_id(song_id: int, session: Session = Depends(get_session)):
+    song = session.get(Song, song_id)
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found")
+    return song
+
 @router.get("/{slug}/performances")
 def get_song_performances(slug: str, session: Session = Depends(get_session)):
     """Return performances for a song with rating stats, sorted by avg rating descending"""

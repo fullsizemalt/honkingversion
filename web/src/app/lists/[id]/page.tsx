@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { getApiEndpoint } from '@/lib/api';
 import { UserList } from '@/types/list';
+import { Show, Performance, Song } from '@/types';
 import ListEditor from '@/components/ListEditor';
 
 export default function ListDetailPage() {
@@ -20,6 +21,7 @@ export default function ListDetailPage() {
     const [isOwner, setIsOwner] = useState(false);
     const [shareToken, setShareToken] = useState<string | null>(null);
     const [sharing, setSharing] = useState(false);
+    const [itemDetails, setItemDetails] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchList = async () => {
@@ -49,6 +51,55 @@ export default function ListDetailPage() {
             fetchList();
         }
     }, [id, session]);
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            if (!list?.items) {
+                setItemDetails([]);
+                return;
+            }
+            const itemsArray = Array.isArray(list.items)
+                ? list.items
+                : (() => {
+                    try {
+                        return JSON.parse(list.items as string);
+                    } catch {
+                        return [];
+                    }
+                })();
+
+            const results: any[] = [];
+            for (const raw of itemsArray) {
+                const itemId = typeof raw === 'object' && raw?.id ? raw.id : raw;
+                try {
+                    if (list.list_type === 'shows') {
+                        const res = await fetch(getApiEndpoint(`/shows/id/${itemId}`), { cache: 'no-store' });
+                        if (res.ok) {
+                            results.push({ type: 'show', data: await res.json(), id: itemId });
+                            continue;
+                        }
+                    } else if (list.list_type === 'performances') {
+                        const res = await fetch(getApiEndpoint(`/performances/${itemId}`), { cache: 'no-store' });
+                        if (res.ok) {
+                            results.push({ type: 'performance', data: await res.json(), id: itemId });
+                            continue;
+                        }
+                    } else if (list.list_type === 'songs') {
+                        const res = await fetch(getApiEndpoint(`/songs/id/${itemId}`), { cache: 'no-store' });
+                        if (res.ok) {
+                            results.push({ type: 'song', data: await res.json(), id: itemId });
+                            continue;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch item detail', e);
+                }
+                results.push({ type: 'unknown', id: itemId });
+            }
+            setItemDetails(results);
+        };
+        fetchDetails();
+    }, [list]);
 
     const handleDelete = async () => {
         if (!session?.user?.accessToken || !confirm('Are you sure you want to delete this list?')) return;
@@ -183,19 +234,46 @@ export default function ListDetailPage() {
                         )}
                     </div>
                     <div className="flex items-center gap-4 text-sm font-[family-name:var(--font-ibm-plex-mono)] text-[#707070]">
-                        <span>{items.length} items</span>
+                        <span>{parsedItems.length} items</span>
                         <span>•</span>
                         <span>Created {new Date(list.created_at).toLocaleDateString()}</span>
                     </div>
                 </div>
 
                 <div className="space-y-4">
-                    {parsedItems.length > 0 ? (
-                        parsedItems.map((item: any, index: number) => {
-                            const itemId = typeof item === 'object' && item?.id ? item.id : item;
+                    {itemDetails.length > 0 ? (
+                        itemDetails.map((entry, index) => {
+                            if (entry.type === 'show') {
+                                const s = entry.data as Show;
+                                return (
+                                    <Link key={index} href={`/shows/${s.date}`} className="block bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5] hover:border-[#00d9ff]">
+                                        <div className="font-semibold">{s.date} @ {s.venue}</div>
+                                        <div className="text-sm text-[#9ca3af]">{s.location}</div>
+                                    </Link>
+                                );
+                            }
+                            if (entry.type === 'performance') {
+                                const p = entry.data as Performance;
+                                return (
+                                    <div key={index} className="bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5]">
+                                        <div className="font-semibold">{p.song.name}</div>
+                                        <div className="text-sm text-[#9ca3af]">{p.show.date} @ {p.show.venue}</div>
+                                        <div className="text-xs text-[#6b7280]">Set {p.set_number} • Position {p.position}</div>
+                                    </div>
+                                );
+                            }
+                            if (entry.type === 'song') {
+                                const sg = entry.data as Song;
+                                return (
+                                    <Link key={index} href={`/songs/${sg.slug}`} className="block bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5] hover:border-[#00d9ff]">
+                                        <div className="font-semibold">{sg.name}</div>
+                                        {sg.artist && <div className="text-xs text-[#9ca3af]">{sg.artist}</div>}
+                                    </Link>
+                                );
+                            }
                             return (
                                 <div key={index} className="bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5]">
-                                    Item ID: {itemId}
+                                    Item ID: {entry.id}
                                 </div>
                             );
                         })
