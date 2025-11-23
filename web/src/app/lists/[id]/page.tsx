@@ -109,7 +109,15 @@ export default function ListDetailPage() {
         );
     }
 
-    const items = list.items ? JSON.parse(list.items) : [];
+    const items = (() => {
+        if (!list.items) return [];
+        try {
+            return typeof list.items === 'string' ? JSON.parse(list.items) : list.items;
+        } catch (e) {
+            console.error('Failed to parse list items', e);
+            return [];
+        }
+    })();
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
@@ -182,12 +190,14 @@ export default function ListDetailPage() {
 
                 <div className="space-y-4">
                     {items.length > 0 ? (
-                        items.map((itemId: number, index: number) => (
-                            <div key={index} className="bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5]">
-                                {/* Placeholder for item details - would need to fetch item data */}
-                                Item ID: {itemId}
-                            </div>
-                        ))
+                        items.map((item: any, index: number) => {
+                            const itemId = typeof item === 'object' && item?.id ? item.id : item;
+                            return (
+                                <div key={index} className="bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5]">
+                                    Item ID: {itemId}
+                                </div>
+                            );
+                        })
                     ) : (
                         <div className="text-[#a0a0a0] italic">This list is empty.</div>
                     )}
