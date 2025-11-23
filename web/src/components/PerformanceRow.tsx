@@ -6,6 +6,7 @@ interface PerformanceRowProps {
         id: number;
         avg_rating?: number | null;
         vote_count?: number;
+        song?: { name: string };
         show: { date: string; venue: string; location: string };
         position?: number;
         set_number?: number;
@@ -14,7 +15,7 @@ interface PerformanceRowProps {
 }
 
 export default function PerformanceRow({ performance }: PerformanceRowProps) {
-    const { id, avg_rating, vote_count, show, position, set_number, notes } = performance;
+    const { id, avg_rating, vote_count, song, show, position, set_number, notes } = performance;
     return (
         <div className="bg-[#111] text-[#ddd] p-4 rounded-md border border-[#333] mb-3">
             <div className="flex justify-between items-center">
@@ -28,7 +29,7 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
                     <span className="text-xs text-[#aaa]">({vote_count ?? 0})</span>
                 </div>
             </div>
-            <PerformanceVoteControl performanceId={id} initialRating={avg_rating} />
+            <PerformanceVoteControl performanceId={id} songName={song?.name || 'Performance'} />
         </div>
     );
 }
