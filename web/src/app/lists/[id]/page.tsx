@@ -204,6 +204,7 @@ export default function ListDetailPage() {
                         setList((prev) => ({
                             ...(prev || ({} as UserList)),
                             ...updatedList,
+                            list_type: updatedList.list_type || prev?.list_type || 'shows',
                             items: normalizedItems,
                         }));
                         setShowListEditor(false);
