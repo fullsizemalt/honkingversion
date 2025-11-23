@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import ProfileHeader from "@/components/ProfileHeader";
 import ActivityFeed from "@/components/ActivityFeed";
+import { getApiUrl } from '@/lib/api';
 import { User, Review } from "@/types";
 
 // Mock data fetcher (replace with API call)
 async function getUser(username: string): Promise<User | null> {
     try {
-        const res = await fetch(`http://localhost:8000/users/${username}`, { cache: 'no-store' });
+        const res = await fetch(getApiUrl(`/users/${username}`), { cache: 'no-store' });
         if (!res.ok) return null;
         return res.json();
     } catch (error) {
@@ -17,7 +18,7 @@ async function getUser(username: string): Promise<User | null> {
 
 async function getUserReviews(username: string): Promise<Review[]> {
     try {
-        const res = await fetch(`http://localhost:8000/votes/user/${username}`, { cache: 'no-store' });
+        const res = await fetch(getApiUrl(`/votes/user/${username}`), { cache: 'no-store' });
         if (!res.ok) return [];
         return res.json();
     } catch (error) {

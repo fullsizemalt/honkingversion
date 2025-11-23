@@ -1,3 +1,4 @@
+import { getApiUrl } from '@/lib/api';
 'use client'
 
 import { useSession } from "next-auth/react"
@@ -25,7 +26,7 @@ export default function ProfilePage() {
     const fetchUserData = async () => {
         try {
             // Fetch user data from API
-            const userRes = await fetch('http://localhost:8000/users/me');
+            const userRes = await fetch(getApiUrl('/users/me'));
             if (!userRes.ok) {
                 throw new Error('Failed to fetch user');
             }
@@ -34,7 +35,7 @@ export default function ProfilePage() {
 
             // Fetch user reviews
             if (userData.username) {
-                const reviewsRes = await fetch(`http://localhost:8000/votes/user/${userData.username}`);
+                const reviewsRes = await fetch(getApiUrl(`/votes/user/${userData.username}`));
                 if (reviewsRes.ok) {
                     const reviewsData = await reviewsRes.json();
                     setReviews(reviewsData);
