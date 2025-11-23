@@ -128,13 +128,18 @@ export default function ProfilePage() {
                     isOpen={showListEditor}
                     onClose={() => setShowListEditor(false)}
                     onListSaved={(newList) => {
-                        const normalized = {
-                            ...newList,
+                        const normalized: UserList = {
+                            id: newList.id || 0,
+                            user_id: newList.user_id ?? user?.id ?? 0,
+                            title: newList.title,
+                            description: newList.description,
                             items: newList.items || '[]',
                             list_type: newList.list_type || 'shows',
-                            user_id: newList.user_id ?? user?.id ?? 0,
+                            share_token: (newList as any).share_token ?? null,
+                            is_public: (newList as any).is_public ?? true,
+                            created_at: (newList as any).created_at || new Date().toISOString(),
                         };
-                        setLists([normalized as UserList, ...lists]);
+                        setLists([normalized, ...lists]);
                         setShowListEditor(false);
                     }}
                 />
