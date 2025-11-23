@@ -201,12 +201,17 @@ export default function ListDetailPage() {
                             typeof updatedList.items === 'string'
                                 ? updatedList.items
                                 : JSON.stringify(updatedList.items ?? []);
-                        setList((prev) => ({
-                            ...(prev || ({} as UserList)),
-                            ...updatedList,
-                            list_type: updatedList.list_type || prev?.list_type || 'shows',
-                            items: normalizedItems,
-                        }));
+                        setList((prev) => {
+                            const next: UserList = {
+                                ...(prev || ({} as UserList)),
+                                ...updatedList,
+                                list_type:
+                                    (updatedList.list_type as UserList['list_type']) ||
+                                    (prev?.list_type ?? 'shows'),
+                                items: normalizedItems,
+                            };
+                            return next;
+                        });
                         setShowListEditor(false);
                     }}
                     editList={list}
