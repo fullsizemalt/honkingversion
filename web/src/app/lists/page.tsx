@@ -1,5 +1,6 @@
 import ListCard from '@/components/ListCard';
 import { getApiEndpoint } from '@/lib/api';
+import CreateListButton from '@/components/CreateListButton';
 
 interface ListsData {
     id: number;
@@ -23,6 +24,7 @@ async function getLists(): Promise<ListsData[]> {
 
 export default async function ListsPage() {
     const lists = await getLists();
+    // Client components are discouraged here; keep this page server-rendered and delegate interactivity to ListEditor inside a client boundary.
 
     return (
         <div className="min-h-screen p-8 font-[family-name:var(--font-geist-sans)]">
@@ -34,7 +36,7 @@ export default async function ListsPage() {
                             Discover curated collections of shows from the community
                         </p>
                     </div>
-                    {/* TODO: Add "Create List" button for authenticated users */}
+                    <CreateListButton />
                 </div>
 
                 {lists.length === 0 ? (

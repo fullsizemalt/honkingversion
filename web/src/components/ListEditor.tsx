@@ -37,7 +37,8 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!session?.accessToken) {
+        const accessToken = session?.user?.accessToken
+        if (!accessToken) {
             setError('You must be logged in to create lists');
             return;
         }
@@ -63,7 +64,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                 method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session.accessToken}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(listData)
             });
