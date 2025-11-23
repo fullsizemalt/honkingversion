@@ -5,10 +5,14 @@ import { useSession, signOut } from "next-auth/react"
 import { useState } from 'react'
 import ThemeToggle from './ThemeToggle'
 import SearchBar from './SearchBar'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
     const { data: session } = useSession()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const pathname = usePathname();
+
+    const isActive = (path: string) => pathname === path;
 
     return (
         <nav className="bg-[#0a0a0a] border-b-2 border-[#ff6b35] sticky top-0 z-50">

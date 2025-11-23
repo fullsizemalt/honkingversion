@@ -1,6 +1,7 @@
 import { Show } from '@/types';
 import VoteControl from '@/components/VoteControl';
 import SetlistDisplay from '@/components/SetlistDisplay';
+import AttendedButton from '@/components/AttendedButton';
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { notFound } from 'next/navigation';
@@ -135,6 +136,7 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
                             showId={show.id}
                             initialUserVote={userVote}
                         />
+                        <AttendedButton showId={show.id} />
                     </div>
                 </div>
             </div>

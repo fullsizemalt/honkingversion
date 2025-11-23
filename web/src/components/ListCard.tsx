@@ -1,34 +1,30 @@
 import Link from 'next/link';
+import { UserList } from '@/types/list';
 
 interface ListCardProps {
-    list: {
-        id: number;
-        title: string;
-        description?: string;
-        username: string;
-        show_count: number;
-        created_at?: string;
-    };
+    list: UserList;
+    username?: string;
 }
 
-export default function ListCard({ list }: ListCardProps) {
+export default function ListCard({ list, username }: ListCardProps) {
+    const itemCount = list.items ? JSON.parse(list.items).length : 0;
+
     return (
-        <Link href={`/lists/${list.id}`} className="block">
-            <div className="border border-slate-700 rounded-lg p-6 hover:shadow-lg hover:border-orange-500/50 transition bg-white dark:bg-slate-900 h-full flex flex-col">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    {list.title}
-                </h3>
-                {list.description && (
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow line-clamp-3">
-                        {list.description}
-                    </p>
-                )}
-                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mt-auto pt-4 border-t border-slate-700">
-                    <span className="font-medium">by {list.username}</span>
-                    <span className="bg-slate-800 px-3 py-1 rounded-full text-xs">
-                        {list.show_count} {list.show_count === 1 ? 'show' : 'shows'}
-                    </span>
-                </div>
+        <Link
+            href={`/lists/${list.id}`}
+            className="block bg-[#1a1a1a] border border-[#333] p-4 hover:border-[#ff6b35] transition-colors group"
+        >
+            <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] group-hover:text-[#ff6b35] mb-2">
+                {list.title}
+            </h3>
+            {list.description && (
+                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] mb-4 line-clamp-2">
+                    {list.description}
+                </p>
+            )}
+            <div className="flex items-center justify-between text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[#707070] uppercase tracking-wider">
+                <span>{itemCount} {list.list_type}</span>
+                <span>{new Date(list.created_at).toLocaleDateString()}</span>
             </div>
         </Link>
     );

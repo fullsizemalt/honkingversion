@@ -15,11 +15,23 @@ echo "📦 Copying backend models and routes..."
 cp "$CURRENT_DIR/api/models.py" "$HV3_DIR/api/models.py"
 cp "$CURRENT_DIR/api/routes/users.py" "$HV3_DIR/api/routes/users.py"
 cp "$CURRENT_DIR/api/routes/votes.py" "$HV3_DIR/api/routes/votes.py"
+cp "$CURRENT_DIR/api/routes/lists.py" "$HV3_DIR/api/routes/lists.py"
+cp "$CURRENT_DIR/api/routes/tags.py" "$HV3_DIR/api/routes/tags.py"
+cp "$CURRENT_DIR/api/routes/search.py" "$HV3_DIR/api/routes/search.py"
+cp "$CURRENT_DIR/api/main.py" "$HV3_DIR/api/main.py"
 
-# Step 2: Copy frontend profile pages (in case they differ)
-echo "📦 Copying profile pages..."
+# Step 2: Copy frontend profile pages and new features
+echo "📦 Copying frontend pages and components..."
 cp -r "$CURRENT_DIR/web/src/app/profile" "$HV3_DIR/web/src/app/"
 cp -r "$CURRENT_DIR/web/src/app/u" "$HV3_DIR/web/src/app/"
+cp -r "$CURRENT_DIR/web/src/app/lists" "$HV3_DIR/web/src/app/"
+cp -r "$CURRENT_DIR/web/src/app/search" "$HV3_DIR/web/src/app/"
+cp "$CURRENT_DIR/web/src/components/ListCard.tsx" "$HV3_DIR/web/src/components/"
+cp "$CURRENT_DIR/web/src/components/TagBadge.tsx" "$HV3_DIR/web/src/components/"
+cp "$CURRENT_DIR/web/src/components/TagSelector.tsx" "$HV3_DIR/web/src/components/"
+cp "$CURRENT_DIR/web/src/components/SearchBar.tsx" "$HV3_DIR/web/src/components/"
+cp "$CURRENT_DIR/web/src/types/list.ts" "$HV3_DIR/web/src/types/"
+cp "$CURRENT_DIR/web/src/types/tag.ts" "$HV3_DIR/web/src/types/"
 
 # Step 3: Update frontend pages to use centralized API
 echo "🔧 Updating profile pages to use centralized API..."

@@ -1,8 +1,13 @@
+'use client';
+
 import PerformanceList from "@/components/PerformanceList";
 import ActivityFeed from "@/components/ActivityFeed";
 import { Review } from "@/types";
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { getApiEndpoint } from "@/lib/api";
 
-// Mock data for homepage activity
+// Mock data for homepage activity (fallback/initial)
 const recentActivity: Review[] = [
   {
     id: 101,
@@ -23,6 +28,37 @@ const recentActivity: Review[] = [
 ];
 
 export default function Home() {
+  const { data: session } = useSession();
+  const [feedType, setFeedType] = useState<'community' | 'following'>('community');
+  const [feedActivities, setFeedActivities] = useState<Review[]>(recentActivity);
+  const [loadingFeed, setLoadingFeed] = useState(false);
+
+  useEffect(() => {
+    if (feedType === 'following' && session) {
+      const fetchFollowingFeed = async () => {
+        setLoadingFeed(true);
+        try {
+          const res = await fetch(getApiEndpoint('/users/me/feed'), {
+            headers: {
+              'Authorization': `Bearer ${session.accessToken}`
+            }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setFeedActivities(data);
+          }
+        } catch (error) {
+          console.error('Failed to fetch following feed', error);
+        } finally {
+          setLoadingFeed(false);
+        }
+      };
+      fetchFollowingFeed();
+    } else {
+      setFeedActivities(recentActivity);
+    }
+  }, [feedType, session]);
+
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* Hero Section */}
@@ -76,7 +112,28 @@ export default function Home() {
 
           {/* Right Column: Community Activity */}
           <div className="lg:col-span-1">
-            <ActivityFeed activities={recentActivity} title="Community Pulse" />
+            <div className="flex items-center gap-4 mb-4">
+              <button
+                onClick={() => setFeedType('community')}
+                className={`font-[family-name:var(--font-space-grotesk)] text-xl font-bold uppercase tracking-tight ${feedType === 'community' ? 'text-[var(--text-primary)] border-b-2 border-[var(--accent-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+              >
+                Community
+              </button>
+              {session && (
+                <button
+                  onClick={() => setFeedType('following')}
+                  className={`font-[family-name:var(--font-space-grotesk)] text-xl font-bold uppercase tracking-tight ${feedType === 'following' ? 'text-[var(--text-primary)] border-b-2 border-[var(--accent-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                >
+                  Following
+                </button>
+              )}
+            </div>
+
+            {loadingFeed ? (
+              <div className="text-[var(--text-secondary)]">Loading feed...</div>
+            ) : (
+              <ActivityFeed activities={feedActivities} title="" />
+            )}
           </div>
         </div>
       </div>

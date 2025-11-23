@@ -11,6 +11,7 @@ class User(SQLModel, table=True):
     
     votes: List["Vote"] = Relationship(back_populates="user")
     lists: List["UserList"] = Relationship(back_populates="user")
+    attended_shows: List["UserShowAttendance"] = Relationship(back_populates="user")
 
 class Show(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -23,6 +24,15 @@ class Show(SQLModel, table=True):
     votes: List["Vote"] = Relationship(back_populates="show")
     performances: List["SongPerformance"] = Relationship(back_populates="show")
     show_tags: List["ShowTag"] = Relationship(back_populates="show")
+    attended_users: List["UserShowAttendance"] = Relationship(back_populates="show")
+
+class UserShowAttendance(SQLModel, table=True):
+    user_id: int = Field(foreign_key="user.id", primary_key=True)
+    show_id: int = Field(foreign_key="show.id", primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    user: "User" = Relationship(back_populates="attended_shows")
+    show: "Show" = Relationship(back_populates="attended_users")
 
 class Song(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -123,3 +133,4 @@ class UserRead(SQLModel):
     email: str
     created_at: datetime
     stats: Optional[UserStats] = None
+    is_following: bool = False

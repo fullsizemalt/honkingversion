@@ -1,61 +1,82 @@
-from fastapi import APIRouter, Depends, Query
-from sqlmodel import Session, select, or_
+from fastapi import APIRouter, Depends, HTTPException
+from sqlmodel import Session, select, col
 from typing import List, Optional
+from pydantic import BaseModel
+
 from database import get_session
-from models import Song, Show, User
+from models import Show, Song, User
 
 router = APIRouter(prefix="/search", tags=["search"])
 
-@router.get("/")
+class SearchResult(BaseModel):
+    type: str  # 'show', 'song', 'user'
+    id: int
+    title: str
+    subtitle: Optional[str] = None
+    url: str
+
+@router.get("/", response_model=List[SearchResult])
 def search(
-    q: str = Query(..., min_length=1, description="Search query"),
-    type: Optional[str] = Query(None, description="Filter by type: song, show, venue"),
+    q: str,
     session: Session = Depends(get_session)
 ):
-    """
-    Search for songs, shows, and venues.
-    """
-    results = {
-        "songs": [],
-        "shows": [],
-        "venues": []
-    }
-    
-    query = q.lower()
+    if not q or len(q) < 2:
+        return []
+        
+    results = []
+    query_str = f"%{q}%"
     
     # Search Songs
-    if not type or type == "song":
-        song_stmt = select(Song).where(
-            or_(
-                Song.name.ilike(f"%{query}%"),
-                Song.artist.ilike(f"%{query}%")
-            )
-        ).limit(10)
-        songs = session.exec(song_stmt).all()
-        results["songs"] = [song.model_dump() for song in songs]
-
-    # Search Shows (by venue or location or date)
-    if not type or type == "show":
-        show_stmt = select(Show).where(
-            or_(
-                Show.venue.ilike(f"%{query}%"),
-                Show.location.ilike(f"%{query}%"),
-                Show.date.ilike(f"%{query}%")
-            )
-        ).limit(10)
-        shows = session.exec(show_stmt).all()
-        results["shows"] = [show.model_dump() for show in shows]
-        
-    # Search Venues (derived from Shows for now, or if we had a Venue model)
-    # Since we don't have a dedicated Venue model yet, we'll skip distinct venue search 
-    # or just rely on the show search returning venue info. 
-    # For now, let's keep it simple and just return shows that match the venue.
-    # If we want a distinct list of venues, we'd need a group by query.
+    songs = session.exec(
+        select(Song)
+        .where(col(Song.name).like(query_str))
+        .limit(5)
+    ).all()
     
-    if not type or type == "venue":
-        # Distinct venues matching query
-        # This is a bit more complex with SQLModel/SQLAlchemy core, 
-        # let's stick to returning shows for now as the "venue" search result.
-        pass
-
+    for song in songs:
+        results.append(SearchResult(
+            type="song",
+            id=song.id,
+            title=song.name,
+            subtitle=song.artist,
+            url=f"/songs/{song.slug}"
+        ))
+        
+    # Search Shows (by venue or location)
+    shows = session.exec(
+        select(Show)
+        .where(
+            (col(Show.venue).like(query_str)) | 
+            (col(Show.location).like(query_str)) |
+            (col(Show.date).like(query_str))
+        )
+        .order_by(Show.date.desc())
+        .limit(5)
+    ).all()
+    
+    for show in shows:
+        results.append(SearchResult(
+            type="show",
+            id=show.id,
+            title=f"{show.date} - {show.venue}",
+            subtitle=show.location,
+            url=f"/shows/{show.date}"
+        ))
+        
+    # Search Users
+    users = session.exec(
+        select(User)
+        .where(col(User.username).like(query_str))
+        .limit(5)
+    ).all()
+    
+    for user in users:
+        results.append(SearchResult(
+            type="user",
+            id=user.id,
+            title=user.username,
+            subtitle="User",
+            url=f"/u/{user.username}"
+        ))
+        
     return results

@@ -98,16 +98,27 @@ def get_show_votes(
     
     return votes_read
 
+from models import SongPerformance, PerformanceTag, ShowTag, Tag
+from sqlalchemy.orm import selectinload
+
 class ShowSummary(BaseModel):
     id: int
     date: str
     venue: str
     location: str
+    tags: List[Tag] = []
+
+class PerformanceSummary(BaseModel):
+    id: int
+    song_name: str
+    song_slug: str
+    tags: List[Tag] = []
 
 class UserReviewRead(BaseModel):
     id: int
     user: UserRead
     show: Optional[ShowSummary] = None
+    performance: Optional[PerformanceSummary] = None
     rating: int
     blurb: Optional[str] = None
     full_review: Optional[str] = None
@@ -119,7 +130,16 @@ def get_user_votes(username: str, session: Session = Depends(get_session)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
         
-    statement = select(Vote).where(Vote.user_id == user.id).order_by(Vote.created_at.desc())
+    statement = (
+        select(Vote)
+        .where(Vote.user_id == user.id)
+        .options(
+            selectinload(Vote.performance).selectinload(SongPerformance.song),
+            selectinload(Vote.performance).selectinload(SongPerformance.performance_tags).selectinload(PerformanceTag.tag),
+            selectinload(Vote.show).selectinload(Show.show_tags).selectinload(ShowTag.tag)
+        )
+        .order_by(Vote.created_at.desc())
+    )
     votes = session.exec(statement).all()
     
     results = []
@@ -130,7 +150,17 @@ def get_user_votes(username: str, session: Session = Depends(get_session)):
                 id=vote.show.id,
                 date=vote.show.date,
                 venue=vote.show.venue,
-                location=vote.show.location
+                location=vote.show.location,
+                tags=[st.tag for st in vote.show.show_tags] if vote.show.show_tags else []
+            )
+            
+        performance_summary = None
+        if vote.performance:
+            performance_summary = PerformanceSummary(
+                id=vote.performance.id,
+                song_name=vote.performance.song.name,
+                song_slug=vote.performance.song.slug,
+                tags=[pt.tag for pt in vote.performance.performance_tags] if vote.performance.performance_tags else []
             )
             
         # Create UserRead manually or from_orm if configured
@@ -146,9 +176,10 @@ def get_user_votes(username: str, session: Session = Depends(get_session)):
             id=vote.id,
             user=user_read,
             show=show_summary,
+            performance=performance_summary,
             rating=vote.rating,
-            blurb=vote.blurb,
-            full_review=vote.full_review,
+            blurb=vote.comment, # Mapping comment to blurb
+            full_review=None, # Assuming full_review is not in Vote model yet or mapped differently
             created_at=vote.created_at
         ))
     return results

@@ -1,13 +1,15 @@
 import { notFound } from "next/navigation";
 import ProfileHeader from "@/components/ProfileHeader";
 import ActivityFeed from "@/components/ActivityFeed";
+import ListCard from "@/components/ListCard";
 import { getApiEndpoint } from '@/lib/api';
 import { User, Review } from "@/types";
+import { UserList } from "@/types/list";
 
 // Mock data fetcher (replace with API call)
 async function getUser(username: string): Promise<User | null> {
     try {
-        const res = await fetch(getApiEndpoint(`/ users / ${username} `), { cache: 'no-store' });
+        const res = await fetch(getApiEndpoint(`/users/${username}`), { cache: 'no-store' });
         if (!res.ok) return null;
         return res.json();
     } catch (error) {
@@ -18,11 +20,41 @@ async function getUser(username: string): Promise<User | null> {
 
 async function getUserReviews(username: string): Promise<Review[]> {
     try {
-        const res = await fetch(getApiEndpoint(`/ votes / user / ${username} `), { cache: 'no-store' });
+        const res = await fetch(getApiEndpoint(`/votes/user/${username}`), { cache: 'no-store' });
         if (!res.ok) return [];
         return res.json();
     } catch (error) {
         console.error("Failed to fetch user reviews", error);
+        return [];
+    }
+}
+
+async function getUserLists(username: string): Promise<UserList[]> {
+    try {
+        const res = await fetch(getApiEndpoint(`/lists/user/${username}`), { cache: 'no-store' });
+        if (!res.ok) return [];
+        return res.json();
+    } catch (error) {
+        console.error("Failed to fetch user lists", error);
+        return [];
+    }
+}
+
+interface AttendedShow {
+    show_id: number;
+    date: string;
+    venue: string;
+    location: string;
+    created_at: string;
+}
+
+async function getUserAttendedShows(username: string): Promise<AttendedShow[]> {
+    try {
+        const res = await fetch(getApiEndpoint(`/attended/user/${username}`), { cache: 'no-store' });
+        if (!res.ok) return [];
+        return res.json();
+    } catch (error) {
+        console.error("Failed to fetch attended shows", error);
         return [];
     }
 }
@@ -40,19 +72,21 @@ export default async function PublicProfilePage({ params }: PageProps) {
     }
 
     const reviews = await getUserReviews(username);
+    const lists = await getUserLists(username);
+    const attendedShows = await getUserAttendedShows(username);
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
             <div className="max-w-7xl mx-auto px-4 py-8">
-                <ProfileHeader user={user} isCurrentUser={false} />
+                <ProfileHeader user={user} isCurrentUser={false} isFollowing={user.is_following} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">
-                        <ActivityFeed activities={reviews} title={`${user.username} 's Activity`} />
+                        <ActivityFeed activities={reviews} title={`${user.username}'s Activity`} />
                     </div >
 
                     <div className="lg:col-span-1">
-                        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6">
+                        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 mb-8">
                             <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] mb-4 uppercase">
                                 Stats
                             </h3>
@@ -65,6 +99,14 @@ export default async function PublicProfilePage({ params }: PageProps) {
                                     <span className="text-[var(--text-secondary)]">Reviews Written</span>
                                     <span className="text-[var(--text-primary)] font-bold">{user.stats?.reviews_count}</span>
                                 </div>
+                                <div className="flex justify-between">
+                                    <a href={`/u/${user.username}/followers`} className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Followers</a>
+                                    <span className="text-[var(--text-primary)] font-bold">{user.stats?.followers_count}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <a href={`/u/${user.username}/following`} className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Following</a>
+                                    <span className="text-[var(--text-primary)] font-bold">{user.stats?.following_count}</span>
+                                </div>
                                 <div className="border-t border-[var(--border)] pt-4 mt-4">
                                     <div className="flex justify-between">
                                         <span className="text-[var(--text-secondary)]">Member Since</span>
@@ -75,9 +117,56 @@ export default async function PublicProfilePage({ params }: PageProps) {
                                 </div>
                             </div>
                         </div>
+
+                        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] uppercase">
+                                    Lists
+                                </h3>
+                                <a href={`/u/${user.username}/lists`} className="text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] hover:text-[var(--accent-primary)] uppercase tracking-wider">
+                                    View All
+                                </a>
+                            </div>
+                            <div className="space-y-4">
+                                {lists.length > 0 ? (
+                                    lists.slice(0, 3).map((list) => (
+                                        <ListCard key={list.id} list={list} username={user.username} />
+                                    ))
+                                ) : (
+                                    <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
+                                        No lists yet.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Attended Shows */}
+                        {attendedShows.length > 0 && (
+                            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 mt-8">
+                                <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] mb-4 uppercase">
+                                    Shows Attended ({attendedShows.length})
+                                </h3>
+                                <div className="space-y-2">
+                                    {attendedShows.slice(0, 5).map((show) => (
+                                        <a
+                                            key={show.show_id}
+                                            href={`/shows/${show.date}`}
+                                            className="block bg-[#1a1a1a] border border-[#333] p-3 hover:border-[#ff6b35] transition-colors group"
+                                        >
+                                            <div className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[#f5f5f5] group-hover:text-[#ff6b35]">
+                                                {show.date}
+                                            </div>
+                                            <div className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0]">
+                                                {show.venue} · {show.location}
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div >
-            </div >
-        </div >
+                </div>
+            </div>
+        </div>
     );
 }

@@ -6,7 +6,10 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import ProfileHeader from "@/components/ProfileHeader"
 import ActivityFeed from "@/components/ActivityFeed"
+import ListCard from "@/components/ListCard"
+import ListEditor from "@/components/ListEditor"
 import { User, Review } from "@/types"
+import { UserList } from "@/types/list"
 
 
 export default function ProfilePage() {
@@ -14,7 +17,9 @@ export default function ProfilePage() {
     const router = useRouter()
     const [user, setUser] = useState<User | null>(null)
     const [reviews, setReviews] = useState<Review[]>([])
+    const [lists, setLists] = useState<UserList[]>([])
     const [loading, setLoading] = useState(true)
+    const [showListEditor, setShowListEditor] = useState(false)
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -27,7 +32,9 @@ export default function ProfilePage() {
     const fetchUserData = async () => {
         try {
             // Fetch user data from API
-            const userRes = await fetch(getApiEndpoint('/users/me'));
+            const userRes = await fetch(getApiEndpoint('/users/me'), {
+                headers: { 'Authorization': `Bearer ${session?.accessToken}` }
+            });
             if (!userRes.ok) {
                 throw new Error('Failed to fetch user');
             }
@@ -40,6 +47,13 @@ export default function ProfilePage() {
                 if (reviewsRes.ok) {
                     const reviewsData = await reviewsRes.json();
                     setReviews(reviewsData);
+                }
+
+                // Fetch user lists
+                const listsRes = await fetch(getApiEndpoint(`/lists/user/${userData.username}`));
+                if (listsRes.ok) {
+                    const listsData = await listsRes.json();
+                    setLists(listsData);
                 }
             }
         } catch (error) {
@@ -73,15 +87,45 @@ export default function ProfilePage() {
 
                     <div className="lg:col-span-1">
                         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6">
-                            <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] mb-4 uppercase">
-                                Your Lists
-                            </h3>
-                            <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                                Coming soon...
-                            </p>
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] uppercase">
+                                    Your Lists
+                                </h3>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setShowListEditor(true)}
+                                        className="bg-[#ff6b35] text-[#0a0a0a] px-3 py-1 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[#f7931e]"
+                                    >
+                                        + New
+                                    </button>
+                                    <a href={`/u/${user.username}/lists`} className="text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] hover:text-[var(--accent-primary)] uppercase tracking-wider flex items-center">
+                                        View All
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                {lists.length > 0 ? (
+                                    lists.slice(0, 3).map((list) => (
+                                        <ListCard key={list.id} list={list} username={user.username} />
+                                    ))
+                                ) : (
+                                    <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
+                                        No lists yet. Create one to get started!
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <ListEditor
+                    isOpen={showListEditor}
+                    onClose={() => setShowListEditor(false)}
+                    onListSaved={(newList) => {
+                        setLists([newList, ...lists]);
+                        setShowListEditor(false);
+                    }}
+                />
             </div>
         </div>
     )

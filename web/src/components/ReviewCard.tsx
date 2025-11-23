@@ -35,17 +35,41 @@ export default function ReviewCard({ review, showContext = false }: ReviewCardPr
                 </div>
             </div>
 
+            import TagBadge from './TagBadge';
+
+            // ...
+
             {showContext && (review.show || review.performance) && (
                 <div className="mb-3 pb-3 border-b border-[#333]">
-                    <span className="text-[#707070] text-xs uppercase tracking-wider mr-2">Reviewing:</span>
-                    {review.show ? (
-                        <Link href={`/shows/${review.show.date}`} className="text-[#f5f5f5] hover:text-[#00d9ff] font-[family-name:var(--font-space-grotesk)]">
-                            {review.show.date} @ {review.show.venue}
-                        </Link>
-                    ) : (
-                        <Link href={`/songs/${review.performance?.song.slug}`} className="text-[#f5f5f5] hover:text-[#00d9ff] font-[family-name:var(--font-space-grotesk)]">
-                            {review.performance?.song.name} ({review.performance?.show.date})
-                        </Link>
+                    <div className="flex items-center justify-between mb-2">
+                        <div>
+                            <span className="text-[#707070] text-xs uppercase tracking-wider mr-2">Reviewing:</span>
+                            {review.show ? (
+                                <Link href={`/shows/${review.show.date}`} className="text-[#f5f5f5] hover:text-[#00d9ff] font-[family-name:var(--font-space-grotesk)]">
+                                    {review.show.date} @ {review.show.venue}
+                                </Link>
+                            ) : (
+                                <Link href={`/songs/${review.performance?.song.slug}`} className="text-[#f5f5f5] hover:text-[#00d9ff] font-[family-name:var(--font-space-grotesk)]">
+                                    {review.performance?.song.name} ({review.performance?.show.date})
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Tags Display */}
+                    {(review.performance?.tags && review.performance.tags.length > 0) && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                            {review.performance.tags.map(tag => (
+                                <TagBadge key={tag.id} tag={tag} />
+                            ))}
+                        </div>
+                    )}
+                    {(review.show?.tags && review.show.tags.length > 0) && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                            {review.show.tags.map(tag => (
+                                <TagBadge key={tag.id} tag={tag} />
+                            ))}
+                        </div>
                     )}
                 </div>
             )}

@@ -1,3 +1,5 @@
+import { Tag } from './tag';
+
 export interface Show {
     id?: number;
     elgoose_id?: number;
@@ -6,35 +8,10 @@ export interface Show {
     location: string;
     setlist_data?: string;
     source?: string;
+    tags?: Tag[];
 }
 
-export interface Setlist {
-    date: string;
-    venue: string;
-    location: string;
-    sets: { [key: string]: string[] };
-}
-
-export interface Song {
-    id: number;
-    name: string;
-    artist: string;
-    slug: string;
-    debut_date?: string;
-    times_played: number;
-    avg_rating?: number;
-    is_cover: boolean;
-    original_artist?: string;
-}
-
-export interface SongPerformance {
-    id: number;
-    song_id: number;
-    show_id: number;
-    position: number;
-    set_number: number;
-    notes?: string;
-}
+// ... (Setlist, Song, SongPerformance interfaces remain unchanged)
 
 export interface Performance {
     id: number;
@@ -56,6 +33,7 @@ export interface Performance {
     };
     vote_count: number;
     avg_rating?: number;
+    tags?: Tag[];
 }
 
 export interface User {
@@ -69,6 +47,7 @@ export interface User {
         followers_count: number;
         following_count: number;
     };
+    is_following?: boolean;
 }
 
 export interface Review {

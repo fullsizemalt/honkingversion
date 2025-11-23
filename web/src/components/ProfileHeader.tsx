@@ -1,13 +1,14 @@
 import { User } from '@/types';
+import FollowButton from './FollowButton';
 
 interface ProfileHeaderProps {
     user: User;
     isCurrentUser?: boolean;
-    onFollow?: () => void;
+    onFollow?: () => void; // Deprecated but kept for compatibility if needed
     isFollowing?: boolean;
 }
 
-export default function ProfileHeader({ user, isCurrentUser, onFollow, isFollowing }: ProfileHeaderProps) {
+export default function ProfileHeader({ user, isCurrentUser, isFollowing = false }: ProfileHeaderProps) {
     return (
         <div className="bg-[#1a1a1a] border border-[#333] p-6 mb-8">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -31,20 +32,15 @@ export default function ProfileHeader({ user, isCurrentUser, onFollow, isFollowi
                             <div>
                                 <span className="text-[#f5f5f5] font-bold">{user.stats?.followers_count || 0}</span> Followers
                             </div>
+                            <div>
+                                <span className="text-[#f5f5f5] font-bold">{user.stats?.following_count || 0}</span> Following
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {!isCurrentUser && (
-                    <button
-                        onClick={onFollow}
-                        className={`px-6 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-sm uppercase tracking-wider transition-colors ${isFollowing
-                                ? 'bg-transparent border border-[#333] text-[#a0a0a0] hover:border-[#f5f5f5] hover:text-[#f5f5f5]'
-                                : 'bg-[#ff6b35] text-[#0a0a0a] hover:bg-[#ff8555]'
-                            }`}
-                    >
-                        {isFollowing ? 'Unfollow' : 'Follow'}
-                    </button>
+                    <FollowButton username={user.username} initialIsFollowing={isFollowing} />
                 )}
 
                 {isCurrentUser && (
