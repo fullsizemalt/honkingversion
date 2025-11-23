@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { getApiEndpoint } from '@/lib/api';
 import { UserList } from '@/types/list';
-import { Show, Performance, Song } from '@/types';
+import { Show, Performance } from '@/types';
 import ItemTags from '@/components/ItemTags';
 import ListEditor from '@/components/ListEditor';
 
