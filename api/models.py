@@ -24,6 +24,7 @@ class Show(SQLModel, table=True):
     date: str = Field(index=True) # YYYY-MM-DD
     venue: str
     location: str
+    tour: Optional[str] = Field(default=None, index=True)
     setlist_data: str # JSON string
     
     votes: List["Vote"] = Relationship(back_populates="show")
