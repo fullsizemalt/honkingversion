@@ -6,8 +6,8 @@ from typing import Annotated
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 
-from ..database import get_session
-from ..models import User
+from database import get_session
+from models import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

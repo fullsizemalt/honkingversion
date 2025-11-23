@@ -7,6 +7,8 @@ app = FastAPI(title="Honkingversion.net API", description="API for Goose Fan Sit
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://honkingversion.runfoo.run",
+    "https://api.honkingversion.runfoo.run",
 ]
 
 app.add_middleware(
@@ -17,8 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from .routes import auth, shows, users, votes, lists, songs, performances
-from .database import create_db_and_tables
+from routes import auth, shows, users, votes, lists, songs, performances
+from database import create_db_and_tables
 
 # ... (previous code)
 
