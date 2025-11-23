@@ -113,7 +113,7 @@ export default function ListDetailPage() {
         if (!list.items) return [];
         if (Array.isArray(list.items)) return list.items;
         try {
-            return JSON.parse(list.items);
+            return JSON.parse(list.items as string);
         } catch (e) {
             console.error('Failed to parse list items', e);
             return [];
