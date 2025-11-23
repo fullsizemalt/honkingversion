@@ -197,7 +197,15 @@ export default function ListDetailPage() {
                     isOpen={showListEditor}
                     onClose={() => setShowListEditor(false)}
                     onListSaved={(updatedList) => {
-                        setList((prev) => prev ? { ...prev, ...updatedList } : updatedList as UserList);
+                        const normalizedItems =
+                            typeof updatedList.items === 'string'
+                                ? updatedList.items
+                                : JSON.stringify(updatedList.items ?? []);
+                        setList((prev) => ({
+                            ...(prev || ({} as UserList)),
+                            ...updatedList,
+                            items: normalizedItems,
+                        }));
                         setShowListEditor(false);
                     }}
                     editList={list}
