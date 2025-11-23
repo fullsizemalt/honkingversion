@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { UserList } from '@/types/list';
 
 interface ListCardProps {
-    list: UserList;
+    list: UserList | (Partial<UserList> & { id: number; title: string; created_at?: string });
     username?: string;
 }
 
@@ -31,8 +31,8 @@ export default function ListCard({ list, username }: ListCardProps) {
                 </p>
             )}
             <div className="flex items-center justify-between text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[#707070] uppercase tracking-wider">
-                <span>{itemCount} {list.list_type}</span>
-                <span>{new Date(list.created_at).toLocaleDateString()}</span>
+                <span>{itemCount} {list.list_type || 'items'}</span>
+                <span>{list.created_at ? new Date(list.created_at).toLocaleDateString() : ''}</span>
             </div>
         </Link>
     );

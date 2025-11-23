@@ -309,7 +309,7 @@ export default function ListDetailPage() {
                     editList={{
                         ...list,
                         items: parsedItems,
-                        list_type: list.list_type as 'shows' | 'performances' | 'songs' | undefined,
+                        list_type: (list.list_type as 'shows' | 'performances' | 'songs' | undefined) || 'shows',
                     }}
                 />
             </div>
