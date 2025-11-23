@@ -7,14 +7,16 @@ import { getApiUrl } from '@/lib/api'
 
 interface PerformanceVoteControlProps {
     performanceId: number
-    songName: string
+    songName?: string
+    initialRating?: number | null
     compact?: boolean
     onVoteUpdate?: () => void
 }
 
 export default function PerformanceVoteControl({
     performanceId,
-    songName,
+    songName = 'this performance',
+    initialRating,
     compact = false,
     onVoteUpdate
 }: PerformanceVoteControlProps) {
@@ -97,8 +99,8 @@ export default function PerformanceVoteControl({
                             onMouseLeave={() => setHoverRating(0)}
                             onClick={() => handleVote(value)}
                             className={`w-6 h-6 rounded text-xs font-bold transition-all ${(hoverRating || rating) >= value
-                                    ? 'bg-[#00d9ff] text-[#0a0a0a]'
-                                    : 'bg-[#333] text-[#707070] hover:bg-[#444]'
+                                ? 'bg-[#00d9ff] text-[#0a0a0a]'
+                                : 'bg-[#333] text-[#707070] hover:bg-[#444]'
                                 }`}
                         >
                             {value}
@@ -131,8 +133,8 @@ export default function PerformanceVoteControl({
                         onMouseLeave={() => setHoverRating(0)}
                         onClick={() => handleVote(value)}
                         className={`w-8 h-8 rounded text-sm font-bold transition-all ${(hoverRating || rating) >= value
-                                ? 'bg-[#00d9ff] text-[#0a0a0a] scale-110'
-                                : 'bg-[#333] text-[#707070] hover:bg-[#444]'
+                            ? 'bg-[#00d9ff] text-[#0a0a0a] scale-110'
+                            : 'bg-[#333] text-[#707070] hover:bg-[#444]'
                             }`}
                     >
                         {value}

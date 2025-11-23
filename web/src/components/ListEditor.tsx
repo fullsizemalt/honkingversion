@@ -184,7 +184,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                         </label>
                         <select
                             value={listType}
-                            onChange={(e) => setListType(e.target.value)}
+                            onChange={(e) => setListType(e.target.value as 'performances' | 'shows' | 'songs')}
                             className="w-full bg-[#0a0a0a] border border-[#333] text-[#f5f5f5] px-3 py-2 focus:border-[#ff6b35] focus:outline-none"
                         >
                             <option value="shows">Shows</option>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X, MessageSquare, Bug, Lightbulb } from "lucide-react";
-import { getApiUrl } from "@/lib/api";
+import { getApiEndpoint } from "@/lib/api";
 
 interface FeedbackModalProps {
     isOpen: boolean;
@@ -33,7 +33,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 headers["Authorization"] = `Bearer ${token}`;
             }
 
-            const res = await fetch(getApiUrl("/feedback/"), {
+            const res = await fetch(getApiEndpoint("/feedback/"), {
                 method: "POST",
                 headers,
                 body: JSON.stringify({ type, subject, message }),
@@ -100,8 +100,8 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 type="button"
                                 onClick={() => setType("bug")}
                                 className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${type === "bug"
-                                        ? "bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
-                                        : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                                    ? "bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
+                                    : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                                     }`}
                             >
                                 <Bug className="w-4 h-4" />
@@ -111,8 +111,8 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 type="button"
                                 onClick={() => setType("feature")}
                                 className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${type === "feature"
-                                        ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"
-                                        : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                                    ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"
+                                    : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                                     }`}
                             >
                                 <Lightbulb className="w-4 h-4" />

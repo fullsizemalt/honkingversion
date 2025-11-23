@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getApiUrl } from "@/lib/api";
+import { getApiEndpoint } from "@/lib/api";
 import { format } from "date-fns";
 import { Bug, Lightbulb, Zap, User } from "lucide-react";
 import Link from "next/link";
 
 interface ChangelogEntry {
     id: number;
-    title: str;
-    description: str;
+    title: string;
+    description: string;
     date: string;
     type: "fix" | "feature" | "improvement";
     credited_user?: {
@@ -22,7 +22,7 @@ export default function UpdatesPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(getApiUrl("/changelog/"))
+        fetch(getApiEndpoint("/changelog/"))
             .then((res) => res.json())
             .then((data) => {
                 setEntries(data);
@@ -90,10 +90,10 @@ export default function UpdatesPage() {
                                 <div className="flex items-center justify-between mb-2">
                                     <span
                                         className={`text-xs font-medium px-2.5 py-0.5 rounded ${entry.type === "fix"
-                                                ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                                                : entry.type === "feature"
-                                                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                                                    : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+                                            ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                                            : entry.type === "feature"
+                                                ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                                                : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
                                             }`}
                                     >
                                         {getTypeLabel(entry.type)}

@@ -7,7 +7,7 @@ interface TopVersionProps {
 }
 
 export default function TopVersion({ performance }: TopVersionProps) {
-    const { avg_rating, vote_count, show, position, set_number, notes, id } = performance;
+    const { avg_rating, vote_count, show, position, set_number, notes, id, song } = performance;
     return (
         <div className="bg-[#111] text-[#eee] p-6 rounded-lg shadow-lg border border-[#333] mb-6">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl md:text-3xl font-bold mb-3">
@@ -24,7 +24,7 @@ export default function TopVersion({ performance }: TopVersionProps) {
                 <span className="font-bold text-lg">Avg Rating: {avg_rating ?? 'N/A'}</span>
                 <span className="text-sm">Votes: {vote_count}</span>
             </div>
-            <PerformanceVoteControl performanceId={id} initialRating={avg_rating} />
+            <PerformanceVoteControl performanceId={id} songName={song?.name} initialRating={avg_rating} />
         </div>
     );
 }

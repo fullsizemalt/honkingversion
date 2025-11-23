@@ -8,6 +8,9 @@ export interface Song {
     is_cover?: boolean;
     original_artist?: string;
     tags?: Tag[];
+    times_played?: number;
+    avg_rating?: number;
+    debut_date?: string;
 }
 
 export interface Show {

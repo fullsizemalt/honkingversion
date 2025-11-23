@@ -2,6 +2,8 @@ import PerformanceCard from './PerformanceCard';
 import { Performance } from '@/types';
 import { getApiEndpoint } from '@/lib/api';
 
+export const dynamic = 'force-dynamic';
+
 async function getRecentPerformances(): Promise<Performance[]> {
     try {
         const res = await fetch(getApiEndpoint('/performances/?limit=30'), {

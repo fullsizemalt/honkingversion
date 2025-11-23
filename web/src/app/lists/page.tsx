@@ -2,6 +2,8 @@ import ListCard from '@/components/ListCard';
 import { getApiEndpoint } from '@/lib/api';
 import CreateListButton from '@/components/CreateListButton';
 
+export const dynamic = 'force-dynamic';
+
 interface ListsData {
     id: number;
     title: string;
