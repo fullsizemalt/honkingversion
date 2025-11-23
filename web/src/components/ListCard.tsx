@@ -7,7 +7,15 @@ interface ListCardProps {
 }
 
 export default function ListCard({ list, username }: ListCardProps) {
-    const itemCount = list.items ? JSON.parse(list.items).length : 0;
+    const itemCount = (() => {
+        if (!list.items) return 0;
+        if (Array.isArray(list.items)) return list.items.length;
+        try {
+            return JSON.parse(list.items).length;
+        } catch {
+            return 0;
+        }
+    })();
 
     return (
         <Link
