@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useSession, signOut } from "next-auth/react"
 import { useState } from 'react'
+import ThemeToggle from './ThemeToggle'
 
 export default function Navbar() {
     const { data: session } = useSession()
@@ -30,22 +31,23 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    {/* Auth */}
-                    <div className="hidden md:block">
+                    {/* Auth & Theme */}
+                    <div className="hidden md:flex items-center gap-4">
+                        <ThemeToggle />
                         {session ? (
                             <div className="flex items-center gap-4">
-                                <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0]">
+                                <Link href="/profile" className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
                                     {session.user?.name}
-                                </span>
+                                </Link>
                                 <button
                                     onClick={() => signOut()}
-                                    className="border border-[#333] px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[#a0a0a0] hover:bg-[#1a1a1a] hover:text-[#f5f5f5] transition-colors"
+                                    className="border border-[var(--border)] px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-colors"
                                 >
                                     Sign Out
                                 </button>
                             </div>
                         ) : (
-                            <button className="border-2 border-[#ff6b35] px-4 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[#ff6b35] hover:bg-[#ff6b35] hover:text-[#0a0a0a] transition-colors">
+                            <button className="border-2 border-[var(--accent-primary)] px-4 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[#0a0a0a] transition-colors">
                                 <Link href="/auth/signin">Sign In</Link>
                             </button>
                         )}

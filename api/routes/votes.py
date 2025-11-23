@@ -4,8 +4,10 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from database import get_session
-from models import User, Vote, Show
+from database import get_session
+from models import User, Vote, Show, UserRead
 from routes.auth import get_current_user
+from datetime import datetime
 
 router = APIRouter(prefix="/votes", tags=["votes"])
 
@@ -95,3 +97,58 @@ def get_show_votes(
         ))
     
     return votes_read
+
+class ShowSummary(BaseModel):
+    id: int
+    date: str
+    venue: str
+    location: str
+
+class UserReviewRead(BaseModel):
+    id: int
+    user: UserRead
+    show: Optional[ShowSummary] = None
+    rating: int
+    blurb: Optional[str] = None
+    full_review: Optional[str] = None
+    created_at: datetime
+
+@router.get("/user/{username}", response_model=List[UserReviewRead])
+def get_user_votes(username: str, session: Session = Depends(get_session)):
+    user = session.exec(select(User).where(User.username == username)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    statement = select(Vote).where(Vote.user_id == user.id).order_by(Vote.created_at.desc())
+    votes = session.exec(statement).all()
+    
+    results = []
+    for vote in votes:
+        show_summary = None
+        if vote.show:
+            show_summary = ShowSummary(
+                id=vote.show.id,
+                date=vote.show.date,
+                venue=vote.show.venue,
+                location=vote.show.location
+            )
+            
+        # Create UserRead manually or from_orm if configured
+        user_read = UserRead(
+            id=user.id,
+            username=user.username,
+            email=user.email,
+            created_at=user.created_at
+            # stats can be None or computed if we want
+        )
+
+        results.append(UserReviewRead(
+            id=vote.id,
+            user=user_read,
+            show=show_summary,
+            rating=vote.rating,
+            blurb=vote.blurb,
+            full_review=vote.full_review,
+            created_at=vote.created_at
+        ))
+    return results

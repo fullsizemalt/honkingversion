@@ -1,32 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  /* Background Colors */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a1a;
-  --bg-tertiary: #252525;
+  /* Default (Light Mode) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e5e5e5;
   
-  /* Text Colors */
-  --text-primary: #f5f5f5;
-  --text-secondary: #a0a0a0;
+  --text-primary: #0a0a0a;
+  --text-secondary: #505050;
   --text-tertiary: #707070;
   
-  /* Accent Colors */
+  --border: #e0e0e0;
+  --border-subtle: #f0f0f0;
+
+  /* Accent Colors (Shared) */
   --accent-primary: #ff6b35;
   --accent-secondary: #f7931e;
   --accent-tertiary: #00d9ff;
   --accent-purple: #b565d8;
   
-  /* Borders */
-  --border: #333333;
-  --border-subtle: #222222;
-  
-  /* Functional */
   --rating-gold: #ffd700;
   
   /* Typography */
   --font-display: var(--font-space-grotesk);
   --font-mono: var(--font-ibm-plex-mono);
+}
+
+[data-theme='dark'] {
+  /* Dark Mode Overrides */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #252525;
+  
+  --text-primary: #f5f5f5;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #707070;
+  
+  --border: #333333;
+  --border-subtle: #222222;
 }
 
 @theme inline {
