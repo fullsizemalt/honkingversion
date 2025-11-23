@@ -306,7 +306,11 @@ export default function ListDetailPage() {
                         });
                         setShowListEditor(false);
                     }}
-                    editList={{ ...list, items: parsedItems }}
+                    editList={{
+                        ...list,
+                        items: parsedItems,
+                        list_type: list.list_type as 'shows' | 'performances' | 'songs' | undefined,
+                    }}
                 />
             </div>
         </div>
