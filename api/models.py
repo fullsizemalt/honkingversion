@@ -188,3 +188,24 @@ class Notification(SQLModel, table=True):
     actor: Optional[User] = Relationship(
         sa_relationship_kwargs={"foreign_keys": "Notification.actor_id"}
     )
+
+class Feedback(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    type: str = Field(default="bug") # bug, feature, other
+    subject: str
+    message: str
+    status: str = Field(default="open") # open, closed, in_progress
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    user: Optional[User] = Relationship()
+
+class ChangelogEntry(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str
+    description: str
+    date: datetime = Field(default_factory=datetime.utcnow)
+    type: str = Field(default="fix") # fix, feature, improvement
+    credited_user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    
+    credited_user: Optional[User] = Relationship()

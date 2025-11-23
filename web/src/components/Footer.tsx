@@ -1,15 +1,30 @@
+"use client";
+
 import Link from 'next/link';
+import { useState } from 'react';
+import FeedbackModal from './FeedbackModal';
 
 export default function Footer() {
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
     return (
         <footer className="border-t border-[#333] bg-[#0a0a0a] py-6 mt-8">
+            <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
+
             <div className="max-w-7xl mx-auto px-4">
                 {/* Navigation Links */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-                    <div className="flex space-x-4 mb-4 md:mb-0">
+                    <div className="flex flex-wrap gap-4 mb-4 md:mb-0">
                         <Link href="/shows" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Shows</Link>
                         <Link href="/songs" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Songs</Link>
                         <Link href="/lists" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Lists</Link>
+                        <Link href="/updates" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Updates</Link>
+                        <button
+                            onClick={() => setIsFeedbackOpen(true)}
+                            className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)] text-left"
+                        >
+                            Report Issue
+                        </button>
                         <Link href="/attribution" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Attribution</Link>
                     </div>
                     <div className="text-[#a0a0a0] text-xs font-[family-name:var(--font-ibm-plex-mono)]">
