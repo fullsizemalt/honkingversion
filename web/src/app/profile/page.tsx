@@ -130,11 +130,11 @@ export default function ProfilePage() {
                     onListSaved={(newList) => {
                         const normalized: UserList = {
                             id: newList.id || 0,
-                            user_id: newList.user_id ?? user?.id ?? 0,
+                            user_id: (newList as any).user_id ?? user?.id ?? 0,
                             title: newList.title,
                             description: newList.description,
                             items: newList.items || '[]',
-                            list_type: newList.list_type || 'shows',
+                            list_type: (newList.list_type as UserList['list_type']) || 'shows',
                             share_token: (newList as any).share_token ?? null,
                             is_public: (newList as any).is_public ?? true,
                             created_at: (newList as any).created_at || new Date().toISOString(),
