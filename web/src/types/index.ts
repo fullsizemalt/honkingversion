@@ -57,3 +57,27 @@ export interface Performance {
     vote_count: number;
     avg_rating?: number;
 }
+
+export interface User {
+    id: number;
+    username: string;
+    email?: string;
+    created_at: string;
+    stats?: {
+        shows_attended: number;
+        reviews_count: number;
+        followers_count: number;
+        following_count: number;
+    };
+}
+
+export interface Review {
+    id: number;
+    user: User;
+    show?: Show;
+    performance?: Performance;
+    rating: number;
+    blurb?: string;
+    full_review?: string;
+    created_at: string;
+}

@@ -19,6 +19,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="auth/token", auto_error=False)
 
 # --- Helper Functions ---
 def verify_password(plain_password, hashed_password):
@@ -57,20 +58,53 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], sessio
         raise credentials_exception
     return user
 
+async def get_current_user_optional(token: Annotated[str | None, Depends(oauth2_scheme_optional)], session: Session = Depends(get_session)):
+    if not token:
+        return None
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return None
+    except JWTError:
+        return None
+        
+    statement = select(User).where(User.username == username)
+    user = session.exec(statement).first()
+    return user
+
 # --- Routes ---
 
-@router.post("/register", response_model=User)
-def register(user: User, session: Session = Depends(get_session)):
-    statement = select(User).where(User.username == user.username)
+from pydantic import BaseModel
+
+class UserRegister(BaseModel):
+    username: str
+    email: str
+    password: str
+
+@router.post("/register")
+def register(user_data: UserRegister, session: Session = Depends(get_session)):
+    statement = select(User).where(User.username == user_data.username)
     existing_user = session.exec(statement).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     
-    user.hashed_password = get_password_hash(user.hashed_password)
-    session.add(user)
+    # Check if email already exists
+    statement = select(User).where(User.email == user_data.email)
+    existing_email = session.exec(statement).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    new_user = User(
+        username=user_data.username,
+        email=user_data.email,
+        hashed_password=get_password_hash(user_data.password),
+        created_at=datetime.utcnow()
+    )
+    session.add(new_user)
     session.commit()
-    session.refresh(user)
-    return user
+    session.refresh(new_user)
+    return {"message": "User registered successfully", "username": new_user.username}
 
 @router.post("/token")
 def login_for_access_token(

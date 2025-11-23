@@ -1,71 +1,87 @@
-import { notFound } from 'next/navigation';
-import ShowCard from '@/components/ShowCard';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { getApiEndpoint } from '@/lib/api';
+import { UserList } from '@/types/list';
 
-interface ListDetail {
-    id: number;
-    title: string;
-    description?: string;
-    username: string;
-    user_id: number;
-    shows: Array<{
-        id: number;
-        date: string;
-        venue: string;
-        location: string;
-    }>;
-    created_at?: string;
-}
+export default function ListDetailPage() {
+    const params = useParams();
+    const id = params.id as string;
+    const [list, setList] = useState<UserList | null>(null);
+    const [loading, setLoading] = useState(true);
 
-async function getList(id: string): Promise<ListDetail | null> {
-    try {
-        const res = await fetch(getApiEndpoint(`/lists/${id}`), { cache: 'no-store' });
-        if (!res.ok) return null;
-        return res.json();
-    } catch (e) {
-        return null;
+    useEffect(() => {
+        const fetchList = async () => {
+            try {
+                const res = await fetch(getApiEndpoint(`/lists/${id}`));
+                if (res.ok) {
+                    const data = await res.json();
+                    setList(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch list', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) {
+            fetchList();
+        }
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+                <div className="text-[#a0a0a0]">Loading list...</div>
+            </div>
+        );
     }
-}
-
-export default async function ListDetailPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-    const list = await getList(id);
 
     if (!list) {
-        notFound();
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+                <div className="text-[#a0a0a0]">List not found.</div>
+            </div>
+        );
     }
 
+    const items = list.items ? JSON.parse(list.items) : [];
+
     return (
-        <div className="min-h-screen p-8 font-[family-name:var(--font-geist-sans)]">
-            <main className="max-w-7xl mx-auto">
+        <div className="min-h-screen bg-[var(--bg-primary)]">
+            <div className="max-w-4xl mx-auto px-4 py-8">
                 <div className="mb-8">
-                    <h1 className="text-4xl font-bold mb-2">{list.title}</h1>
+                    <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl font-bold text-[#f5f5f5] mb-2">
+                        {list.title}
+                    </h1>
                     {list.description && (
-                        <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">
+                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-[#a0a0a0] mb-4">
                             {list.description}
                         </p>
                     )}
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Created by <span className="font-medium text-orange-500">{list.username}</span>
-                        {' • '}
-                        {list.shows.length} {list.shows.length === 1 ? 'show' : 'shows'}
-                    </p>
+                    <div className="flex items-center gap-4 text-sm font-[family-name:var(--font-ibm-plex-mono)] text-[#707070]">
+                        <span>{items.length} items</span>
+                        <span>•</span>
+                        <span>Created {new Date(list.created_at).toLocaleDateString()}</span>
+                    </div>
                 </div>
 
-                {list.shows.length === 0 ? (
-                    <div className="text-center py-16">
-                        <p className="text-gray-500 dark:text-gray-400 text-lg">
-                            This list is empty
-                        </p>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {list.shows.map((show) => (
-                            <ShowCard key={show.id} show={show} />
-                        ))}
-                    </div>
-                )}
-            </main>
+                <div className="space-y-4">
+                    {items.length > 0 ? (
+                        items.map((itemId: number, index: number) => (
+                            <div key={index} className="bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5]">
+                                {/* Placeholder for item details - would need to fetch item data */}
+                                Item ID: {itemId}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-[#a0a0a0] italic">This list is empty.</div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
