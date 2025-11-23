@@ -30,7 +30,8 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!session?.accessToken) {
+        const accessToken = session?.user?.accessToken
+        if (!accessToken) {
             setError('You must be logged in to create tags');
             return;
         }
@@ -44,7 +45,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session.accessToken}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(tagData)
             });

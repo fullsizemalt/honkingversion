@@ -40,14 +40,15 @@ export default function TagsPage() {
     };
 
     const handleDelete = async (tagId: number) => {
-        if (!session?.accessToken) return;
+        const accessToken = session?.user?.accessToken;
+        if (!accessToken) return;
         if (!confirm('Are you sure you want to delete this tag?')) return;
 
         try {
             const res = await fetch(getApiEndpoint(`/tags/${tagId}`), {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${session.accessToken}`
+                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 

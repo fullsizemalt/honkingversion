@@ -116,3 +116,23 @@ def add_tag_to_show(
     session.commit()
     session.refresh(show_tag)
     return show_tag
+
+@router.delete("/{tag_id}")
+def delete_tag(
+    tag_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    tag = session.get(Tag, tag_id)
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+    # Remove associations first
+    perf_tags = session.exec(select(PerformanceTag).where(PerformanceTag.tag_id == tag_id)).all()
+    show_tags = session.exec(select(ShowTag).where(ShowTag.tag_id == tag_id)).all()
+    for pt in perf_tags:
+        session.delete(pt)
+    for st in show_tags:
+        session.delete(st)
+    session.delete(tag)
+    session.commit()
+    return {"status": "deleted"}
