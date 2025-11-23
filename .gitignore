@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Database
+database.db
+
+# Node
+node_modules/
+.env.local
+.next/
+out/
+build/
+
+# IDEs
+.vscode/
+.idea/
