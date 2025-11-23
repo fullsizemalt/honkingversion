@@ -4,9 +4,9 @@ from typing import List, Optional
 from pydantic import BaseModel
 import json
 
-from ..database import get_session
-from ..models import User, UserList, Show
-from .auth import get_current_user
+from database import get_session
+from models import User, UserList, Show
+from routes.auth import get_current_user
 
 router = APIRouter(prefix="/lists", tags=["lists"])
 
