@@ -115,7 +115,7 @@ export default function PerformanceVoteControl({
         <div className="flex flex-col gap-2 p-3 bg-[#1a1a1a] border border-[#333] rounded">
             <div className="flex items-center justify-between">
                 <h4 className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] uppercase tracking-wider">
-                    Rate {songName}
+                    Rate this performance
                 </h4>
                 {avgRating !== null && (
                     <div className="flex items-center gap-1">

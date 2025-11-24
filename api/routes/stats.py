@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session, select, func
 
 from database import get_session
-from models import Show, Song, SongPerformance, Vote, User, UserFollow
+from models import Show, Song, SongPerformance, Vote, User, UserFollow, Notification
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
@@ -67,6 +67,46 @@ def get_stats(session: Session = Depends(get_session)) -> Dict[str, Any]:
         .limit(10)
     ).all()
 
+    # Recent comments/blurbs (votes with non-null blurbs) from last 7 days
+    recent_comments = session.exec(
+        select(
+            Vote.blurb,
+            User.username,
+            Song.name,
+            Show.date,
+            Show.venue,
+            Vote.created_at
+        )
+        .join(User, Vote.user_id == User.id)
+        .join(SongPerformance, Vote.performance_id == SongPerformance.id)
+        .join(Song, SongPerformance.song_id == Song.id)
+        .join(Show, SongPerformance.show_id == Show.id)
+        .where(Vote.blurb.isnot(None))
+        .where(Vote.created_at >= datetime.utcnow() - timedelta(days=7))
+        .order_by(Vote.created_at.desc())
+        .limit(10)
+    ).all()
+
+    # New submissions - performances that just got their first vote
+    one_week_ago = datetime.utcnow() - timedelta(days=7)
+    new_submissions = session.exec(
+        select(
+            SongPerformance.id,
+            Song.name,
+            Show.date,
+            Show.venue,
+            func.count(Vote.id).label("vote_count"),
+            func.avg(Vote.rating).label("avg_rating")
+        )
+        .join(Song, SongPerformance.song_id == Song.id)
+        .join(Show, SongPerformance.show_id == Show.id)
+        .join(Vote, Vote.performance_id == SongPerformance.id)
+        .where(Vote.created_at >= one_week_ago)
+        .group_by(SongPerformance.id)
+        .order_by(func.min(Vote.created_at).desc())
+        .limit(10)
+    ).all()
+
     return {
         "top_songs": [{"name": row[0], "slug": row[1], "plays": row[2]} for row in song_counts],
         "top_venues": [{"venue": row[0], "show_count": row[1]} for row in top_venues],
@@ -85,4 +125,26 @@ def get_stats(session: Session = Depends(get_session)) -> Dict[str, Any]:
             "votes_cast": [{"username": row[0], "votes": row[1]} for row in user_votes],
             "followers": [{"username": row[0], "followers": row[1]} for row in follower_counts],
         },
+        "recent_comments": [
+            {
+                "blurb": row[0],
+                "username": row[1],
+                "song_name": row[2],
+                "show_date": row[3],
+                "venue": row[4],
+                "created_at": row[5].isoformat() if row[5] else None
+            }
+            for row in recent_comments
+        ],
+        "new_submissions": [
+            {
+                "performance_id": row[0],
+                "song_name": row[1],
+                "date": row[2],
+                "venue": row[3],
+                "vote_count": row[4],
+                "avg_rating": round(row[5], 1) if row[5] is not None else None,
+            }
+            for row in new_submissions
+        ],
     }
