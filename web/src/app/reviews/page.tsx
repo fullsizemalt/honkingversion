@@ -16,6 +16,8 @@ export default function ReviewsPage() {
         songName: '',
         showDate: '',
         performanceId: '',
+        venue: '',
+        setNumber: '',
         tour: '',
     });
 
@@ -36,6 +38,8 @@ export default function ReviewsPage() {
                 if (filters.songName) params.append('song_name', filters.songName);
                 if (filters.showDate) params.append('show_date', filters.showDate);
                 if (filters.performanceId) params.append('performance_id', filters.performanceId);
+                if (filters.venue) params.append('venue', filters.venue);
+                if (filters.setNumber) params.append('set_number', filters.setNumber);
                 if (filters.tour) params.append('tour', filters.tour);
 
                 const response = await fetch(`/api/hv/reviews?${params}`, {
@@ -105,7 +109,7 @@ export default function ReviewsPage() {
                             <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider text-[var(--text-secondary)] mb-3">
                                 Filter Reviews
                             </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {/* Song Filter */}
                                 <div>
                                     <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
@@ -161,13 +165,44 @@ export default function ReviewsPage() {
                                         className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
                                     />
                                 </div>
+
+                                {/* Venue Filter */}
+                                <div>
+                                    <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                        Venue
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Venue name..."
+                                        value={filters.venue}
+                                        onChange={(e) => setFilters({ ...filters, venue: e.target.value })}
+                                        className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                    />
+                                </div>
+
+                                {/* Set Number Filter */}
+                                <div>
+                                    <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                        Set
+                                    </label>
+                                    <select
+                                        value={filters.setNumber}
+                                        onChange={(e) => setFilters({ ...filters, setNumber: e.target.value })}
+                                        className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                    >
+                                        <option value="">All Sets</option>
+                                        <option value="1">Set 1</option>
+                                        <option value="2">Set 2</option>
+                                        <option value="3">Encore</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
                         {/* Clear Filters Button */}
                         {hasActiveFilters && (
                             <button
-                                onClick={() => setFilters({ songName: '', showDate: '', performanceId: '', tour: '' })}
+                                onClick={() => setFilters({ songName: '', showDate: '', performanceId: '', venue: '', setNumber: '', tour: '' })}
                                 className="px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
                             >
                                 Clear Filters

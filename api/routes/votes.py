@@ -135,7 +135,9 @@ def get_reviews(
     song_name: Optional[str] = None,
     show_id: Optional[int] = None,
     show_date: Optional[str] = None,
+    venue: Optional[str] = None,
     performance_id: Optional[int] = None,
+    set_number: Optional[int] = None,
     tour: Optional[str] = None,
     limit: int = 50,
     offset: int = 0,
@@ -148,7 +150,9 @@ def get_reviews(
     - song_name: Filter by song name (partial match, case-insensitive)
     - show_id: Filter by specific show ID
     - show_date: Filter by show date (YYYY-MM-DD format)
+    - venue: Filter by venue name (partial match, case-insensitive)
     - performance_id: Filter by specific performance ID
+    - set_number: Filter by set number (1=Set 1, 2=Set 2, 3=Encore)
     - tour: Filter by tour name
     - sort: 'rating' for rating, otherwise by date (default)
     """
@@ -189,9 +193,21 @@ def get_reviews(
             Song.name.ilike(f"%{song_name}%")
         )
 
+    if venue:
+        # Join to Show to filter by venue
+        if not (show_id or show_date or song_name or song_id or tour):
+            statement = statement.join(Show)
+        statement = statement.where(Show.venue.ilike(f"%{venue}%"))
+
+    if set_number:
+        # Join to SongPerformance to filter by set number
+        if not (song_id or song_name):
+            statement = statement.join(SongPerformance)
+        statement = statement.where(SongPerformance.set_number == set_number)
+
     if tour:
         # Join to Show to filter by tour
-        if not (show_id or show_date or song_name or song_id):
+        if not (show_id or show_date or song_name or song_id or venue):
             # Only join if not already joined
             statement = statement.join(Show)
         statement = statement.where(Show.tour.ilike(f"%{tour}%"))
