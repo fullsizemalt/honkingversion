@@ -33,6 +33,7 @@ from routes import (
     lists,
     notifications,
     performances,
+    profile,
     search,
     shows,
     songs,
@@ -72,6 +73,7 @@ routers = [
     votes.router,
     performances.router,
     comments.router,
+    profile.router,
 ]
 
 for router in routers:

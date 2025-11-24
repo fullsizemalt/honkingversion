@@ -1,18 +1,52 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FeedbackModal from './FeedbackModal';
 import { ExternalLink } from 'lucide-react';
 
 export default function Footer() {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+    const [tapCount, setTapCount] = useState(0);
+    const [devMode, setDevMode] = useState(false);
+
+    // Check if dev mode is already enabled
+    useEffect(() => {
+        const isDevMode = localStorage.getItem('devMode') === 'true';
+        setDevMode(isDevMode);
+    }, []);
+
+    // Handle secret tap gesture
+    const handleSecretTap = () => {
+        const newCount = tapCount + 1;
+        setTapCount(newCount);
+
+        if (newCount === 7) {
+            const newDevMode = !devMode;
+            setDevMode(newDevMode);
+            localStorage.setItem('devMode', String(newDevMode));
+
+            // Show toast notification
+            const message = newDevMode ? '🔧 Dev mode activated!' : '✅ Dev mode deactivated';
+            alert(message);
+
+            setTapCount(0);
+        }
+
+        // Reset tap count after 2 seconds of inactivity
+        setTimeout(() => setTapCount(0), 2000);
+    };
 
     return (
         <footer className="border-t border-[var(--border)] bg-[var(--bg-secondary)] mt-24">
             <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
 
-            <div className="max-w-7xl mx-auto px-6 py-16">
+            {/* Secret tap area for dev mode */}
+            <div
+                className="max-w-7xl mx-auto px-6 py-16"
+                onClick={handleSecretTap}
+                style={{ cursor: tapCount > 0 ? 'pointer' : 'default' }}
+            >
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                     {/* Brand Column */}
                     <div className="lg:col-span-2 space-y-6">

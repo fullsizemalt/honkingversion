@@ -9,6 +9,16 @@ class User(SQLModel, table=True):
     hashed_password: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
+    # Profile fields
+    display_name: Optional[str] = None
+    bio: Optional[str] = Field(default=None, max_length=160)
+    profile_picture_url: Optional[str] = None
+    selected_title_id: Optional[int] = Field(default=None, foreign_key="usertitle.id")
+    role: str = Field(default="user")  # user, power_user, mod, admin, superadmin
+    
+    # Social links (stored as JSON string)
+    social_links: Optional[str] = None  # JSON: {"twitter": "...", "instagram": "...", "custom_url": "..."}
+    
     votes: List["Vote"] = Relationship(back_populates="user")
     lists: List["UserList"] = Relationship(back_populates="user")
     attended_shows: List["UserShowAttendance"] = Relationship(back_populates="user")
@@ -17,6 +27,12 @@ class User(SQLModel, table=True):
         sa_relationship_kwargs={"foreign_keys": "Notification.user_id"}
     )
     review_comments: List["ReviewComment"] = Relationship(back_populates="user")
+    earned_titles: List["UserTitle"] = Relationship(back_populates="user")
+    earned_badges: List["UserBadge"] = Relationship(back_populates="user")
+    followed_lists: List["ListFollow"] = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"foreign_keys": "ListFollow.user_id"}
+    )
 
 class Show(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -101,6 +117,41 @@ class UserList(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     user: User = Relationship(back_populates="lists")
+    followers: List["ListFollow"] = Relationship(back_populates="list")
+
+class ListFollow(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    list_id: int = Field(foreign_key="userlist.id", index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    user: User = Relationship(
+        back_populates="followed_lists",
+        sa_relationship_kwargs={"foreign_keys": "ListFollow.user_id"}
+    )
+    list: UserList = Relationship(back_populates="followers")
+
+class UserTitle(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    title_name: str  # e.g., "Early Adopter", "Top Contributor"
+    title_description: Optional[str] = None
+    color: str = Field(default="#ff6b35")  # Accent color for display
+    icon: Optional[str] = None  # Emoji or icon identifier
+    earned_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    user: User = Relationship(back_populates="earned_titles")
+
+class UserBadge(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    badge_name: str  # e.g., "100 Shows", "Early Adopter"
+    badge_description: Optional[str] = None
+    badge_icon: str  # Emoji or icon identifier
+    unlock_criteria: Optional[str] = None  # How to unlock this badge
+    earned_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    user: User = Relationship(back_populates="earned_badges")
 
 class Tag(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
