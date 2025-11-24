@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getApiEndpoint } from '@/lib/api';
+import PageHeader from '@/components/PageHeader';
 
 type Venue = {
     name: string;
@@ -33,19 +34,24 @@ export default function VenuesPage() {
     if (loading) return <p>Loading venues...</p>;
 
     return (
-        <div className="max-w-4xl mx-auto p-4">
-            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl font-bold mb-6 text-[#f5f5f5]">
-                Venues
-            </h1>
-            <ul className="space-y-3">
-                {venues.map((v) => (
-                    <li key={v.slug} className="border-b border-[#333] pb-2">
-                        <Link href={`/venues/${v.slug}`} className="text-[#a0a0a0] hover:text-[#ff6b35]">
-                            {v.name}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <>
+            <PageHeader
+                title="Venues"
+                description="Explore shows by venue location"
+                loggedInMessage="Browse venues and discover performances from your favorite locations."
+            />
+
+            <div className="max-w-4xl mx-auto px-4 py-12">
+                <ul className="space-y-3">
+                    {venues.map((v) => (
+                        <li key={v.slug} className="border-b border-[var(--border-subtle)] pb-2">
+                            <Link href={`/venues/${v.slug}`} className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                {v.name}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </>
     );
 }

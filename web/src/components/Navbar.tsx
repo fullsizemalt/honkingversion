@@ -56,6 +56,24 @@ export default function Navbar() {
                         <ThemeToggle />
                     </div>
 
+                    {/* Mobile Auth */}
+                    <div className="flex md:hidden items-center mr-2">
+                        {session ? (
+                            <Link href="/profile" className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold">
+                                    {session.user?.name?.charAt(0).toUpperCase() || 'U'}
+                                </div>
+                            </Link>
+                        ) : (
+                            <Link
+                                href="/auth/signin"
+                                className="px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[var(--accent-primary)] border border-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors rounded-full"
+                            >
+                                Login
+                            </Link>
+                        )}
+                    </div>
+
                     {/* Mobile menu button */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}

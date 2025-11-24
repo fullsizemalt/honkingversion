@@ -8,6 +8,7 @@ import { StatsResponse } from "@/types";
 import RecentComments from "@/components/RecentComments";
 import TopMembers from "@/components/TopMembers";
 import RecentBlurbs from "@/components/RecentBlurbs";
+import PageHeader from "@/components/PageHeader";
 
 interface TrendingPerformance {
   performance_id: number;
@@ -112,28 +113,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
-      {/* Hero Section */}
-      <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="mb-2">
-            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[var(--text-primary)] uppercase tracking-tight">
-              HONKINGVERSION
-            </h1>
-            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)] mt-2 tracking-[0.3em] uppercase">
-              explore the best live performances from Goose
-            </p>
-          </div>
-          {!session && (
-            <div className="mt-6 font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)] flex flex-wrap gap-2 items-center">
-              <span>Please </span>
-              <Link href="/auth/signin" className="text-[var(--accent-primary)] hover:underline">login</Link>
-              <span> or </span>
-              <Link href="/auth/register" className="text-[var(--accent-primary)] hover:underline">register</Link>
-              <span>to vote on your favorite performances.</span>
-            </div>
-          )}
-        </div>
-      </div>
+      <PageHeader
+        title="HONKINGVERSION"
+        description="explore the best live performances from Goose"
+        loggedInMessage="Welcome back! Browse trending and top-rated performances below."
+      />
 
       {/* 3-Column Dashboard */}
       <div className="max-w-7xl mx-auto px-4 py-12">
