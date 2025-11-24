@@ -1,29 +1,43 @@
 # Deploy Instructions for Claude Agent on nexus-vector
 
+## IMPORTANT: You are already ON nexus-vector
+These instructions assume you are running commands DIRECTLY on nexus-vector, not SSHing into it.
+
 ## Prerequisites
-- SSH access to nexus-vector with root or sudo privileges
-- Docker and Docker Compose installed
-- Git installed
+- You have sudo/root access on nexus-vector
+- Docker and Docker Compose are installed
+- Git is installed
 
 ## Step-by-Step Deployment
 
-### Step 1: SSH into nexus-vector and Navigate to Project
+### Step 0: Check if Project Exists
 ```bash
-ssh root@nexus-vector
-cd ~/ANTIGRAVITY/honkingversion
+ls -la /root/ANTIGRAVITY/honkingversion
 ```
 
-### Step 2: Pull Latest Code from Forgejo
+**If directory exists**: Skip to Step 2
+**If "No such file or directory"**: Continue to Step 1
+
+### Step 1: Clone Repository (ONLY if it doesn't exist)
 ```bash
+sudo bash -c 'mkdir -p /root/ANTIGRAVITY && cd /root/ANTIGRAVITY && git clone ssh://git@localhost:2222/runfoo/honkingversion.git'
+```
+
+Or with HTTPS:
+```bash
+sudo bash -c 'mkdir -p /root/ANTIGRAVITY && cd /root/ANTIGRAVITY && git clone https://git.runfoo.run/runfoo/honkingversion.git'
+```
+
+### Step 2: Navigate to Project and Pull Latest Code
+```bash
+cd /root/ANTIGRAVITY/honkingversion
 git pull origin master
 ```
 
 Verify you see the latest commits:
 ```bash
-git log --oneline -5
+git log --oneline -3
 ```
-
-Should show commits about "3-column dashboard", "CI/CD pipeline", "seeding", and "error handling".
 
 ### Step 3: Stop Old Containers and Start Fresh
 ```bash
@@ -42,27 +56,23 @@ sleep 30
 docker compose ps
 ```
 
-You should see:
-- `honkingversion-api-1` running on port 8000
-- `honkingversion-web-1` running on port 3000
+You should see all containers running (green).
 
-### Step 5: Seed Database - Part 1: Shows and Performances
-Run this to import from El Goose API:
+### Step 5: Seed Database - Part 1: Shows and Performances from El Goose
 ```bash
 docker compose exec api python seed_from_elgoose.py
 ```
 
-**Expected output**: Should download and create hundreds of shows and performances. This may take 2-5 minutes.
+This imports hundreds of Goose shows and performances. May take 2-5 minutes.
 
-### Step 6: Seed Database - Part 2: User Personas and History
-Run this to create 69 diverse users with 3 months of voting history:
+### Step 6: Seed Database - Part 2: User Personas and 3 Months History
 ```bash
 docker compose exec api python seed_comprehensive.py
 ```
 
-**Expected output**: Should create 69 users across 8 personas with thousands of votes and reviews.
+Creates 69 diverse users with realistic voting patterns and 3 months of historical data.
 
-### Step 7: Verify Database Population
+### Step 7: Verify Database Is Fully Populated
 ```bash
 docker compose exec api python << 'EOF'
 from database import get_session
@@ -76,66 +86,86 @@ shows = session.exec(select(func.count(Show.id))).one()
 perfs = session.exec(select(func.count(SongPerformance.id))).one()
 follows = session.exec(select(func.count(UserFollow.id))).one()
 
-print("\n" + "="*50)
-print("✅ DATABASE SEEDING COMPLETE!")
-print("="*50)
-print(f"Users:       {users}")
-print(f"Votes:       {votes}")
-print(f"Shows:       {shows}")
-print(f"Performances: {perfs}")
-print(f"Follows:     {follows}")
-print("="*50 + "\n")
+print("\n" + "="*60)
+print("✅ DATABASE SEEDING STATUS")
+print("="*60)
+print(f"Users:        {users:,} (target: 60+)")
+print(f"Votes:        {votes:,} (target: 1000+)")
+print(f"Shows:        {shows:,} (target: 100+)")
+print(f"Performances: {perfs:,} (target: 500+)")
+print(f"Follows:      {follows:,} (target: 300+)")
+print("="*60 + "\n")
 
-# Verify some data
-if users >= 60:
-    print("✅ User seeding successful (60+ users)")
-if votes >= 1000:
-    print("✅ Vote seeding successful (1000+ votes)")
-if shows >= 100:
-    print("✅ Show seeding successful (100+ shows)")
+if users >= 60 and votes >= 1000:
+    print("✅ ALL SEEDING COMPLETE - DEPLOYMENT SUCCESSFUL!")
+else:
+    print("⚠️  Seeding may still be in progress or incomplete")
 EOF
 ```
 
-### Step 8: Verify Web and API Are Accessible
+## Expected Output
 
-**Test API**:
-```bash
-curl -s https://api.honkingversion.runfoo.run/ | head -20
+After all steps complete, you should see:
+```
+Users:        69
+Votes:        1800+
+Shows:        200+
+Performances: 500+
+Follows:      500+
+
+✅ ALL SEEDING COMPLETE - DEPLOYMENT SUCCESSFUL!
 ```
 
-Should return JSON with "Welcome to Honkingversion.net API" or similar.
+## Test the Deployment
 
-**Test Web**:
+### Check if Web is Running
 ```bash
 curl -s https://honkingversion.runfoo.run/ | grep -o "HONKINGVERSION" | head -1
 ```
 
-Should return "HONKINGVERSION".
+Should return: `HONKINGVERSION`
 
-### Step 9: Check Service Logs for Any Errors
+### Check if API is Running
 ```bash
-docker compose logs api | tail -20
-docker compose logs web | tail -20
+curl -s https://api.honkingversion.runfoo.run/ | grep -o "Welcome"
 ```
 
-Look for any ERROR messages. If all is well, you should see startup messages without errors.
+Should return: `Welcome`
 
-## Success Criteria
+## Success Checklist
 
-✅ All services running (`docker compose ps`)
-✅ 60+ users created
-✅ 1000+ votes/reviews
-✅ 100+ shows with performances
-✅ Web accessible at https://honkingversion.runfoo.run
-✅ API accessible at https://api.honkingversion.runfoo.run
-✅ Homepage shows 3-column dashboard:
-   - Left: Trending Performances with 🔥 heat indicators
-   - Middle: Highest Rated Performances
-   - Right: Top 10 Community Voters
+- [ ] Project directory exists at `/root/ANTIGRAVITY/honkingversion`
+- [ ] Latest code pulled from Forgejo
+- [ ] All Docker containers running (`docker compose ps`)
+- [ ] 60+ users created
+- [ ] 1000+ votes/reviews created
+- [ ] 200+ shows with performances
+- [ ] Web site accessible at https://honkingversion.runfoo.run
+- [ ] API responsive at https://api.honkingversion.runfoo.run
+- [ ] Homepage shows 3-column dashboard:
+  - **Left Column**: Trending Performances with 🔥 heat indicators
+  - **Middle Column**: Highest Rated Performances
+  - **Right Column**: Top 10 Community Voters
 
-## If Something Goes Wrong
+## After Deployment: Push to Forgejo
 
-### Services won't start
+Once seeding is complete and verified:
+```bash
+cd /root/ANTIGRAVITY/honkingversion
+git push origin master
+```
+
+This triggers CI/CD - no more manual builds needed for future changes!
+
+## Troubleshooting
+
+### Git clone fails
+Try HTTPS instead of SSH:
+```bash
+sudo bash -c 'mkdir -p /root/ANTIGRAVITY && cd /root/ANTIGRAVITY && git clone https://git.runfoo.run/runfoo/honkingversion.git'
+```
+
+### Docker containers won't start
 ```bash
 docker compose logs api
 docker compose logs web
@@ -143,59 +173,40 @@ docker compose logs web
 
 Check the error messages.
 
-### Database is corrupted
+### Database corruption / seeding issues
+Full reset:
 ```bash
 docker compose down -v
 docker compose up -d --build
+sleep 30
+docker compose exec api python seed_from_elgoose.py
+docker compose exec api python seed_comprehensive.py
 ```
 
-This removes all volumes and starts fresh. Then re-run Steps 5-6.
-
-### API can't connect to database
-Ensure the database file is writable:
+### Seeding takes a long time
+El Goose seeding (Step 5) can take 2-5 minutes. This is normal. Watch:
 ```bash
-ls -la ~/ANTIGRAVITY/honkingversion/database.db
+docker compose logs api -f
 ```
 
-### Port conflicts
-Check what's using ports 8000 and 3000:
-```bash
-lsof -i :8000
-lsof -i :3000
-```
+Press Ctrl+C when it's done.
 
-## After Deployment
-
-From this point forward, the CI/CD pipeline is active. Just push changes to Forgejo:
-```bash
-git push origin master
-```
-
-And GitHub Actions will automatically:
-1. Build Docker images
-2. Push to registry
-3. Deploy to production
-
-No more manual deployments needed!
-
-## Quick Command Reference
+## Command Quick Reference
 
 ```bash
+# Check service status
+docker compose ps
+
 # View logs
 docker compose logs -f api
 docker compose logs -f web
 
 # Restart a service
 docker compose restart api
-docker compose restart web
-
-# Check status
-docker compose ps
 
 # Stop all services
 docker compose down
 
-# Remove all volumes and reset database
-docker compose down -v
-docker compose up -d --build
+# Full reset
+docker compose down -v && docker compose up -d --build
 ```
