@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func
 from database import get_session
 from models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance
-from routes.auth import get_current_user_optional
+from routes.auth import get_current_user_optional, get_current_user
 import json
 
 router = APIRouter(prefix="/profile", tags=["profile"])
@@ -192,3 +192,29 @@ def get_followed_lists(
     lists = session.exec(lists_statement).all()
     
     return lists
+
+@router.put("/{username}/title")
+def update_selected_title(
+    username: str,
+    title_id: Optional[int],
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    """Update user's selected title"""
+    if not current_user or current_user.username != username:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # Verify title belongs to user if title_id is provided
+    if title_id is not None:
+        title = session.get(UserTitle, title_id)
+        if not title or title.user_id != current_user.id:
+            raise HTTPException(status_code=404, detail="Title not found or not owned by user")
+    
+    # Update selected title
+    current_user.selected_title_id = title_id
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
+    
+    return {"success": True, "selected_title_id": title_id}
+
