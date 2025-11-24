@@ -3,8 +3,8 @@ from sqlmodel import Session, select, col
 from typing import List, Optional
 from pydantic import BaseModel
 
-from database import get_session
-from models import Show, Song, User
+from api.database import get_session
+from api.models import Show, Song, User
 
 router = APIRouter(prefix="/search", tags=["search"])
 

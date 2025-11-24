@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session, select
-from database import get_session
-from models import User, Vote, Show, SongPerformance, Song, UserShowAttendance, UserFollow, UserList
-from routes.auth import get_current_user, get_current_user_optional
+from api.database import get_session
+from api.models import User, Vote, Show, SongPerformance, Song, UserShowAttendance, UserFollow, UserList
+from api.routes.auth import get_current_user, get_current_user_optional
 import csv
 import io
 import json

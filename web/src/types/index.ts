@@ -111,4 +111,20 @@ export interface StatsResponse {
         votes_cast: { username: string; votes: number }[];
         followers: { username: string; followers: number }[];
     };
+    recent_comments?: {
+        blurb: string;
+        username: string;
+        song_name: string;
+        show_date: string;
+        venue: string;
+        created_at?: string;
+    }[];
+    new_submissions?: {
+        performance_id: number;
+        song_name: string;
+        date: string;
+        venue: string;
+        vote_count: number;
+        avg_rating?: number | null | undefined;
+    }[];
 }

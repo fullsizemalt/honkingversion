@@ -3,9 +3,9 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from datetime import datetime
 
-from database import get_session
-from models import Tag, PerformanceTag, ShowTag, SongPerformance, Show, User
-from routes.auth import get_current_user
+from api.database import get_session
+from api.models import Tag, PerformanceTag, ShowTag, SongPerformance, Show, User
+from api.routes.auth import get_current_user
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 
