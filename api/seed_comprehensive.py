@@ -200,16 +200,60 @@ def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
 
+# Goose-themed user names mapped to personas
+GOOSE_NAMES = {
+    "casual": [
+        "TreeDancer", "VenueVibe", "RoadRunner", "GrooveWalker", "SoundSeeker",
+        "EchoChaser", "TuneLover", "StageLight", "RhythmRider", "NoteWatcher",
+        "JourneyJack", "StreamFlow", "BeatKeeper", "VenueWanderer", "MusicMuse"
+    ],
+    "hardcore": [
+        "JamMaster", "ShowCollector", "TapedTruth", "PeakChaser", "SetList",
+        "VenueVeteran", "DeepDiver", "TourFollower", "LegacyHunter", "SonicSeeker",
+        "PerfectionPhil", "HistoryKeep", "EchosForever"
+    ],
+    "god": [
+        "OracleOne", "CosmicCarl", "ZenMaster"
+    ],
+    "rail": [
+        "FrontRowFrank", "RailRunner", "StageSide", "CloseCall", "FrontlineFelix",
+        "RiseSide", "ViewVince", "PerspectivePete", "CloseCaller", "RailRider"
+    ],
+    "run": [
+        "CrewMate", "SquadLead", "BandBro", "PackRunner", "CrewChief",
+        "TribalTone", "FamilyFirst", "GroupGroove", "CrewCalling", "Posse"
+    ],
+    "expert": [
+        "MusicalMind", "AnalysisAlex", "ToneSmith", "HarmonyHank", "ProAcoustic",
+        "ComposerClass", "TechnicalTim", "CraftCure"
+    ],
+    "jam": [
+        "JamJourney", "ImprovisedIan", "ExtendedEric", "ExploreEmi", "FlowFinder",
+        "BuildUp", "ClimbingCliff", "LongFormLarry", "SectionSeeker", "ZoneZeke"
+    ],
+    "hater": [
+        "CriticalCurt", "ScepticalSal", "DissDeclan", "NaysayerNed", "QuestionMark"
+    ]
+}
+
+
+def get_goose_username(persona_type: str, index: int) -> str:
+    """Get a Goose-themed username for a persona"""
+    names = GOOSE_NAMES.get(persona_type, [f"{persona_type}_{index}"])
+    # Cycle through available names, repeat if necessary
+    return names[index % len(names)]
+
+
 def create_users(session: Session) -> dict[str, list[User]]:
-    """Create users for each persona type"""
-    print("Creating user personas...")
+    """Create users for each persona type with Goose-themed names"""
+    print("Creating user personas with Goose-themed names...")
     users_by_type = {}
 
     for persona_type, config in USER_PERSONAS.items():
         users = []
         for i in range(config["count"]):
-            username = f"{persona_type}_{i+1}"
-            email = f"{username}@honkingversion.local"
+            username = get_goose_username(persona_type, i)
+            email = f"{username.lower()}@honkingversion.local"
 
             user = User(
                 username=username,
@@ -227,6 +271,22 @@ def create_users(session: Session) -> dict[str, list[User]]:
     return users_by_type
 
 
+def get_persona_for_username(username: str) -> str:
+    """Determine persona type from username (handles both old and new naming schemes)"""
+    # First check if it's an old-style username (casual_1, hardcore_1, etc.)
+    first_part = username.split('_')[0]
+    if first_part in USER_PERSONAS:
+        return first_part
+
+    # Check if it's a Goose-themed name
+    for persona_type, names in GOOSE_NAMES.items():
+        if username in names:
+            return persona_type
+
+    # Default fallback
+    return None
+
+
 def create_follows(session: Session, users_by_type: dict) -> None:
     """Create follow relationships between users"""
     print("Creating follow relationships...")
@@ -237,7 +297,10 @@ def create_follows(session: Session, users_by_type: dict) -> None:
 
     follow_count = 0
     for user in all_users:
-        persona_type = user.username.split("_")[0]
+        persona_type = get_persona_for_username(user.username)
+        if not persona_type or persona_type not in USER_PERSONAS:
+            continue
+
         follow_ratio = USER_PERSONAS[persona_type]["follow_ratio"]
 
         # Each user follows some other users
@@ -329,15 +392,15 @@ def main():
 
     try:
         # Check if users already exist
-        existing_users = session.exec(select(User)).first()
-        if existing_users:
-            print("Users already exist in database. Skipping user creation.")
-            users_by_type = {}
-            for persona_type in USER_PERSONAS.keys():
-                users = session.exec(
-                    select(User).where(User.username.contains(persona_type))
-                ).all()
-                users_by_type[persona_type] = users
+        existing_users = session.exec(select(User)).all()
+        if existing_users and len(existing_users) > 0:
+            print(f"Users already exist in database ({len(existing_users)} users). Skipping user creation.")
+            # Group existing users by persona type
+            users_by_type = {persona: [] for persona in USER_PERSONAS.keys()}
+            for user in existing_users:
+                persona = get_persona_for_username(user.username)
+                if persona and persona in users_by_type:
+                    users_by_type[persona].append(user)
         else:
             users_by_type = create_users(session)
 
