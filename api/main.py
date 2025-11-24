@@ -82,6 +82,12 @@ def read_root():
     return {"message": "Welcome to Honkingversion.net API"}
 
 
+@app.get("/healthz")
+def health_check():
+    """Health check endpoint for monitoring"""
+    return {"status": "ok"}
+
+
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc: Exception):
     """Handle 404 errors gracefully"""

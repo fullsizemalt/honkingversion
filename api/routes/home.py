@@ -1,6 +1,6 @@
 from typing import List, Optional
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlmodel import Session, select, func, desc, SQLModel
 from database import get_session
 from models import ReviewComment, User, Vote, SongPerformance, Song, Show
@@ -32,7 +32,11 @@ class RecentBlurbRead(SQLModel):
     show_date: str
 
 @router.get("/recent-comments", response_model=List[RecentCommentRead])
-def get_recent_comments(limit: int = 5, session: Session = Depends(get_session)):
+def get_recent_comments(
+    response: Response,
+    limit: int = 5,
+    session: Session = Depends(get_session)
+):
     """Get most recent comments on votes."""
     query = select(ReviewComment).order_by(desc(ReviewComment.created_at)).limit(limit)
     comments = session.exec(query).all()
@@ -52,10 +56,22 @@ def get_recent_comments(limit: int = 5, session: Session = Depends(get_session))
                 song_name=vote.performance.song.name,
                 show_date=vote.performance.show.date
             ))
+    
+    # Smart Caching: If no data, don't cache (so we retry soon).
+    # If data exists, cache for 60 seconds.
+    if not results:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    else:
+        response.headers["Cache-Control"] = "public, max-age=60"
+        
     return results
 
 @router.get("/top-members", response_model=List[TopMemberRead])
-def get_top_members(limit: int = 5, session: Session = Depends(get_session)):
+def get_top_members(
+    response: Response,
+    limit: int = 5,
+    session: Session = Depends(get_session)
+):
     """Get members with the most votes."""
     # This is a simplified "top member" metric. Could be more complex.
     query = (
@@ -67,13 +83,24 @@ def get_top_members(limit: int = 5, session: Session = Depends(get_session)):
     )
     results = session.exec(query).all()
     
-    return [
+    data = [
         TopMemberRead(id=user.id, username=user.username, vote_count=count)
         for user, count in results
     ]
+    
+    if not data:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    else:
+        response.headers["Cache-Control"] = "public, max-age=60"
+        
+    return data
 
 @router.get("/recent-blurbs", response_model=List[RecentBlurbRead])
-def get_recent_blurbs(limit: int = 5, session: Session = Depends(get_session)):
+def get_recent_blurbs(
+    response: Response,
+    limit: int = 5,
+    session: Session = Depends(get_session)
+):
     """Get recent votes that have a blurb."""
     query = (
         select(Vote)
@@ -96,4 +123,10 @@ def get_recent_blurbs(limit: int = 5, session: Session = Depends(get_session)):
                 song_name=vote.performance.song.name,
                 show_date=vote.performance.show.date
             ))
+            
+    if not results:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    else:
+        response.headers["Cache-Control"] = "public, max-age=60"
+            
     return results
