@@ -128,6 +128,79 @@ class UserReviewRead(BaseModel):
     full_review: Optional[str] = None
     created_at: datetime
 
+@router.get("/", response_model=List[UserReviewRead])
+def get_reviews(
+    sort: Optional[str] = None,
+    limit: int = 50,
+    offset: int = 0,
+    session: Session = Depends(get_session)
+):
+    """Get all reviews across the platform with optional sorting."""
+    statement = (
+        select(Vote)
+        .options(
+            selectinload(Vote.user),
+            selectinload(Vote.performance).selectinload(SongPerformance.song),
+            selectinload(Vote.performance).selectinload(SongPerformance.performance_tags).selectinload(PerformanceTag.tag),
+            selectinload(Vote.show).selectinload(Show.show_tags).selectinload(ShowTag.tag)
+        )
+    )
+
+    # Only show reviews with blurb or full_review (actual reviews, not just votes)
+    statement = statement.where(
+        (Vote.blurb != None) | (Vote.full_review != None)
+    )
+
+    # Sort by rating if requested, otherwise by date
+    if sort == 'rating':
+        statement = statement.order_by(Vote.rating.desc())
+    else:
+        statement = statement.order_by(Vote.created_at.desc())
+
+    statement = statement.limit(limit).offset(offset)
+    votes = session.exec(statement).all()
+
+    results = []
+    for vote in votes:
+        show_summary = None
+        if vote.show:
+            show_summary = ShowSummary(
+                id=vote.show.id,
+                date=vote.show.date,
+                venue=vote.show.venue,
+                location=vote.show.location,
+                tags=[st.tag for st in vote.show.show_tags] if vote.show.show_tags else []
+            )
+
+        performance_summary = None
+        if vote.performance:
+            performance_summary = PerformanceSummary(
+                id=vote.performance.id,
+                song_name=vote.performance.song.name,
+                song_slug=vote.performance.song.slug,
+                tags=[pt.tag for pt in vote.performance.performance_tags] if vote.performance.performance_tags else []
+            )
+
+        user_read = UserRead(
+            id=vote.user.id,
+            username=vote.user.username,
+            email=vote.user.email,
+            created_at=vote.user.created_at
+        )
+
+        results.append(UserReviewRead(
+            id=vote.id,
+            user=user_read,
+            show=show_summary,
+            performance=performance_summary,
+            rating=vote.rating,
+            blurb=vote.blurb,
+            full_review=vote.full_review,
+            created_at=vote.created_at
+        ))
+
+    return results
+
 @router.get("/user/{username}", response_model=List[UserReviewRead])
 def get_user_votes(username: str, session: Session = Depends(get_session)):
     user = session.exec(select(User).where(User.username == username)).first()
