@@ -9,7 +9,7 @@ export interface Song {
     original_artist?: string;
     tags?: Tag[];
     times_played?: number;
-    avg_rating?: number;
+    avg_rating?: number | null | undefined;
     debut_date?: string;
 }
 
@@ -45,7 +45,7 @@ export interface Performance {
         location: string;
     };
     vote_count: number;
-    avg_rating?: number;
+    avg_rating?: number | null | undefined;
     tags?: Tag[];
 }
 
@@ -105,7 +105,7 @@ export interface StatsResponse {
         date: string;
         venue: string;
         votes_last_30d: number;
-        avg_rating?: number | null;
+        avg_rating?: number | null | undefined;
     }[];
     leaderboards: {
         votes_cast: { username: string; votes: number }[];
