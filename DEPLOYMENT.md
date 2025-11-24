@@ -79,6 +79,33 @@ docker compose logs -f api
 docker compose logs -f web
 ```
 
+### Handling Git Conflicts & Rebase
+
+If local `master` diverges from remote (e.g., hotfixes on server):
+
+1. **Backup Database**:
+   ```bash
+   cp database.db database.runtime.backup
+   ```
+
+2. **Rebase**:
+   ```bash
+   git pull --rebase origin master
+   ```
+
+3. **Restore Database** (if overwritten):
+   The `database.db` file should be `skip-worktree`, but if issues arise:
+   ```bash
+   # Restore from backup if needed
+   cp database.runtime.backup database.db
+   ```
+
+4. **Rebuild & Restart**:
+   ```bash
+   docker compose up -d --build web
+   ```
+
+
 ## Database Seeding
 
 ### Initial Data Setup

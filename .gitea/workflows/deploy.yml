@@ -30,7 +30,7 @@ jobs:
       - name: Rebuild and restart services
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-          cd /root/ANTIGRAVITY/honkingversion
+          cd /home/admin/honkingversion
           docker compose down
           docker compose pull
           docker compose up -d --build
