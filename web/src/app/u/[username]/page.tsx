@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import ProfileHeader from "@/components/ProfileHeader";
 import ActivityFeed from "@/components/ActivityFeed";
 import ListCard from "@/components/ListCard";
+import BadgeShowcase from "@/components/BadgeShowcase";
 import { getApiEndpoint } from '@/lib/api';
 import { User, Review } from "@/types";
 import { UserList } from "@/types/list";
@@ -59,6 +60,27 @@ async function getUserAttendedShows(username: string): Promise<AttendedShow[]> {
     }
 }
 
+interface Badge {
+    id: number;
+    badge_name: string;
+    badge_description?: string;
+    badge_icon: string;
+    unlock_criteria?: string;
+    earned_at: string;
+}
+
+async function getUserBadges(username: string): Promise<Badge[]> {
+    try {
+        const res = await fetch(getApiEndpoint(`/profile/${username}`), { cache: 'no-store' });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return data.badges || [];
+    } catch (error) {
+        console.error("Failed to fetch user badges", error);
+        return [];
+    }
+}
+
 interface PageProps {
     params: Promise<{ username: string }>;
 }
@@ -74,6 +96,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
     const reviews = await getUserReviews(username);
     const lists = await getUserLists(username);
     const attendedShows = await getUserAttendedShows(username);
+    const badges = await getUserBadges(username);
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
@@ -117,6 +140,11 @@ export default async function PublicProfilePage({ params }: PageProps) {
                                 </div>
                             </div>
                         </div>
+
+                        <BadgeShowcase
+                            badges={badges}
+                            username={user.username}
+                        />
 
                         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6">
                             <div className="flex items-center justify-between mb-4">

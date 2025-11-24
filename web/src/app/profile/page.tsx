@@ -8,6 +8,7 @@ import ProfileHeader from '@/components/ProfileHeader';
 import StatsCard from '@/components/StatsCard';
 import ActivityFeed from '@/components/ActivityFeed';
 import ListsSection from '@/components/ListsSection';
+import BadgeShowcase from '@/components/BadgeShowcase';
 
 interface ProfileData {
     user: {
@@ -116,6 +117,10 @@ export default function ProfilePage() {
                     {/* Left Sidebar - Stats */}
                     <div className="lg:col-span-3 space-y-6">
                         <StatsCard stats={profileData.stats} />
+                        <BadgeShowcase
+                            badges={profileData.badges || []}
+                            username={profileData.user.username}
+                        />
                     </div>
 
                     {/* Main Content - Activity Feed */}
