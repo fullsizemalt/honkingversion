@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { MessageSquare } from 'lucide-react';
+import { getApiEndpoint } from '@/lib/api';
 
 interface RecentComment {
     id: number;
@@ -18,10 +18,27 @@ export default function RecentComments() {
     const [comments, setComments] = useState<RecentComment[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8000/home/recent-comments?limit=5')
-            .then(res => res.json())
-            .then(data => setComments(data))
-            .catch(err => console.error(err));
+        const controller = new AbortController();
+
+        const fetchComments = async () => {
+            try {
+                const res = await fetch(getApiEndpoint('/home/recent-comments?limit=5'), {
+                    signal: controller.signal,
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to fetch recent comments');
+                }
+                const data = await res.json();
+                setComments(data);
+            } catch (err) {
+                if ((err as Error).name !== 'AbortError') {
+                    console.error('Error fetching recent comments', err);
+                }
+            }
+        };
+
+        fetchComments();
+        return () => controller.abort();
     }, []);
 
     return (

@@ -1,7 +1,7 @@
 from typing import List, Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select, func, desc
+from sqlmodel import Session, select, func, desc, SQLModel
 from database import get_session
 from models import ReviewComment, User, Vote, SongPerformance, Song, Show
 

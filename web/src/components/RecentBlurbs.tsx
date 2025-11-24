@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Star } from 'lucide-react';
+import { getApiEndpoint } from '@/lib/api';
 
 interface RecentBlurb {
     id: number;
@@ -18,10 +19,27 @@ export default function RecentBlurbs() {
     const [blurbs, setBlurbs] = useState<RecentBlurb[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8000/home/recent-blurbs?limit=5')
-            .then(res => res.json())
-            .then(data => setBlurbs(data))
-            .catch(err => console.error(err));
+        const controller = new AbortController();
+
+        const fetchBlurbs = async () => {
+            try {
+                const res = await fetch(getApiEndpoint('/home/recent-blurbs?limit=5'), {
+                    signal: controller.signal,
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to fetch recent blurbs');
+                }
+                const data = await res.json();
+                setBlurbs(data);
+            } catch (err) {
+                if ((err as Error).name !== 'AbortError') {
+                    console.error('Error fetching recent blurbs', err);
+                }
+            }
+        };
+
+        fetchBlurbs();
+        return () => controller.abort();
     }, []);
 
     return (

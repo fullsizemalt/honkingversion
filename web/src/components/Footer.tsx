@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import FeedbackModal from './FeedbackModal';
-import { MessageSquare, ExternalLink, Github, Twitter } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function Footer() {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);

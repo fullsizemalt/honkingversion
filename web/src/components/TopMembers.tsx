@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Trophy } from 'lucide-react';
+import { getApiEndpoint } from '@/lib/api';
 
 interface TopMember {
     id: number;
@@ -13,10 +14,27 @@ export default function TopMembers() {
     const [members, setMembers] = useState<TopMember[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8000/home/top-members?limit=5')
-            .then(res => res.json())
-            .then(data => setMembers(data))
-            .catch(err => console.error(err));
+        const controller = new AbortController();
+
+        const fetchMembers = async () => {
+            try {
+                const res = await fetch(getApiEndpoint('/home/top-members?limit=5'), {
+                    signal: controller.signal,
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to fetch top members');
+                }
+                const data = await res.json();
+                setMembers(data);
+            } catch (err) {
+                if ((err as Error).name !== 'AbortError') {
+                    console.error('Error fetching top members', err);
+                }
+            }
+        };
+
+        fetchMembers();
+        return () => controller.abort();
     }, []);
 
     return (

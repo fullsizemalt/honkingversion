@@ -22,23 +22,26 @@ app.add_middleware(
 )
 
 from routes import (
+    attended,
     auth,
-    songs,
-    shows,
-    lists,
-    venues,
-    stats,
-    search,
-    tours,
-    years,
-    performance_comparisons,
-    profile,
-    notifications,
-    u,
+    changelog,
+    comments,
     export,
     feedback,
-    changelog,
-    home
+    follows,
+    home,
+    lists,
+    notifications,
+    performances,
+    search,
+    shows,
+    songs,
+    stats,
+    tags,
+    tours,
+    users,
+    venues,
+    votes,
 )
 from database import create_db_and_tables
 
@@ -48,23 +51,31 @@ from database import create_db_and_tables
 def on_startup():
     create_db_and_tables()
 
-app.include_router(auth.router)
-app.include_router(songs.router)
-app.include_router(shows.router)
-app.include_router(lists.router)
-app.include_router(venues.router)
-app.include_router(stats.router)
-app.include_router(search.router)
-app.include_router(tours.router)
-app.include_router(years.router)
-app.include_router(performance_comparisons.router)
-app.include_router(profile.router)
-app.include_router(notifications.router)
-app.include_router(u.router)
-app.include_router(export.router)
-app.include_router(feedback.router)
-app.include_router(changelog.router)
-app.include_router(home.router)
+routers = [
+    auth.router,
+    songs.router,
+    shows.router,
+    lists.router,
+    venues.router,
+    stats.router,
+    search.router,
+    tours.router,
+    notifications.router,
+    export.router,
+    feedback.router,
+    changelog.router,
+    home.router,
+    attended.router,
+    follows.router,
+    tags.router,
+    users.router,
+    votes.router,
+    performances.router,
+    comments.router,
+]
+
+for router in routers:
+    app.include_router(router)
 
 @app.get("/")
 def read_root():
@@ -101,4 +112,3 @@ async def catch_all_404_middleware(request: Request, call_next):
     """Catch unmatched routes and return 404"""
     response = await call_next(request)
     return response
-
