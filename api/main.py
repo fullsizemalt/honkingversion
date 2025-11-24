@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 
 app = FastAPI(title="Honkingversion.net API", description="API for Goose Fan Site")
 
@@ -51,4 +53,36 @@ app.include_router(changelog.router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Honkingversion.net API"}
+
+
+@app.exception_handler(404)
+async def not_found_handler(request: Request, exc: Exception):
+    """Handle 404 errors gracefully"""
+    return JSONResponse(
+        status_code=404,
+        content={
+            "detail": "Resource not found",
+            "path": request.url.path,
+            "method": request.method
+        }
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle validation errors gracefully"""
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": "Validation error",
+            "errors": exc.errors()
+        }
+    )
+
+
+@app.middleware("http")
+async def catch_all_404_middleware(request: Request, call_next):
+    """Catch unmatched routes and return 404"""
+    response = await call_next(request)
+    return response
 
