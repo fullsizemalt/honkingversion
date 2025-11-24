@@ -4,9 +4,9 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-from api.database import get_session
-from api.models import ChangelogEntry, User, UserRead
-from api.routes.auth import get_current_user
+from database import get_session
+from models import ChangelogEntry, User, UserRead
+from routes.auth import get_current_user
 
 router = APIRouter(prefix="/changelog", tags=["changelog"])
 

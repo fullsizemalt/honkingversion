@@ -2,8 +2,8 @@ from typing import List, Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func, desc, SQLModel
-from api.database import get_session
-from api.models import ReviewComment, User, Vote, SongPerformance, Song, Show
+from database import get_session
+from models import ReviewComment, User, Vote, SongPerformance, Song, Show
 
 router = APIRouter(prefix="/home", tags=["home"])
 

@@ -3,7 +3,7 @@ from sqlmodel import Session
 
 from typing import Optional
 
-from api.models import Notification
+from models import Notification
 
 def create_notification(
     session: Session,

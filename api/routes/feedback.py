@@ -3,9 +3,9 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from pydantic import BaseModel
 
-from api.database import get_session
-from api.models import Feedback, User
-from api.routes.auth import get_current_user, get_current_user_optional
+from database import get_session
+from models import Feedback, User
+from routes.auth import get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/feedback", tags=["feedback"])
 
