@@ -50,7 +50,7 @@ export default function UserListsPage() {
                 ) : lists.length > 0 ? (
                     <div className="grid gap-4">
                         {lists.map((list) => (
-                            <ListCard key={list.id} list={list} username={username} />
+                            <ListCard key={list.id} list={list} />
                         ))}
                     </div>
                 ) : (

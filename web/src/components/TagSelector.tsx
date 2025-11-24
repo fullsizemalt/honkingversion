@@ -19,20 +19,20 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
     const [showTagManager, setShowTagManager] = useState(false);
 
     useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const res = await fetch(getApiEndpoint('/tags'));
+                if (res.ok) {
+                    const data = await res.json();
+                    setAvailableTags(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch tags', error);
+            }
+        };
+
         fetchTags();
     }, []);
-
-    const fetchTags = async () => {
-        try {
-            const res = await fetch(getApiEndpoint('/tags'));
-            if (res.ok) {
-                const data = await res.json();
-                setAvailableTags(data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch tags', error);
-        }
-    };
 
     const handleTagCreated = (newTag: Tag) => {
         setAvailableTags([...availableTags, newTag]);
@@ -56,7 +56,7 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
                 <input
                     type="text"
                     placeholder="Add a tag..."
-                    className="flex-1 bg-[#1a1a1a] border border-[#333] text-[#f5f5f5] px-3 py-2 text-sm focus:outline-none focus:border-[#ff6b35]"
+                    className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 text-sm rounded-lg focus:outline-none focus:border-[var(--accent-primary)] placeholder:text-[var(--text-tertiary)]"
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value);
@@ -68,19 +68,19 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
                 <button
                     type="button"
                     onClick={() => setShowTagManager(true)}
-                    className="bg-[#ff6b35] text-[#0a0a0a] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[#f7931e] whitespace-nowrap"
+                    className="bg-[var(--accent-primary)] text-[var(--text-inverse)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase rounded-full hover:bg-[var(--accent-secondary)] whitespace-nowrap"
                 >
                     + New Tag
                 </button>
             </div>
 
             {showDropdown && searchTerm && (
-                <div className="absolute z-10 w-full bg-[#1a1a1a] border border-[#333] mt-1 max-h-40 overflow-y-auto shadow-lg">
+                <div className="absolute z-10 w-full bg-[var(--bg-secondary)] border border-[var(--border)] mt-1 max-h-40 overflow-y-auto shadow-lg rounded-2xl">
                     {filteredTags.length > 0 ? (
                         filteredTags.map(tag => (
                             <button
                                 key={tag.id}
-                                className="w-full text-left px-3 py-2 text-sm text-[#f5f5f5] hover:bg-[#333] flex items-center"
+                                className="w-full text-left px-3 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-muted)] flex items-center"
                                 onClick={() => {
                                     onAddTag(tag);
                                     setSearchTerm('');
@@ -94,7 +94,7 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
                             </button>
                         ))
                     ) : (
-                        <div className="px-3 py-2 text-sm text-[#707070]">No matching tags found</div>
+                        <div className="px-3 py-2 text-sm text-[var(--text-tertiary)]">No matching tags found</div>
                     )}
                 </div>
             )}

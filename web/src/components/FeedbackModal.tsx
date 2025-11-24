@@ -48,7 +48,8 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 setMessage("");
                 onClose();
             }, 2000);
-        } catch (err) {
+        } catch (_error) {
+            console.error("Feedback submission failed", _error);
             setError("Something went wrong. Please try again.");
         } finally {
             setIsSubmitting(false);

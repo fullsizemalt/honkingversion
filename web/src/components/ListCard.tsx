@@ -3,10 +3,9 @@ import { UserList } from '@/types/list';
 
 interface ListCardProps {
     list: UserList | (Partial<UserList> & { id: number; title: string; created_at?: string });
-    username?: string;
 }
 
-export default function ListCard({ list, username }: ListCardProps) {
+export default function ListCard({ list }: ListCardProps) {
     const itemCount = (() => {
         if (!list.items) return 0;
         if (Array.isArray(list.items)) return list.items.length;

@@ -19,13 +19,13 @@ export default function SearchBar() {
             <input
                 type="text"
                 placeholder="Search songs, shows, users..."
-                className="w-full bg-[#1a1a1a] border border-[#333] text-[#f5f5f5] pl-4 pr-10 py-2 text-sm focus:outline-none focus:border-[#ff6b35] font-[family-name:var(--font-ibm-plex-mono)]"
+                className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] pl-4 pr-10 py-2 text-sm focus:outline-none focus:border-[var(--accent-primary)] font-[family-name:var(--font-ibm-plex-mono)] rounded-full placeholder:text-[var(--text-tertiary)] transition-colors"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />
             <button
                 type="submit"
-                className="absolute right-0 top-0 h-full px-3 text-[#707070] hover:text-[#ff6b35] transition-colors"
+                className="absolute right-0 top-0 h-full px-3 text-[var(--text-tertiary)] hover:text-[var(--accent-primary)] transition-colors"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />

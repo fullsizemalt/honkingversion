@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import PerformanceVoteControl from './PerformanceVoteControl'
 
 interface Performance {
@@ -16,12 +15,10 @@ interface Performance {
 }
 
 interface SetlistDisplayProps {
-    showId: number
-    showDate: string
     performances: Performance[]
 }
 
-export default function SetlistDisplay({ showId, showDate, performances }: SetlistDisplayProps) {
+export default function SetlistDisplay({ performances }: SetlistDisplayProps) {
     // Group performances by set
     const sets = performances.reduce((acc, perf) => {
         const setNum = perf.set_number || 1
@@ -35,25 +32,25 @@ export default function SetlistDisplay({ showId, showDate, performances }: Setli
     return (
         <div className="space-y-6">
             {Object.entries(sets).map(([setNum, setPerfs]) => (
-                <div key={setNum} className="bg-[#1a1a1a] border border-[#333] p-6">
-                    <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#f5f5f5] mb-4 uppercase tracking-tight">
+                <div key={setNum} className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 rounded-3xl shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
+                    <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] mb-4 uppercase tracking-[0.35em]">
                         {setNames[parseInt(setNum) - 1] || `Set ${setNum}`}
                     </h3>
                     <div className="space-y-3">
                         {setPerfs.map((perf) => (
                             <div
                                 key={perf.id}
-                                className="flex items-center justify-between gap-4 p-3 bg-[#0a0a0a] border border-[#333] hover:border-[#00d9ff] transition-colors"
+                                className="flex items-center justify-between gap-4 p-4 bg-[var(--bg-muted)] border border-[var(--border-subtle)] hover:border-[var(--accent-tertiary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all rounded-2xl"
                             >
                                 <div className="flex items-center gap-3 flex-1">
-                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070] w-6">
+                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] w-8">
                                         {perf.position}
                                     </span>
-                                    <span className="font-[family-name:var(--font-space-grotesk)] text-[#f5f5f5] font-medium">
+                                    <span className="font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] font-semibold">
                                         {perf.song.name}
                                     </span>
                                     {perf.notes && (
-                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] italic">
+                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] italic">
                                             {perf.notes}
                                         </span>
                                     )}

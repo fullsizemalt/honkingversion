@@ -43,8 +43,8 @@ async function getPerformances(date: string): Promise<Performance[]> {
         const res = await fetch(getApiEndpoint(`/shows/${date}/performances`), { cache: 'no-store' });
         if (!res.ok) return [];
         return res.json();
-    } catch (e) {
-        console.error('Failed to fetch performances:', e);
+    } catch (_error) {
+        console.error('Failed to fetch performances:', _error);
         return [];
     }
 }
@@ -54,7 +54,8 @@ async function getVotes(showId: number): Promise<Vote[]> {
         const res = await fetch(getApiEndpoint(`/votes/show/${showId}`), { cache: 'no-store' });
         if (!res.ok) return [];
         return res.json();
-    } catch (e) {
+    } catch (_error) {
+        console.error('Failed to fetch votes', _error);
         return [];
     }
 }
@@ -87,23 +88,23 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
             {/* Header */}
-            <div className="border-b-2 border-[#333] bg-[#0a0a0a] py-8">
+            <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] py-10">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div className="relative">
-                            <div className="absolute -left-4 top-0 bottom-0 w-1 bg-[#00d9ff]" />
-                            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[#f5f5f5] mb-2 uppercase tracking-tighter">
+                        <div className="relative pl-4">
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-tertiary)] rounded-full" />
+                            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-2 uppercase tracking-tight">
                                 {show.date}
                             </h1>
-                            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] uppercase tracking-wider">
+                            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)] uppercase tracking-[0.35em]">
                                 {show.venue || 'Unknown Venue'} · {show.location || 'Unknown Location'}
                             </p>
                         </div>
                         <div className="flex flex-col items-end">
-                            <div className="text-5xl font-black text-[#00d9ff]">
+                            <div className="text-5xl font-black text-[var(--accent-tertiary)]">
                                 {averageRating}
                             </div>
-                            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070]">
+                            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)]">
                                 {votes.length} votes
                             </p>
                             <div className="mt-2 w-full min-w-[220px]">
@@ -120,14 +121,10 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
                     {/* Setlist with voting */}
                     <div className="lg:col-span-2">
                         {performances.length > 0 ? (
-                            <SetlistDisplay
-                                showId={show.id}
-                                showDate={show.date || date}
-                                performances={performances}
-                            />
+                            <SetlistDisplay performances={performances} />
                         ) : (
-                            <div className="bg-[#1a1a1a] border border-[#333] p-6">
-                                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#707070]">
+                            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 rounded-3xl">
+                                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-tertiary)]">
                                     No performances found for this show.
                                 </p>
                             </div>

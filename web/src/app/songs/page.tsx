@@ -23,16 +23,16 @@ export default async function SongsPage() {
     const covers = songs.filter(s => s.is_cover);
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-[var(--bg-primary)]">
             {/* Header */}
-            <div className="border-b-2 border-[#333] bg-[#0a0a0a] py-8">
+            <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] py-10">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="relative">
-                        <div className="absolute -left-4 top-0 bottom-0 w-1 bg-[#00d9ff]" />
-                        <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[#f5f5f5] mb-2 uppercase tracking-tighter">
+                    <div className="relative pl-4">
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-tertiary)] rounded-full" />
+                        <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-2 uppercase tracking-tight">
                             SONGS
                         </h1>
-                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] uppercase tracking-wider">
+                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] uppercase tracking-[0.35em]">
                             Browse all Goose songs and their performances
                         </p>
                     </div>
@@ -44,11 +44,11 @@ export default async function SongsPage() {
                 {/* Originals */}
                 {originals.length > 0 && (
                     <div className="mb-12">
-                        <div className="mb-4 pb-2 border-b border-[#333]">
-                            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#f5f5f5] uppercase tracking-tight inline-block">
+                        <div className="mb-4 pb-2 border-b border-[var(--border)]">
+                            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-[0.35em] inline-block">
                                 Originals
                             </h2>
-                            <span className="ml-3 font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0]">
+                            <span className="ml-3 font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">
                                 ({originals.length})
                             </span>
                         </div>
@@ -63,11 +63,11 @@ export default async function SongsPage() {
                 {/* Covers */}
                 {covers.length > 0 && (
                     <div>
-                        <div className="mb-4 pb-2 border-b border-[#333]">
-                            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#f5f5f5] uppercase tracking-tight inline-block">
+                        <div className="mb-4 pb-2 border-b border-[var(--border)]">
+                            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-[0.35em] inline-block">
                                 Covers
                             </h2>
-                            <span className="ml-3 font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0]">
+                            <span className="ml-3 font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">
                                 ({covers.length})
                             </span>
                         </div>
@@ -80,8 +80,8 @@ export default async function SongsPage() {
                 )}
 
                 {songs.length === 0 && (
-                    <div className="text-center py-12 border border-[#333] bg-[#1a1a1a]">
-                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070] uppercase tracking-wider">
+                    <div className="text-center py-12 border border-[var(--border)] bg-[var(--bg-secondary)] rounded-3xl">
+                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] uppercase tracking-[0.35em]">
                             No songs found. Check that the API is running.
                         </p>
                     </div>

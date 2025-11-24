@@ -14,6 +14,7 @@ export default function ListDetailPage() {
     const params = useParams();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const tokenParam = searchParams.get('token');
     const { data: session } = useSession();
     const id = params.id as string;
     const [list, setList] = useState<UserList | null>(null);
@@ -27,7 +28,6 @@ export default function ListDetailPage() {
     useEffect(() => {
         const fetchList = async () => {
             try {
-                const tokenParam = searchParams.get('token');
                 const res = await fetch(getApiEndpoint(`/lists/${id}${tokenParam ? `?token=${tokenParam}` : ''}`));
                 if (res.ok) {
                     const data = await res.json();
@@ -51,7 +51,7 @@ export default function ListDetailPage() {
         if (id) {
             fetchList();
         }
-    }, [id, session]);
+    }, [id, session, tokenParam]);
 
     useEffect(() => {
         const fetchDetails = async () => {

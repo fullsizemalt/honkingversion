@@ -7,19 +7,19 @@ interface SongHeaderProps {
 
 export default function SongHeader({ song }: SongHeaderProps) {
     return (
-        <div className="bg-[#0a0a0a] text-[#f5f5f5] p-6 rounded-lg shadow-md border border-[#333]">
-            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold mb-2 uppercase tracking-tighter">
+        <div className="bg-[var(--bg-secondary)] text-[var(--text-primary)] p-6 rounded-3xl shadow-[0_35px_55px_rgba(23,20,10,0.12)] border border-[var(--border)]">
+            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold mb-2 uppercase tracking-tight">
                 {song.name}
             </h1>
-            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] uppercase tracking-wider mb-1">
+            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)] uppercase tracking-[0.35em] mb-1">
                 {song.artist}
             </p>
             {song.debut_date && (
-                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070]">
+                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)]">
                     Debut: {song.debut_date}
                 </p>
             )}
-            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] mt-2">
+            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)] mt-2">
                 Times Played: {song.times_played ?? 0}
             </p>
         </div>

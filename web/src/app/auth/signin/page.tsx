@@ -30,7 +30,8 @@ export default function SignIn() {
                 router.push("/")
                 router.refresh()
             }
-        } catch (err) {
+        } catch (_err) {
+            console.error("Sign in failed", _err)
             setError("An error occurred. Please try again.")
         } finally {
             setLoading(false)

@@ -130,7 +130,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
                             <div className="space-y-4">
                                 {lists.length > 0 ? (
                                     lists.slice(0, 3).map((list) => (
-                                        <ListCard key={list.id} list={list} username={user.username} />
+                                        <ListCard key={list.id} list={list} />
                                     ))
                                 ) : (
                                     <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">

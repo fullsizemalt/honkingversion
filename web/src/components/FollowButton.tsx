@@ -68,9 +68,9 @@ export default function FollowButton({ username, initialIsFollowing = false }: F
         <button
             onClick={toggleFollow}
             disabled={loading}
-            className={`border px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase transition-colors ${isFollowing
-                    ? 'border-[#333] text-[#a0a0a0] hover:border-[#ff6b35] hover:text-[#ff6b35]'
-                    : 'border-[#ff6b35] bg-[#ff6b35] text-[#0a0a0a] hover:bg-[#f7931e]'
+            className={`border px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase transition-colors rounded-full ${isFollowing
+                    ? 'border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]'
+                    : 'border-[var(--accent-primary)] bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:bg-[var(--accent-secondary)]'
                 }`}
         >
             {loading ? 'Loading...' : isFollowing ? 'Following' : 'Follow'}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { getApiUrl } from '@/lib/api'
@@ -8,7 +8,6 @@ import { getApiUrl } from '@/lib/api'
 interface PerformanceVoteControlProps {
     performanceId: number
     songName?: string
-    initialRating?: number | null
     compact?: boolean
     onVoteUpdate?: () => void
 }
@@ -16,7 +15,6 @@ interface PerformanceVoteControlProps {
 export default function PerformanceVoteControl({
     performanceId,
     songName = 'this performance',
-    initialRating,
     compact = false,
     onVoteUpdate
 }: PerformanceVoteControlProps) {
@@ -28,11 +26,7 @@ export default function PerformanceVoteControl({
     const [avgRating, setAvgRating] = useState<number | null>(null)
     const [voteCount, setVoteCount] = useState(0)
 
-    useEffect(() => {
-        fetchRating()
-    }, [performanceId])
-
-    const fetchRating = async () => {
+    const fetchRating = useCallback(async () => {
         try {
             const apiUrl = getApiUrl()
             const res = await fetch(`${apiUrl}/performances/${performanceId}/rating`)
@@ -47,7 +41,11 @@ export default function PerformanceVoteControl({
         } catch (error) {
             console.error('Failed to fetch rating:', error)
         }
-    }
+    }, [performanceId])
+
+    useEffect(() => {
+        fetchRating()
+    }, [fetchRating])
 
     const handleVote = async (value: number) => {
         if (!session) {
@@ -86,8 +84,8 @@ export default function PerformanceVoteControl({
             <div className="flex items-center gap-2">
                 {avgRating !== null && (
                     <div className="flex items-center gap-1">
-                        <span className="text-[#00d9ff] font-bold text-sm">{avgRating}</span>
-                        <span className="text-[#707070] text-xs">({voteCount})</span>
+                        <span className="text-[var(--accent-tertiary)] font-bold text-sm">{avgRating}</span>
+                        <span className="text-[var(--text-tertiary)] text-xs">({voteCount})</span>
                     </div>
                 )}
                 <div className="flex gap-0.5">
@@ -98,9 +96,9 @@ export default function PerformanceVoteControl({
                             onMouseEnter={() => setHoverRating(value)}
                             onMouseLeave={() => setHoverRating(0)}
                             onClick={() => handleVote(value)}
-                            className={`w-6 h-6 rounded text-xs font-bold transition-all ${(hoverRating || rating) >= value
-                                ? 'bg-[#00d9ff] text-[#0a0a0a]'
-                                : 'bg-[#333] text-[#707070] hover:bg-[#444]'
+                            className={`w-6 h-6 rounded text-xs font-bold transition-all border ${(hoverRating || rating) >= value
+                                ? 'bg-[color:rgba(0,168,210,0.18)] text-[var(--accent-tertiary)] border-[color:rgba(0,168,210,0.35)]'
+                                : 'bg-[var(--bg-secondary)] text-[var(--text-tertiary)] border-[var(--border)] hover:border-[var(--accent-tertiary)]'
                                 }`}
                         >
                             {value}
@@ -112,15 +110,15 @@ export default function PerformanceVoteControl({
     }
 
     return (
-        <div className="flex flex-col gap-2 p-3 bg-[#1a1a1a] border border-[#333] rounded">
+        <div className="flex flex-col gap-3 p-4 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl shadow-[0_15px_35px_rgba(23,20,10,0.08)]">
             <div className="flex items-center justify-between">
-                <h4 className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] uppercase tracking-wider">
-                    Rate this performance
+                <h4 className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] uppercase tracking-[0.35em]">
+                    Rate {songName}
                 </h4>
                 {avgRating !== null && (
                     <div className="flex items-center gap-1">
-                        <span className="text-[#00d9ff] font-bold">{avgRating}</span>
-                        <span className="text-[#707070] text-xs">({voteCount} votes)</span>
+                        <span className="text-[var(--accent-tertiary)] font-bold">{avgRating}</span>
+                        <span className="text-[var(--text-tertiary)] text-xs">({voteCount} votes)</span>
                     </div>
                 )}
             </div>
@@ -132,9 +130,9 @@ export default function PerformanceVoteControl({
                         onMouseEnter={() => setHoverRating(value)}
                         onMouseLeave={() => setHoverRating(0)}
                         onClick={() => handleVote(value)}
-                        className={`w-8 h-8 rounded text-sm font-bold transition-all ${(hoverRating || rating) >= value
-                            ? 'bg-[#00d9ff] text-[#0a0a0a] scale-110'
-                            : 'bg-[#333] text-[#707070] hover:bg-[#444]'
+                        className={`w-9 h-9 rounded-xl text-sm font-bold transition-all border ${(hoverRating || rating) >= value
+                            ? 'bg-[color:rgba(0,168,210,0.18)] text-[var(--accent-tertiary)] scale-110 border-[color:rgba(0,168,210,0.35)]'
+                            : 'bg-[var(--bg-muted)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] border-[var(--border)]'
                             }`}
                     >
                         {value}
@@ -142,7 +140,7 @@ export default function PerformanceVoteControl({
                 ))}
             </div>
             {rating > 0 && (
-                <p className="text-xs text-[#00d9ff] font-[family-name:var(--font-ibm-plex-mono)]">
+                <p className="text-xs text-[var(--accent-tertiary)] font-[family-name:var(--font-ibm-plex-mono)]">
                     You rated this {rating}/10
                 </p>
             )}

@@ -3,7 +3,7 @@
 import { getApiEndpoint } from '@/lib/api';
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import ProfileHeader from "@/components/ProfileHeader"
 import ActivityFeed from "@/components/ActivityFeed"
 import ListCard from "@/components/ListCard"
@@ -21,15 +21,7 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true)
     const [showListEditor, setShowListEditor] = useState(false)
 
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/auth/signin")
-        } else if (status === "authenticated" && session?.user) {
-            fetchUserData()
-        }
-    }, [status, session, router])
-
-    const fetchUserData = async () => {
+    const fetchUserData = useCallback(async () => {
         try {
             // Fetch user data from API
             const userRes = await fetch(getApiEndpoint('/users/me'), {
@@ -67,7 +59,15 @@ export default function ProfilePage() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [session?.user?.accessToken])
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/auth/signin")
+        } else if (status === "authenticated" && session?.user) {
+            fetchUserData()
+        }
+    }, [status, session, router, fetchUserData])
 
     if (status === "loading" || loading) {
         return (
@@ -112,7 +112,7 @@ export default function ProfilePage() {
                             <div className="space-y-4">
                                 {lists.length > 0 ? (
                                     lists.slice(0, 3).map((list) => (
-                                        <ListCard key={list.id} list={list} username={user.username} />
+                                        <ListCard key={list.id} list={list} />
                                     ))
                                 ) : (
                                     <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getApiEndpoint } from '@/lib/api';
 import Link from 'next/link';
 

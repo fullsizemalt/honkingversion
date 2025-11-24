@@ -17,7 +17,7 @@ export default function CreateListButton() {
             <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="bg-[#ff6b35] text-[#0a0a0a] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[#f7931e]"
+                className="bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase rounded-full hover:bg-[var(--accent-secondary)]"
             >
                 + Create List
             </button>

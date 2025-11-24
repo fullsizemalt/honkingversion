@@ -24,7 +24,7 @@ export default function TopVersion({ performance }: TopVersionProps) {
                 <span className="font-bold text-lg">Avg Rating: {avg_rating ?? 'N/A'}</span>
                 <span className="text-sm">Votes: {vote_count}</span>
             </div>
-            <PerformanceVoteControl performanceId={id} songName={song?.name} initialRating={avg_rating} />
+            <PerformanceVoteControl performanceId={id} songName={song?.name} />
         </div>
     );
 }

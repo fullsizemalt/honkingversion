@@ -53,7 +53,8 @@ export default function PerformanceComparisonsPage() {
                 } else {
                     setError(`Performance ${id} not found`);
                 }
-            } catch (err) {
+            } catch (_error) {
+                console.error("Failed to fetch performance", _error);
                 setError(`Failed to load performance ${id}`);
             }
         }

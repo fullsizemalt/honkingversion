@@ -8,36 +8,36 @@ export default function Footer() {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
     return (
-        <footer className="border-t border-[#333] bg-[#0a0a0a] py-6 mt-8">
+        <footer className="border-t border-[var(--border)] bg-[var(--bg-secondary)] py-8 mt-16 text-[var(--text-secondary)]">
             <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
 
             <div className="max-w-7xl mx-auto px-4">
                 {/* Navigation Links */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-                    <div className="flex flex-wrap gap-4 mb-4 md:mb-0">
-                        <Link href="/shows" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Shows</Link>
-                        <Link href="/songs" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Songs</Link>
-                        <Link href="/lists" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Lists</Link>
-                        <Link href="/updates" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Updates</Link>
+                    <div className="flex flex-wrap gap-4 mb-4 md:mb-0 text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wide">
+                        <Link href="/shows" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Shows</Link>
+                        <Link href="/songs" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Songs</Link>
+                        <Link href="/lists" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Lists</Link>
+                        <Link href="/updates" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Updates</Link>
                         <button
                             onClick={() => setIsFeedbackOpen(true)}
-                            className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)] text-left"
+                            className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors text-left"
                         >
                             Report Issue
                         </button>
-                        <Link href="/attribution" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors text-xs font-[family-name:var(--font-ibm-plex-mono)]">Attribution</Link>
+                        <Link href="/attribution" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Attribution</Link>
                     </div>
-                    <div className="text-[#a0a0a0] text-xs font-[family-name:var(--font-ibm-plex-mono)]">
+                    <div className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] tracking-[0.3em] uppercase text-[var(--text-tertiary)]">
                         © {new Date().getFullYear()} Honkingversion.runfoo.run
                     </div>
                 </div>
 
                 {/* Attribution Notice */}
-                <div className="border-t border-[#333] pt-4">
-                    <div className="text-[#707070] text-[10px] font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider">
-                        Data provided by <a href="https://elgoose.net" target="_blank" rel="noopener noreferrer" className="text-[#ff6b35] hover:underline">El Goose</a>
+                <div className="border-t border-[var(--border-subtle)] pt-4">
+                    <div className="text-[var(--text-tertiary)] text-[10px] font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-[0.3em]">
+                        Data provided by <a href="https://elgoose.net" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline">El Goose</a>
                         {' • '}
-                        <Link href="/attribution" className="text-[#ff6b35] hover:underline">See full attribution and usage policy</Link>
+                        <Link href="/attribution" className="text-[var(--accent-primary)] hover:underline">See full attribution and usage policy</Link>
                     </div>
                 </div>
             </div>

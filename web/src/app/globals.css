@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  /* Default (Light Mode) */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f5;
-  --bg-tertiary: #e5e5e5;
-  
-  --text-primary: #0a0a0a;
-  --text-secondary: #505050;
-  --text-tertiary: #707070;
-  
-  --border: #e0e0e0;
-  --border-subtle: #f0f0f0;
+  /* Daylight palette */
+  --bg-primary: #fdf9f3;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f3ede3;
+  --bg-muted: #f8f2e9;
+
+  --text-primary: #1a1c1c;
+  --text-secondary: #4e5057;
+  --text-tertiary: #7d7f86;
+  --text-inverse: #f5f5f5;
+
+  --border: #ddd4c5;
+  --border-subtle: #efe7db;
+
+  --shadow-soft: 0 8px 24px rgba(14, 20, 26, 0.08);
+  --shadow-ring: 0 0 0 3px rgba(255, 107, 53, 0.25);
 
   /* Accent Colors (Shared) */
   --accent-primary: #ff6b35;
   --accent-secondary: #f7931e;
-  --accent-tertiary: #00d9ff;
-  --accent-purple: #b565d8;
-  
-  --rating-gold: #ffd700;
-  
+  --accent-tertiary: #00a8d2;
+  --accent-purple: #9a4bd3;
+  --accent-emerald: #1fc77b;
+
+  --rating-gold: #f6b400;
+
   /* Typography */
   --font-space-grotesk: "Space Grotesk", "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-ibm-plex-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -30,16 +36,21 @@
 
 [data-theme='dark'] {
   /* Dark Mode Overrides */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a1a;
-  --bg-tertiary: #252525;
-  
+  --bg-primary: #090909;
+  --bg-secondary: #111112;
+  --bg-tertiary: #1b1b1e;
+  --bg-muted: #191a1d;
+
   --text-primary: #f5f5f5;
-  --text-secondary: #a0a0a0;
-  --text-tertiary: #707070;
-  
-  --border: #333333;
-  --border-subtle: #222222;
+  --text-secondary: #bbbbc2;
+  --text-tertiary: #8a8a92;
+  --text-inverse: #0a0a0a;
+
+  --border: #2a2a2a;
+  --border-subtle: #1d1d1f;
+
+  --shadow-soft: 0 12px 24px rgba(0, 0, 0, 0.45);
+  --shadow-ring: 0 0 0 3px rgba(0, 217, 255, 0.35);
 }
 
 @theme inline {
@@ -49,13 +60,48 @@
 
 body {
   font-family: var(--font-display), system-ui, sans-serif;
-  background: var(--bg-primary);
+  background: radial-gradient(circle at top, #fff8ef 10%, var(--bg-primary) 55%, #f8f2e9 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  letter-spacing: -0.01em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
   color: var(--text-primary);
 }
 
-/* Remove default rounded corners */
-* {
-  border-radius: 0 !important;
+p,
+span,
+label {
+  color: var(--text-secondary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-ring);
+  border-color: transparent;
+}
+
+.card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+.muted {
+  color: var(--text-tertiary);
 }
 
 /* Custom scrollbar */
@@ -74,4 +120,34 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-primary);
+}
+
+::selection {
+  background: rgba(255, 107, 53, 0.15);
+}
+
+/* Legacy utility overrides for new palette */
+[class*="bg-[#0a0a0a]"] {
+  background-color: var(--bg-primary) !important;
+}
+
+[class*="bg-[#0f0f0f]"],
+[class*="bg-[#1a1a1a]"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+[class*="border-[#333]"] {
+  border-color: var(--border) !important;
+}
+
+[class*="text-[#f5f5f5]"] {
+  color: var(--text-primary) !important;
+}
+
+[class*="text-[#a0a0a0]"] {
+  color: var(--text-secondary) !important;
+}
+
+[class*="text-[#707070]"] {
+  color: var(--text-tertiary) !important;
 }
