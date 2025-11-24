@@ -17,6 +17,7 @@ export default function Navbar() {
     return (
         <nav className="bg-[#0a0a0a] border-b-2 border-[#ff6b35] sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4">
+                {/* Top Row */}
                 <div className="flex items-center justify-between h-14">
                     {/* Logo - Sharp geometric */}
                     <Link href="/" className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
@@ -24,19 +25,8 @@ export default function Navbar() {
                         <span className="text-[#ff6b35]">VERSION</span>
                     </Link>
 
-                    {/* Desktop Menu */}
-                    <div className="hidden md:flex gap-6 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider items-center">
-                        <Link href="/shows" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Shows</Link>
-                        <Link href="/venues" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Venues</Link>
-                        <Link href="/performance-comparisons" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Comparisons</Link>
-                        <Link href="/streaming" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Streaming</Link>
-                        <Link href="/attribution" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Attribution</Link>
-                        <Link href="/songs" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">
-                            Songs
-                        </Link>
-                        <Link href="/lists" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">
-                            Lists
-                        </Link>
+                    {/* Desktop Search */}
+                    <div className="hidden md:flex">
                         <SearchBar />
                     </div>
 
@@ -75,6 +65,21 @@ export default function Navbar() {
                             )}
                         </svg>
                     </button>
+                </div>
+
+                {/* Bottom Row - Navigation Menu */}
+                <div className="hidden md:flex gap-6 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider border-t border-[#333] py-2">
+                    <Link href="/shows" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Shows</Link>
+                    <Link href="/venues" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Venues</Link>
+                    <Link href="/performance-comparisons" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Comparisons</Link>
+                    <Link href="/streaming" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Streaming</Link>
+                    <Link href="/attribution" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">Attribution</Link>
+                    <Link href="/songs" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">
+                        Songs
+                    </Link>
+                    <Link href="/lists" className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-1 border-b-2 border-transparent hover:border-[#ff6b35]">
+                        Lists
+                    </Link>
                 </div>
             </div>
 
