@@ -121,10 +121,11 @@ def main():
 
                             # Create random comments on votes
                             if random.random() > 0.8:
+                                comment_phrases = ['So good.', 'Mind blowing.', "Can't wait to see them again."]
                                 comment = ReviewComment(
                                     vote_id=vote.id,
                                     user_id=random.choice(users).id,
-                                    body=f"Totally agree with this rating! {random.choice(['So good.', 'Mind blowing.', 'Can\'t wait to see them again.'])}",
+                                    body=f"Totally agree with this rating! {random.choice(comment_phrases)}",
                                     created_at=datetime.utcnow() - timedelta(days=random.randint(0, 5))
                                 )
                                 session.add(comment)
