@@ -52,15 +52,47 @@ const getRelativeTime = (dateString: string) => {
 
 export default function ActivityFeed({ activities, title = "Recent Activity" }: ActivityFeedProps) {
     const [expandedId, setExpandedId] = useState<number | null>(null);
+    const [filter, setFilter] = useState<'all' | 'votes' | 'blurbs' | 'reviews'>('all');
+
+    // Filter activities based on selected filter
+    const filteredActivities = activities.filter(activity => {
+        if (filter === 'all') return true;
+        if (filter === 'votes') return activity.rating && !activity.blurb && !activity.full_review;
+        if (filter === 'blurbs') return activity.blurb;
+        if (filter === 'reviews') return activity.full_review;
+        return true;
+    });
 
     return (
         <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-2xl p-6 shadow-sm">
-            <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)] mb-6">
+            <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)] mb-4">
                 {title}
             </h3>
 
+            {/* Filter Tabs */}
+            <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                {[
+                    { key: 'all', label: 'All', icon: '📊' },
+                    { key: 'votes', label: 'Votes', icon: '⭐' },
+                    { key: 'blurbs', label: 'Blurbs', icon: '💬' },
+                    { key: 'reviews', label: 'Reviews', icon: '📝' },
+                ].map((tab) => (
+                    <button
+                        key={tab.key}
+                        onClick={() => setFilter(tab.key as typeof filter)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${filter === tab.key
+                            ? 'bg-[var(--accent-primary)] text-[var(--text-inverse)] shadow-sm scale-105'
+                            : 'bg-[var(--bg-muted)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]/80 hover:scale-102'
+                            }`}
+                    >
+                        <span>{tab.icon}</span>
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
             <div className="space-y-3">
-                {activities.map((activity, index) => (
+                {filteredActivities.map((activity, index) => (
                     <div
                         key={activity.id}
                         className="group border border-[var(--border-subtle)] rounded-xl p-4 hover:border-[var(--accent-primary)]/30 hover:bg-[var(--bg-muted)]/30 transition-all duration-200 cursor-pointer"
@@ -119,10 +151,10 @@ export default function ActivityFeed({ activities, title = "Recent Activity" }: 
                     </div>
                 ))}
 
-                {activities.length === 0 && (
+                {filteredActivities.length === 0 && (
                     <div className="p-12 border border-[var(--border-subtle)] border-dashed rounded-xl text-center">
                         <p className="text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                            No activity yet.
+                            No {filter !== 'all' ? filter : 'activity'} yet.
                         </p>
                     </div>
                 )}

@@ -54,6 +54,15 @@ export interface User {
     username: string;
     email?: string;
     created_at: string;
+    display_name?: string;
+    bio?: string;
+    profile_picture_url?: string;
+    role?: string;
+    social_links?: {
+        twitter?: string;
+        instagram?: string;
+        custom_url?: string;
+    };
     stats?: {
         shows_attended: number;
         reviews_count: number;

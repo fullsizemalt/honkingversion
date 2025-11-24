@@ -11,7 +11,7 @@ interface ProfileHeaderProps {
         display_name?: string;
         bio?: string;
         profile_picture_url?: string;
-        role: string;
+        role?: string;
         social_links?: {
             twitter?: string;
             instagram?: string;
@@ -26,7 +26,8 @@ interface ProfileHeaderProps {
     isCurrentUser?: boolean;
 }
 
-const getRoleBadge = (role: string) => {
+const getRoleBadge = (role?: string) => {
+    const roleKey = role || 'user';
     const badges = {
         user: { label: 'Member', color: 'bg-zinc-500/10 text-zinc-600 dark:text-zinc-400' },
         power_user: { label: 'Power User', color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
@@ -34,7 +35,7 @@ const getRoleBadge = (role: string) => {
         admin: { label: 'Admin', color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
         superadmin: { label: 'Super Admin', color: 'bg-gradient-to-r from-orange-500/10 to-red-500/10 text-orange-600 dark:text-orange-400' },
     };
-    return badges[role as keyof typeof badges] || badges.user;
+    return badges[roleKey as keyof typeof badges] || badges.user;
 };
 
 export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: ProfileHeaderProps) {

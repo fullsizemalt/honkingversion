@@ -1,9 +1,9 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func
-from api.database import get_session
-from api.models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance
-from api.routes.auth import get_current_user_optional
+from database import get_session
+from models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance
+from routes.auth import get_current_user_optional
 import json
 
 router = APIRouter(prefix="/profile", tags=["profile"])

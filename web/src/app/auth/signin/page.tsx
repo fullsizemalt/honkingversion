@@ -11,6 +11,15 @@ export default function SignIn() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
+    const [showDevLogin, setShowDevLogin] = useState(false)
+
+    // Check for dev mode on mount
+    useState(() => {
+        if (typeof window !== 'undefined') {
+            const isDevMode = localStorage.getItem('devMode') === 'true';
+            setShowDevLogin(isDevMode);
+        }
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -37,6 +46,28 @@ export default function SignIn() {
             setLoading(false)
         }
     }
+
+    const quickLogin = async (user: string, pass: string) => {
+        setLoading(true);
+        setError("");
+        try {
+            const res = await signIn("credentials", {
+                username: user,
+                password: pass,
+                redirect: false,
+            });
+            if (res?.error) {
+                setError("Quick login failed");
+            } else {
+                router.push("/");
+                router.refresh();
+            }
+        } catch (_err) {
+            setError("Quick login failed");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -98,6 +129,38 @@ export default function SignIn() {
                         </button>
                     </div>
                 </form>
+
+                {/* Dev Mode Quick Login */}
+                {showDevLogin && (
+                    <div className="mt-6 p-4 bg-purple-900/20 border border-purple-500/30 rounded-lg">
+                        <p className="text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider text-purple-400 mb-3 text-center">
+                            🔧 Quick Login (Dev Mode)
+                        </p>
+                        <div className="grid grid-cols-3 gap-2">
+                            <button
+                                onClick={() => quickLogin('testuser', 'test123')}
+                                disabled={loading}
+                                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                            >
+                                User
+                            </button>
+                            <button
+                                onClick={() => quickLogin('poweruser', 'power123')}
+                                disabled={loading}
+                                className="px-3 py-2 bg-blue-900/30 hover:bg-blue-900/50 border border-blue-700/50 rounded-lg text-xs font-semibold text-blue-300 transition-colors disabled:opacity-50"
+                            >
+                                Power
+                            </button>
+                            <button
+                                onClick={() => quickLogin('admin', 'admin123')}
+                                disabled={loading}
+                                className="px-3 py-2 bg-orange-900/30 hover:bg-orange-900/50 border border-orange-700/50 rounded-lg text-xs font-semibold text-orange-300 transition-colors disabled:opacity-50"
+                            >
+                                Admin
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 <div className="mt-6">
                     <div className="relative">
