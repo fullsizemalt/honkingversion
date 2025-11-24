@@ -18,7 +18,7 @@ export default function Footer() {
                     <div className="lg:col-span-2 space-y-6">
                         <Link href="/" className="inline-block">
                             <span className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-                                HONKING<span className="text-[var(--accent-primary)]">VERSION</span>
+                                HONKING<span className="text-[var(--accent-secondary)]">VERSION</span>
                             </span>
                         </Link>
                         <p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-sm">
@@ -37,22 +37,22 @@ export default function Footer() {
                         </h3>
                         <ul className="space-y-4 text-sm">
                             <li>
-                                <Link href="/shows" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <Link href="/shows" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Shows
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/songs" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <Link href="/songs" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Songs
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/lists" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <Link href="/lists" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Lists
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/streaming" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <Link href="/streaming" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Streaming
                                 </Link>
                             </li>
@@ -67,17 +67,17 @@ export default function Footer() {
                         </h3>
                         <ul className="space-y-4 text-sm">
                             <li>
-                                <Link href="/performance-comparisons" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <Link href="/performance-comparisons" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Trends
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/venues" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <Link href="/venues" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Geographical
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/years" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <Link href="/years" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Temporal
                                 </Link>
                             </li>
@@ -91,22 +91,22 @@ export default function Footer() {
                         </h3>
                         <ul className="space-y-4 text-sm">
                             <li>
-                                <a href="https://www.goosetheband.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <a href="https://www.goosetheband.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Official Site <ExternalLink className="w-3 h-3 opacity-50" />
                                 </a>
                             </li>
                             <li>
-                                <a href="https://elgoose.net/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <a href="https://elgoose.net/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     ElGoose.net <ExternalLink className="w-3 h-3 opacity-50" />
                                 </a>
                             </li>
                             <li>
-                                <a href="https://www.reddit.com/r/GoosetheBand/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <a href="https://www.reddit.com/r/GoosetheBand/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Subreddit <ExternalLink className="w-3 h-3 opacity-50" />
                                 </a>
                             </li>
                             <li>
-                                <a href="https://community.wysterialane.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
+                                <a href="https://community.wysterialane.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                     Wysteria Lane <ExternalLink className="w-3 h-3 opacity-50" />
                                 </a>
                             </li>

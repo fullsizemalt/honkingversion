@@ -18,7 +18,7 @@ export default function Navbar() {
                     {/* Logo - Sharp geometric */}
                     <Link href="/" className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold tracking-tight hover:opacity-80 transition-opacity text-[var(--text-primary)]">
                         <span className="text-[var(--text-primary)]">HONKING</span>
-                        <span className="text-[var(--accent-primary)]">VERSION</span>
+                        <span className="text-[var(--accent-secondary)]">VERSION</span>
                     </Link>
 
                     {/* Desktop Search */}
@@ -49,6 +49,11 @@ export default function Navbar() {
                                 Sign In
                             </Link>
                         )}
+                    </div>
+
+                    {/* Mobile Theme Toggle */}
+                    <div className="flex md:hidden items-center mr-2">
+                        <ThemeToggle />
                     </div>
 
                     {/* Mobile menu button */}
