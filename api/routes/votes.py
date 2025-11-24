@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List, Optional
 from pydantic import BaseModel
+from sqlalchemy import func, Integer
 
 from database import get_session
 from database import get_session
@@ -102,7 +103,7 @@ def get_show_votes(
     
     return votes_read
 
-from models import SongPerformance, PerformanceTag, ShowTag, Tag
+from models import SongPerformance, PerformanceTag, ShowTag, Tag, Song
 from sqlalchemy.orm import selectinload
 
 class ShowSummary(BaseModel):
@@ -131,11 +132,47 @@ class UserReviewRead(BaseModel):
 @router.get("/", response_model=List[UserReviewRead])
 def get_reviews(
     sort: Optional[str] = None,
+    song_id: Optional[int] = None,
+    song_name: Optional[str] = None,
+    show_id: Optional[int] = None,
+    show_date: Optional[str] = None,
+    venue: Optional[str] = None,
+    performance_id: Optional[int] = None,
+    set_number: Optional[int] = None,
+    tour: Optional[str] = None,
+    day_of_week: Optional[int] = None,
+    month: Optional[int] = None,
+    year: Optional[int] = None,
+    min_rating: Optional[int] = None,
+    max_rating: Optional[int] = None,
+    review_type: Optional[str] = None,
+    reviewer: Optional[str] = None,
+    recency_days: Optional[int] = None,
     limit: int = 50,
     offset: int = 0,
     session: Session = Depends(get_session)
 ):
-    """Get all reviews across the platform with optional sorting."""
+    """Get all reviews across the platform with optional filtering and sorting.
+
+    Filters:
+    - song_id: Filter by specific song ID
+    - song_name: Filter by song name (partial match, case-insensitive)
+    - show_id: Filter by specific show ID
+    - show_date: Filter by show date (YYYY-MM-DD format)
+    - venue: Filter by venue name (partial match, case-insensitive)
+    - performance_id: Filter by specific performance ID
+    - set_number: Filter by set number (1=Set 1, 2=Set 2, 3=Encore)
+    - tour: Filter by tour name
+    - day_of_week: Filter by day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
+    - month: Filter by month (1-12)
+    - year: Filter by year (YYYY)
+    - min_rating: Minimum rating (1-5)
+    - max_rating: Maximum rating (1-5)
+    - review_type: 'detailed', 'quick', or None for all
+    - reviewer: Filter by reviewer username
+    - recency_days: Show reviews from last N days
+    - sort: 'rating' for rating, otherwise by date (default)
+    """
     statement = (
         select(Vote)
         .options(
@@ -150,6 +187,94 @@ def get_reviews(
     statement = statement.where(
         (Vote.blurb != None) | (Vote.full_review != None)
     )
+
+    # Apply filters
+    if show_id:
+        statement = statement.where(Vote.show_id == show_id)
+
+    if show_date:
+        statement = statement.where(Vote.show_id.in_(
+            select(Show.id).where(Show.date == show_date)
+        ))
+
+    if performance_id:
+        statement = statement.where(Vote.performance_id == performance_id)
+
+    if song_id:
+        # Join to SongPerformance to filter by song
+        statement = statement.join(SongPerformance).where(SongPerformance.song_id == song_id)
+
+    if song_name:
+        # Join to SongPerformance and Song to filter by song name
+        statement = statement.join(SongPerformance).join(Song).where(
+            Song.name.ilike(f"%{song_name}%")
+        )
+
+    if venue:
+        # Join to Show to filter by venue
+        if not (show_id or show_date or song_name or song_id or tour):
+            statement = statement.join(Show)
+        statement = statement.where(Show.venue.ilike(f"%{venue}%"))
+
+    if set_number:
+        # Join to SongPerformance to filter by set number
+        if not (song_id or song_name):
+            statement = statement.join(SongPerformance)
+        statement = statement.where(SongPerformance.set_number == set_number)
+
+    if tour:
+        # Join to Show to filter by tour
+        if not (show_id or show_date or song_name or song_id or venue):
+            # Only join if not already joined
+            statement = statement.join(Show)
+        statement = statement.where(Show.tour.ilike(f"%{tour}%"))
+
+    if day_of_week is not None:
+        # Filter by day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
+        # Using strftime for SQLite compatibility
+        if not (show_id or show_date or venue or song_name or song_id or tour):
+            statement = statement.join(Show)
+        statement = statement.where(func.cast(func.strftime('%w', Show.date), Integer) == day_of_week)
+
+    if month is not None:
+        # Filter by month (1-12)
+        if not (show_id or show_date or venue or song_name or song_id or tour or day_of_week is not None):
+            statement = statement.join(Show)
+        statement = statement.where(func.cast(func.strftime('%m', Show.date), Integer) == month)
+
+    if year is not None:
+        # Filter by year (YYYY)
+        if not (show_id or show_date or venue or song_name or song_id or tour or day_of_week is not None or month is not None):
+            statement = statement.join(Show)
+        statement = statement.where(func.cast(func.strftime('%Y', Show.date), Integer) == year)
+
+    if min_rating is not None:
+        # Filter by minimum rating
+        statement = statement.where(Vote.rating >= min_rating)
+
+    if max_rating is not None:
+        # Filter by maximum rating
+        statement = statement.where(Vote.rating <= max_rating)
+
+    if review_type:
+        # Filter by review type (detailed vs quick/blurb)
+        if review_type == 'detailed':
+            # Only full_review present (detailed reviews)
+            statement = statement.where(Vote.full_review != None)
+        elif review_type == 'quick':
+            # Only blurb present (quick takes)
+            statement = statement.where((Vote.blurb != None) & (Vote.full_review == None))
+
+    if reviewer:
+        # Filter by reviewer username
+        if not (song_id or song_name):
+            statement = statement.join(User)
+        statement = statement.where(User.username.ilike(f"%{reviewer}%"))
+
+    if recency_days is not None:
+        # Filter by recency - reviews created in last N days
+        cutoff_date = func.datetime('now', f'-{recency_days} days')
+        statement = statement.where(Vote.created_at >= cutoff_date)
 
     # Sort by rating if requested, otherwise by date
     if sort == 'rating':
