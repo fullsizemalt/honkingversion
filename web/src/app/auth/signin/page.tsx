@@ -1,7 +1,7 @@
 'use client'
 
 import { signIn } from "next-auth/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
@@ -14,12 +14,10 @@ export default function SignIn() {
     const [showDevLogin, setShowDevLogin] = useState(false)
 
     // Check for dev mode on mount
-    useState(() => {
-        if (typeof window !== 'undefined') {
-            const isDevMode = localStorage.getItem('devMode') === 'true';
-            setShowDevLogin(isDevMode);
-        }
-    });
+    useEffect(() => {
+        const isDevMode = localStorage.getItem('devMode') === 'true';
+        setShowDevLogin(isDevMode);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
