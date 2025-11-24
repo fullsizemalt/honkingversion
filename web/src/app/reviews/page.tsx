@@ -22,10 +22,18 @@ export default function ReviewsPage() {
         dayOfWeek: '',
         month: '',
         year: '',
+        minRating: '',
+        maxRating: '',
+        reviewType: 'all',
+        reviewer: '',
+        recencyDays: '',
     });
 
+    // Advanced filters visibility
+    const [showAdvanced, setShowAdvanced] = useState(false);
+
     // Track if filters are active
-    const hasActiveFilters = Object.values(filters).some(v => v.trim() !== '');
+    const hasActiveFilters = Object.values(filters).some(v => v.trim() !== '') || filters.reviewType !== 'all';
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -36,17 +44,25 @@ export default function ReviewsPage() {
                 const params = new URLSearchParams();
                 if (sortBy === 'rated') params.append('sort', 'rating');
 
-                // Add filters - these would need to be resolved to IDs on the backend
-                // For now we'll pass them as query params
+                // Basic filters
                 if (filters.songName) params.append('song_name', filters.songName);
                 if (filters.showDate) params.append('show_date', filters.showDate);
                 if (filters.performanceId) params.append('performance_id', filters.performanceId);
                 if (filters.venue) params.append('venue', filters.venue);
                 if (filters.setNumber) params.append('set_number', filters.setNumber);
                 if (filters.tour) params.append('tour', filters.tour);
+
+                // Chronological filters
                 if (filters.dayOfWeek) params.append('day_of_week', filters.dayOfWeek);
                 if (filters.month) params.append('month', filters.month);
                 if (filters.year) params.append('year', filters.year);
+
+                // Advanced filters
+                if (filters.minRating) params.append('min_rating', filters.minRating);
+                if (filters.maxRating) params.append('max_rating', filters.maxRating);
+                if (filters.reviewType !== 'all') params.append('review_type', filters.reviewType);
+                if (filters.reviewer) params.append('reviewer', filters.reviewer);
+                if (filters.recencyDays) params.append('recency_days', filters.recencyDays);
 
                 const response = await fetch(`/api/hv/reviews?${params}`, {
                     credentials: 'include'
@@ -107,6 +123,34 @@ export default function ReviewsPage() {
                         <div className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-xs">
                             {reviews.length} review{reviews.length !== 1 ? 's' : ''} {hasActiveFilters && '(filtered)'}
                         </div>
+                    </div>
+
+                    {/* Quick Filter Presets */}
+                    <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={() => setFilters({ ...filters, minRating: '5', maxRating: '5' })}
+                            className="px-3 py-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                        >
+                            ⭐ Best Rated (5★)
+                        </button>
+                        <button
+                            onClick={() => setFilters({ ...filters, minRating: '4', maxRating: '' })}
+                            className="px-3 py-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                        >
+                            4★+
+                        </button>
+                        <button
+                            onClick={() => setFilters({ ...filters, recencyDays: '7' })}
+                            className="px-3 py-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                        >
+                            Past Week
+                        </button>
+                        <button
+                            onClick={() => setFilters({ ...filters, recencyDays: '30' })}
+                            className="px-3 py-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                        >
+                            Past Month
+                        </button>
                     </div>
 
                     {/* Filters Section */}
@@ -266,14 +310,119 @@ export default function ReviewsPage() {
                             </div>
                         </div>
 
-                        {/* Clear Filters Button */}
-                        {hasActiveFilters && (
+                        <div className="flex items-center justify-between">
+                            {/* Clear Filters Button */}
+                            {hasActiveFilters && (
+                                <button
+                                    onClick={() => setFilters({ songName: '', showDate: '', performanceId: '', venue: '', setNumber: '', tour: '', dayOfWeek: '', month: '', year: '', minRating: '', maxRating: '', reviewType: 'all', reviewer: '', recencyDays: '' })}
+                                    className="px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                                >
+                                    Clear Filters
+                                </button>
+                            )}
+
+                            {/* Advanced Filters Toggle */}
                             <button
-                                onClick={() => setFilters({ songName: '', showDate: '', performanceId: '', venue: '', setNumber: '', tour: '', dayOfWeek: '', month: '', year: '' })}
-                                className="px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                                onClick={() => setShowAdvanced(!showAdvanced)}
+                                className="px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider ml-2"
                             >
-                                Clear Filters
+                                {showAdvanced ? '▼' : '▶'} Advanced
                             </button>
+                        </div>
+
+                        {/* Advanced Filters Section */}
+                        {showAdvanced && (
+                            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
+                                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider text-[var(--text-secondary)] mb-3">
+                                    Advanced Filters
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {/* Rating Range */}
+                                    <div>
+                                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                            Min Rating
+                                        </label>
+                                        <select
+                                            value={filters.minRating}
+                                            onChange={(e) => setFilters({ ...filters, minRating: e.target.value })}
+                                            className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                        >
+                                            <option value="">Any</option>
+                                            <option value="1">1★+</option>
+                                            <option value="2">2★+</option>
+                                            <option value="3">3★+</option>
+                                            <option value="4">4★+</option>
+                                            <option value="5">5★</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                            Max Rating
+                                        </label>
+                                        <select
+                                            value={filters.maxRating}
+                                            onChange={(e) => setFilters({ ...filters, maxRating: e.target.value })}
+                                            className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                        >
+                                            <option value="">Any</option>
+                                            <option value="1">1★</option>
+                                            <option value="2">2★</option>
+                                            <option value="3">3★</option>
+                                            <option value="4">4★</option>
+                                            <option value="5">5★</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Review Type */}
+                                    <div>
+                                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                            Review Type
+                                        </label>
+                                        <select
+                                            value={filters.reviewType}
+                                            onChange={(e) => setFilters({ ...filters, reviewType: e.target.value })}
+                                            className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                        >
+                                            <option value="all">All Reviews</option>
+                                            <option value="detailed">Detailed Only</option>
+                                            <option value="quick">Quick Takes</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Reviewer Filter */}
+                                    <div>
+                                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                            Reviewer
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Username..."
+                                            value={filters.reviewer}
+                                            onChange={(e) => setFilters({ ...filters, reviewer: e.target.value })}
+                                            className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                        />
+                                    </div>
+
+                                    {/* Recency Filter */}
+                                    <div>
+                                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                            Recency
+                                        </label>
+                                        <select
+                                            value={filters.recencyDays}
+                                            onChange={(e) => setFilters({ ...filters, recencyDays: e.target.value })}
+                                            className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                        >
+                                            <option value="">All Time</option>
+                                            <option value="7">Past Week</option>
+                                            <option value="30">Past Month</option>
+                                            <option value="90">Past 3 Months</option>
+                                            <option value="365">Past Year</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>

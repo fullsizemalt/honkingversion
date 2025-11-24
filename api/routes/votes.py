@@ -143,6 +143,11 @@ def get_reviews(
     day_of_week: Optional[int] = None,
     month: Optional[int] = None,
     year: Optional[int] = None,
+    min_rating: Optional[int] = None,
+    max_rating: Optional[int] = None,
+    review_type: Optional[str] = None,
+    reviewer: Optional[str] = None,
+    recency_days: Optional[int] = None,
     limit: int = 50,
     offset: int = 0,
     session: Session = Depends(get_session)
@@ -161,6 +166,11 @@ def get_reviews(
     - day_of_week: Filter by day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
     - month: Filter by month (1-12)
     - year: Filter by year (YYYY)
+    - min_rating: Minimum rating (1-5)
+    - max_rating: Maximum rating (1-5)
+    - review_type: 'detailed', 'quick', or None for all
+    - reviewer: Filter by reviewer username
+    - recency_days: Show reviews from last N days
     - sort: 'rating' for rating, otherwise by date (default)
     """
     statement = (
@@ -237,6 +247,34 @@ def get_reviews(
         if not (show_id or show_date or venue or song_name or song_id or tour or day_of_week is not None or month is not None):
             statement = statement.join(Show)
         statement = statement.where(func.cast(func.strftime('%Y', Show.date), Integer) == year)
+
+    if min_rating is not None:
+        # Filter by minimum rating
+        statement = statement.where(Vote.rating >= min_rating)
+
+    if max_rating is not None:
+        # Filter by maximum rating
+        statement = statement.where(Vote.rating <= max_rating)
+
+    if review_type:
+        # Filter by review type (detailed vs quick/blurb)
+        if review_type == 'detailed':
+            # Only full_review present (detailed reviews)
+            statement = statement.where(Vote.full_review != None)
+        elif review_type == 'quick':
+            # Only blurb present (quick takes)
+            statement = statement.where((Vote.blurb != None) & (Vote.full_review == None))
+
+    if reviewer:
+        # Filter by reviewer username
+        if not (song_id or song_name):
+            statement = statement.join(User)
+        statement = statement.where(User.username.ilike(f"%{reviewer}%"))
+
+    if recency_days is not None:
+        # Filter by recency - reviews created in last N days
+        cutoff_date = func.datetime('now', f'-{recency_days} days')
+        statement = statement.where(Vote.created_at >= cutoff_date)
 
     # Sort by rating if requested, otherwise by date
     if sort == 'rating':
