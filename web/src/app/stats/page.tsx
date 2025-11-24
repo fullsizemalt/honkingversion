@@ -1,6 +1,10 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { getApiEndpoint } from '@/lib/api'
 import { StatsResponse } from '@/types'
 import Link from 'next/link'
+import PageHeader from '@/components/PageHeader'
 
 async function fetchStats(): Promise<StatsResponse | null> {
     try {
@@ -12,109 +16,152 @@ async function fetchStats(): Promise<StatsResponse | null> {
     }
 }
 
-export default async function StatsPage() {
-    const stats = await fetchStats()
+export default function StatsPage() {
+    const [stats, setStats] = useState<StatsResponse | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
 
-    if (!stats) {
+    useEffect(() => {
+        const loadStats = async () => {
+            const data = await fetchStats()
+            if (data) {
+                setStats(data)
+            } else {
+                setError(true)
+            }
+            setLoading(false)
+        }
+        loadStats()
+    }, [])
+
+    if (loading) {
         return (
-            <div className="max-w-5xl mx-auto px-4 py-10 text-[#9ca3af]">
-                Failed to load stats.
-            </div>
+            <>
+                <PageHeader
+                    title="Trending"
+                    description="Community activity and performance trends"
+                />
+                <div className="max-w-7xl mx-auto px-4 py-12">
+                    <div className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)]">
+                        Loading stats...
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    if (!stats || error) {
+        return (
+            <>
+                <PageHeader
+                    title="Trending"
+                    description="Community activity and performance trends"
+                />
+                <div className="max-w-7xl mx-auto px-4 py-12">
+                    <div className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded">
+                        <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
+                            Failed to load stats. Please try again later.
+                        </p>
+                    </div>
+                </div>
+            </>
         )
     }
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-10 space-y-8">
-            <div className="flex items-center justify-between">
-                <h1 className="text-4xl font-bold text-white font-[family-name:var(--font-space-grotesk)]">
-                    Community Stats
-                </h1>
-            </div>
+        <>
+            <PageHeader
+                title="Trending"
+                description="Community activity and performance trends"
+                loggedInMessage="Discover what's trending in the community."
+            />
+            <div className="max-w-7xl mx-auto px-4 py-12 space-y-8">
 
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border border-[#333] bg-[#0f0f0f] p-4">
-                    <h2 className="text-lg font-semibold text-white mb-3">Top Songs</h2>
-                    <div className="space-y-2">
-                        {stats.top_songs.map((s, idx) => (
-                            <div key={s.slug} className="flex items-center justify-between text-sm text-[#e5e7eb]">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[#9ca3af]">#{idx + 1}</span>
-                                    <Link href={`/songs/${s.slug}`} className="hover:text-[#00d9ff]">{s.name}</Link>
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                        <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Top Songs</h2>
+                        <div className="space-y-3">
+                            {stats.top_songs.map((s, idx) => (
+                                <div key={s.slug} className="flex items-center justify-between text-sm text-[var(--text-primary)]">
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] font-bold">#{idx + 1}</span>
+                                        <Link href={`/songs/${s.slug}`} className="hover:text-[var(--accent-primary)] transition-colors">{s.name}</Link>
+                                    </div>
+                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">{s.plays} plays</span>
                                 </div>
-                                <span className="text-[#9ca3af]">{s.plays} plays</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="border border-[#333] bg-[#0f0f0f] p-4">
-                    <h2 className="text-lg font-semibold text-white mb-3">Top Venues</h2>
-                    <div className="space-y-2">
-                        {stats.top_venues.map((v, idx) => (
-                            <div key={`${v.venue}-${idx}`} className="flex items-center justify-between text-sm text-[#e5e7eb]">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[#9ca3af]">#{idx + 1}</span>
-                                    <span>{v.venue}</span>
-                                </div>
-                                <span className="text-[#9ca3af]">{v.show_count} shows</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="border border-[#333] bg-[#0f0f0f] p-4">
-                <h2 className="text-lg font-semibold text-white mb-3">Trending Performances (last 30d)</h2>
-                <div className="space-y-2">
-                    {stats.trending_performances.map((p) => (
-                        <div key={p.performance_id} className="flex flex-col md:flex-row md:items-center md:justify-between text-sm text-[#e5e7eb] border-b border-[#1f2937] pb-2 last:border-none">
-                            <div>
-                                <div className="font-semibold">{p.song_name}</div>
-                                <div className="text-[#9ca3af]">{p.date} @ {p.venue}</div>
-                            </div>
-                            <div className="flex items-center gap-4 text-[#9ca3af]">
-                                <span>{p.votes_last_30d} votes</span>
-                                <span>{p.avg_rating ? `${p.avg_rating.toFixed(1)} avg` : 'N/A'}</span>
-                            </div>
+                            ))}
                         </div>
-                    ))}
-                    {stats.trending_performances.length === 0 && (
-                        <div className="text-sm text-[#9ca3af]">No recent activity.</div>
-                    )}
-                </div>
-            </section>
+                    </div>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border border-[#333] bg-[#0f0f0f] p-4">
-                    <h2 className="text-lg font-semibold text-white mb-3">Leaderboard: Votes Cast</h2>
-                    <div className="space-y-2">
-                        {stats.leaderboards.votes_cast.map((u, idx) => (
-                            <div key={u.username} className="flex items-center justify-between text-sm text-[#e5e7eb]">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[#9ca3af]">#{idx + 1}</span>
-                                    <span>{u.username}</span>
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                        <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Top Venues</h2>
+                        <div className="space-y-3">
+                            {stats.top_venues.map((v, idx) => (
+                                <div key={`${v.venue}-${idx}`} className="flex items-center justify-between text-sm text-[var(--text-primary)]">
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] font-bold">#{idx + 1}</span>
+                                        <span>{v.venue}</span>
+                                    </div>
+                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">{v.show_count} shows</span>
                                 </div>
-                                <span className="text-[#9ca3af]">{u.votes} votes</span>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Trending Performances (Last 30 Days)</h2>
+                    <div className="space-y-4">
+                        {stats.trending_performances.map((p) => (
+                            <div key={p.performance_id} className="flex flex-col md:flex-row md:items-center md:justify-between text-sm text-[var(--text-primary)] border-b border-[var(--border-subtle)] pb-4 last:border-none last:pb-0">
+                                <div>
+                                    <div className="font-bold">{p.song_name}</div>
+                                    <div className="text-xs text-[var(--text-secondary)] mt-1">{p.date} @ {p.venue}</div>
+                                </div>
+                                <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)] mt-2 md:mt-0 font-[family-name:var(--font-ibm-plex-mono)]">
+                                    <span>{p.votes_last_30d} votes</span>
+                                    <span>{p.avg_rating ? `${p.avg_rating.toFixed(1)}/10` : 'N/A'}</span>
+                                </div>
                             </div>
                         ))}
+                        {stats.trending_performances.length === 0 && (
+                            <div className="text-sm text-[var(--text-secondary)]">No recent activity.</div>
+                        )}
                     </div>
-                </div>
+                </section>
 
-                <div className="border border-[#333] bg-[#0f0f0f] p-4">
-                    <h2 className="text-lg font-semibold text-white mb-3">Leaderboard: Followers</h2>
-                    <div className="space-y-2">
-                        {stats.leaderboards.followers.map((u, idx) => (
-                            <div key={u.username} className="flex items-center justify-between text-sm text-[#e5e7eb]">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[#9ca3af]">#{idx + 1}</span>
-                                    <span>{u.username}</span>
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                        <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Most Active Voters</h2>
+                        <div className="space-y-3">
+                            {stats.leaderboards.votes_cast.map((u, idx) => (
+                                <div key={u.username} className="flex items-center justify-between text-sm text-[var(--text-primary)]">
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] font-bold">#{idx + 1}</span>
+                                        <span>{u.username}</span>
+                                    </div>
+                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">{u.votes} votes</span>
                                 </div>
-                                <span className="text-[#9ca3af]">{u.followers} followers</span>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
-        </div>
+
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                        <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Most Followed Users</h2>
+                        <div className="space-y-3">
+                            {stats.leaderboards.followers.map((u, idx) => (
+                                <div key={u.username} className="flex items-center justify-between text-sm text-[var(--text-primary)]">
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] font-bold">#{idx + 1}</span>
+                                        <span>{u.username}</span>
+                                    </div>
+                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">{u.followers} followers</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </>
     )
 }
