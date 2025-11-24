@@ -2,7 +2,7 @@
 
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { Users, X } from 'lucide-react';
+import { Users, X, AlertCircle } from 'lucide-react';
 
 /**
  * Dev-only component for quickly switching between test users
@@ -27,10 +27,12 @@ export default function DevUserSwitcher() {
     const [isOpen, setIsOpen] = useState(false);
     const [switching, setSwitching] = useState(false);
     const [devMode, setDevMode] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     // Check if dev mode is enabled
     useEffect(() => {
         const checkDevMode = () => {
+            if (typeof window === 'undefined') return;
             const isDevMode = localStorage.getItem('devMode') === 'true';
             setDevMode(isDevMode);
         };
@@ -49,21 +51,26 @@ export default function DevUserSwitcher() {
 
     const switchUser = async (user: TestUser) => {
         setSwitching(true);
+        setErrorMsg(null);
         try {
             // Sign out current user
             await signOut({ redirect: false });
 
             // Sign in as new user
-            await signIn('credentials', {
+            const res = await signIn('credentials', {
                 username: user.username,
                 password: user.password,
                 redirect: false,
             });
 
-            // Reload to update session
-            window.location.reload();
+            if (res?.error) {
+                setErrorMsg('Quick login failed. Ensure dev users exist in the API.');
+            } else {
+                window.location.reload();
+            }
         } catch (error) {
             console.error('Failed to switch user:', error);
+            setErrorMsg('Switch failed. Check credentials or API availability.');
         } finally {
             setSwitching(false);
             setIsOpen(false);
@@ -146,6 +153,13 @@ export default function DevUserSwitcher() {
                             >
                                 Sign Out
                             </button>
+                        )}
+
+                        {errorMsg && (
+                            <div className="mt-3 flex items-center gap-2 text-sm text-amber-400 font-[family-name:var(--font-ibm-plex-mono)]">
+                                <AlertCircle className="w-4 h-4" />
+                                <span>{errorMsg}</span>
+                            </div>
                         )}
 
                         {/* Note */}
