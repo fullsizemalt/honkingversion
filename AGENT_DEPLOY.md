@@ -12,7 +12,7 @@ These instructions assume you are running commands DIRECTLY on nexus-vector, not
 
 ### Step 0: Check if Project Exists
 ```bash
-ls -la /root/ANTIGRAVITY/honkingversion
+ls -la /home/admin/honkingversion
 ```
 
 **If directory exists**: Skip to Step 2
@@ -20,17 +20,12 @@ ls -la /root/ANTIGRAVITY/honkingversion
 
 ### Step 1: Clone Repository (ONLY if it doesn't exist)
 ```bash
-sudo bash -c 'mkdir -p /root/ANTIGRAVITY && cd /root/ANTIGRAVITY && git clone ssh://git@localhost:2222/runfoo/honkingversion.git'
-```
-
-Or with HTTPS:
-```bash
-sudo bash -c 'mkdir -p /root/ANTIGRAVITY && cd /root/ANTIGRAVITY && git clone https://git.runfoo.run/runfoo/honkingversion.git'
+mkdir -p /home/admin && cd /home/admin && git clone https://git.runfoo.run/runfoo/honkingversion.git
 ```
 
 ### Step 2: Navigate to Project and Pull Latest Code
 ```bash
-cd /root/ANTIGRAVITY/honkingversion
+cd /home/admin/honkingversion
 git pull origin master
 ```
 
@@ -134,7 +129,7 @@ Should return: `Welcome`
 
 ## Success Checklist
 
-- [ ] Project directory exists at `/root/ANTIGRAVITY/honkingversion`
+- [ ] Project directory exists at `/home/admin/honkingversion`
 - [ ] Latest code pulled from Forgejo
 - [ ] All Docker containers running (`docker compose ps`)
 - [ ] 60+ users created
@@ -151,7 +146,7 @@ Should return: `Welcome`
 
 Once seeding is complete and verified:
 ```bash
-cd /root/ANTIGRAVITY/honkingversion
+cd /home/admin/honkingversion
 git push origin master
 ```
 
@@ -164,7 +159,7 @@ For future code changes, you'll need to manually re-run the deployment steps (pu
 ### Git clone fails
 Try HTTPS instead of SSH:
 ```bash
-sudo bash -c 'mkdir -p /root/ANTIGRAVITY && cd /root/ANTIGRAVITY && git clone https://git.runfoo.run/runfoo/honkingversion.git'
+mkdir -p /home/admin && cd /home/admin && git clone https://git.runfoo.run/runfoo/honkingversion.git
 ```
 
 ### Docker containers won't start

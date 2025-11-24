@@ -35,7 +35,9 @@ export default function RecentComments() {
                     <div key={comment.id} className="border-b border-[var(--border-subtle)] last:border-0 pb-4 last:pb-0">
                         <div className="flex justify-between items-start mb-1">
                             <span className="font-bold text-sm text-[var(--text-primary)]">{comment.username}</span>
-                            <span className="text-xs text-[var(--text-tertiary)]">{new Date(comment.created_at).toLocaleDateString()}</span>
+                            <span className="text-xs text-[var(--text-tertiary)]">
+                                {new Date(comment.created_at).toISOString().split('T')[0]}
+                            </span>
                         </div>
                         <p className="text-sm text-[var(--text-secondary)] line-clamp-2 mb-2">"{comment.body}"</p>
                         <div className="text-xs text-[var(--text-tertiary)]">

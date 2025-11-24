@@ -22,7 +22,7 @@ jobs:
       - name: Pull latest code
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-          cd /root/ANTIGRAVITY/honkingversion
+          cd /home/admin/honkingversion
           git pull origin master
           echo "✅ Code pulled successfully"
           EOF

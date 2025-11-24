@@ -99,7 +99,7 @@ The workflow (`.gitea/workflows/deploy.yml`) uses these secrets:
 
     # Deploy
     ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST << 'ENDSSH'
-    cd /root/ANTIGRAVITY/honkingversion
+    cd /home/admin/honkingversion
     git pull origin master
     docker compose down
     docker compose pull
@@ -122,7 +122,7 @@ git push origin master
 
 3. Check nexus-vector for deployment:
 ```bash
-ssh root@nexus-vector "cd /root/ANTIGRAVITY/honkingversion && docker compose ps"
+ssh admin@nexus-vector "cd /home/admin/honkingversion && docker compose ps"
 ```
 
 ## Troubleshooting

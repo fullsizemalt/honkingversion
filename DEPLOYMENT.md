@@ -33,7 +33,7 @@ If you already have SSH access to nexus-vector:
 ssh root@nexus-vector
 
 # Download and run the setup script
-cd /root/ANTIGRAVITY/honkingversion
+cd /home/admin/honkingversion
 bash scripts/setup-forgejo-runner.sh
 
 # Follow the prompts - you'll need:
