@@ -19,6 +19,9 @@ export default function ReviewsPage() {
         venue: '',
         setNumber: '',
         tour: '',
+        dayOfWeek: '',
+        month: '',
+        year: '',
     });
 
     // Track if filters are active
@@ -41,6 +44,9 @@ export default function ReviewsPage() {
                 if (filters.venue) params.append('venue', filters.venue);
                 if (filters.setNumber) params.append('set_number', filters.setNumber);
                 if (filters.tour) params.append('tour', filters.tour);
+                if (filters.dayOfWeek) params.append('day_of_week', filters.dayOfWeek);
+                if (filters.month) params.append('month', filters.month);
+                if (filters.year) params.append('year', filters.year);
 
                 const response = await fetch(`/api/hv/reviews?${params}`, {
                     credentials: 'include'
@@ -196,13 +202,74 @@ export default function ReviewsPage() {
                                         <option value="3">Encore</option>
                                     </select>
                                 </div>
+
+                                {/* Day of Week Filter */}
+                                <div>
+                                    <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                        Day of Week
+                                    </label>
+                                    <select
+                                        value={filters.dayOfWeek}
+                                        onChange={(e) => setFilters({ ...filters, dayOfWeek: e.target.value })}
+                                        className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                    >
+                                        <option value="">All Days</option>
+                                        <option value="0">Sunday</option>
+                                        <option value="1">Monday</option>
+                                        <option value="2">Tuesday</option>
+                                        <option value="3">Wednesday</option>
+                                        <option value="4">Thursday</option>
+                                        <option value="5">Friday</option>
+                                        <option value="6">Saturday</option>
+                                    </select>
+                                </div>
+
+                                {/* Month Filter */}
+                                <div>
+                                    <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                        Month
+                                    </label>
+                                    <select
+                                        value={filters.month}
+                                        onChange={(e) => setFilters({ ...filters, month: e.target.value })}
+                                        className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                    >
+                                        <option value="">All Months</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+
+                                {/* Year Filter */}
+                                <div>
+                                    <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                                        Year
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="YYYY"
+                                        value={filters.year}
+                                        onChange={(e) => setFilters({ ...filters, year: e.target.value })}
+                                        className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-sm"
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         {/* Clear Filters Button */}
                         {hasActiveFilters && (
                             <button
-                                onClick={() => setFilters({ songName: '', showDate: '', performanceId: '', venue: '', setNumber: '', tour: '' })}
+                                onClick={() => setFilters({ songName: '', showDate: '', performanceId: '', venue: '', setNumber: '', tour: '', dayOfWeek: '', month: '', year: '' })}
                                 className="px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
                             >
                                 Clear Filters

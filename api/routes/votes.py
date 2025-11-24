@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List, Optional
 from pydantic import BaseModel
+from sqlalchemy import func, Integer
 
 from database import get_session
 from database import get_session
@@ -139,6 +140,9 @@ def get_reviews(
     performance_id: Optional[int] = None,
     set_number: Optional[int] = None,
     tour: Optional[str] = None,
+    day_of_week: Optional[int] = None,
+    month: Optional[int] = None,
+    year: Optional[int] = None,
     limit: int = 50,
     offset: int = 0,
     session: Session = Depends(get_session)
@@ -154,6 +158,9 @@ def get_reviews(
     - performance_id: Filter by specific performance ID
     - set_number: Filter by set number (1=Set 1, 2=Set 2, 3=Encore)
     - tour: Filter by tour name
+    - day_of_week: Filter by day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
+    - month: Filter by month (1-12)
+    - year: Filter by year (YYYY)
     - sort: 'rating' for rating, otherwise by date (default)
     """
     statement = (
@@ -211,6 +218,25 @@ def get_reviews(
             # Only join if not already joined
             statement = statement.join(Show)
         statement = statement.where(Show.tour.ilike(f"%{tour}%"))
+
+    if day_of_week is not None:
+        # Filter by day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
+        # Using strftime for SQLite compatibility
+        if not (show_id or show_date or venue or song_name or song_id or tour):
+            statement = statement.join(Show)
+        statement = statement.where(func.cast(func.strftime('%w', Show.date), Integer) == day_of_week)
+
+    if month is not None:
+        # Filter by month (1-12)
+        if not (show_id or show_date or venue or song_name or song_id or tour or day_of_week is not None):
+            statement = statement.join(Show)
+        statement = statement.where(func.cast(func.strftime('%m', Show.date), Integer) == month)
+
+    if year is not None:
+        # Filter by year (YYYY)
+        if not (show_id or show_date or venue or song_name or song_id or tour or day_of_week is not None or month is not None):
+            statement = statement.join(Show)
+        statement = statement.where(func.cast(func.strftime('%Y', Show.date), Integer) == year)
 
     # Sort by rating if requested, otherwise by date
     if sort == 'rating':
