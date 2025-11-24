@@ -1,24 +1,59 @@
 # Honkingversion Deployment Guide
 
-## CI/CD Pipeline Status
+## CI/CD Pipeline: Forgejo Actions
 
-⚠️ **IMPORTANT**: The `.github/workflows/deploy.yml` is a GitHub Actions template but will NOT work with Forgejo (git.runfoo.run).
+The project now uses **Forgejo Actions** for automatic deployment on every push to `master`.
 
-### Current Status
-- **Repository**: Forgejo (git.runfoo.run) ✅
-- **GitHub Actions**: Not active (different platform)
-- **Forgejo Actions**: Not configured yet
-- **Deployment**: Manual via SSH required
+### How It Works
 
-### To Enable CI/CD on Forgejo (Future Enhancement)
-1. Enable Forgejo Actions in repository settings
-2. Set up Forgejo runners
-3. Convert workflow to Forgejo syntax
-4. Configure secrets in Forgejo
+1. You push code to `master` on git.runfoo.run
+2. Forgejo Actions automatically triggers the workflow (`.gitea/workflows/deploy.yml`)
+3. Runner pulls latest code
+4. Docker services rebuild and restart
+5. Health checks verify deployment
+6. Results visible at https://git.runfoo.run/runfoo/honkingversion/actions
 
-### For Now: Manual Deployment (Recommended)
+### Setup Required (One-time)
 
-Use the SSH deployment method described below.
+Follow the complete setup guide in [FORGEJO_ACTIONS_SETUP.md](./FORGEJO_ACTIONS_SETUP.md):
+
+1. **Set up Forgejo Runner** on nexus-vector
+2. **Configure secrets** in Forgejo repository:
+   - `DEPLOY_KEY`: SSH private key
+   - `DEPLOY_HOST`: nexus-vector
+   - `DEPLOY_USER`: root
+3. **Test** by pushing a change to master
+
+### Quick Setup
+
+If you already have SSH access to nexus-vector:
+
+```bash
+# SSH into the deployment server
+ssh root@nexus-vector
+
+# Download and run the setup script
+cd /root/ANTIGRAVITY/honkingversion
+bash scripts/setup-forgejo-runner.sh
+
+# Follow the prompts - you'll need:
+# - Forgejo instance URL (https://git.runfoo.run)
+# - Registration token from https://git.runfoo.run/admin/runners
+```
+
+### After Setup
+
+Just push your changes:
+```bash
+git push origin master
+```
+
+Deployment happens automatically! View progress at:
+https://git.runfoo.run/runfoo/honkingversion/actions
+
+### Troubleshooting
+
+See [FORGEJO_ACTIONS_SETUP.md](./FORGEJO_ACTIONS_SETUP.md) for detailed troubleshooting.
 
 ### Manual Deployment
 
