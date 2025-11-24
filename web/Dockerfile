@@ -1,6 +1,11 @@
 # Stage 1: Build the Next.js application
 FROM node:20-alpine AS builder
 
+ARG NEXT_PUBLIC_API_URL=http://localhost:8000
+ARG INTERNAL_API_URL=http://localhost:8000
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV INTERNAL_API_URL=${INTERNAL_API_URL}
+
 # Set the working directory
 WORKDIR /app
 
@@ -18,6 +23,11 @@ RUN npm run build
 
 # Stage 2: Serve the application
 FROM node:20-alpine
+
+ARG NEXT_PUBLIC_API_URL=http://localhost:8000
+ARG INTERNAL_API_URL=http://localhost:8000
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV INTERNAL_API_URL=${INTERNAL_API_URL}
 
 # Set the working directory
 WORKDIR /app

@@ -15,7 +15,11 @@ services:
     restart: unless-stopped
 
   web:
-    build: ./web
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_URL: https://api.honkingversion.runfoo.run
+        INTERNAL_API_URL: http://api:8000
     environment:
       - NEXT_PUBLIC_API_URL=https://api.honkingversion.runfoo.run
       - INTERNAL_API_URL=http://api:8000
