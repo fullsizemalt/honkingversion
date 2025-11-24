@@ -47,7 +47,7 @@ USER_PERSONAS = {
             "This is why we follow the band",
         ]
     },
-    "god_level": {
+    "god": {
         "count": 3,
         "base_votes_per_month": 40,
         "rating_preference": lambda: (10 if random.random() > 0.3 else random.randint(7, 9)),
@@ -63,7 +63,7 @@ USER_PERSONAS = {
             "Masterclass in improvisation and arrangement",
         ]
     },
-    "rail_rider": {
+    "rail": {
         "count": 8,
         "base_votes_per_month": 35,
         "rating_preference": lambda: random.choices([i for i in range(1, 11)], weights=[1,1,1,2,2,3,4,5,4,4])[0],
@@ -79,7 +79,7 @@ USER_PERSONAS = {
             "This is why we rail ride",
         ]
     },
-    "run_club": {
+    "run": {
         "count": 10,
         "base_votes_per_month": 20,
         "rating_preference": lambda: random.randint(6, 10),
@@ -109,7 +109,7 @@ USER_PERSONAS = {
             "The composition work paired perfectly with their improvisational abilities",
         ]
     },
-    "jam_aficionado": {
+    "jam": {
         "count": 9,
         "base_votes_per_month": 28,
         "rating_preference": lambda: random.choices([i for i in range(1, 11)], weights=[1,1,2,3,4,5,5,5,4,3])[0],
@@ -161,18 +161,18 @@ COMMENT_BLURBS = {
         "The interaction between [musician] and [musician] was telepathic",
         "This deserves to be on a best-of compilation",
     ],
-    "god_level": [
+    "god": [
         "Absolute peak performance",
         "This will define their legacy",
         "Every element aligned perfectly",
         "Transcendent",
     ],
-    "rail_rider": [
+    "rail": [
         "Felt this energy from the rail!",
         "The connection was real from the front",
         "Best seat in the house vibes",
     ],
-    "run_club": [
+    "run": [
         "Squad was living for this",
         "Crew was so hyped",
         "Run club moment right here",
@@ -182,7 +182,7 @@ COMMENT_BLURBS = {
         "The compositional choices here are smart",
         "Their musicianship shines through",
     ],
-    "jam_aficionado": [
+    "jam": [
         "The jam here was pristine",
         "Built beautifully",
         "That improvisational section was perfect",
