@@ -12,7 +12,7 @@ interface TrendingPerformance {
   date: string;
   venue: string;
   votes_last_30d: number;
-  avg_rating: number | null | undefined;
+  avg_rating?: number | null | undefined;
 }
 
 interface TopPerformance {
