@@ -102,7 +102,7 @@ def get_show_votes(
     
     return votes_read
 
-from models import SongPerformance, PerformanceTag, ShowTag, Tag
+from models import SongPerformance, PerformanceTag, ShowTag, Tag, Song
 from sqlalchemy.orm import selectinload
 
 class ShowSummary(BaseModel):
@@ -132,7 +132,9 @@ class UserReviewRead(BaseModel):
 def get_reviews(
     sort: Optional[str] = None,
     song_id: Optional[int] = None,
+    song_name: Optional[str] = None,
     show_id: Optional[int] = None,
+    show_date: Optional[str] = None,
     performance_id: Optional[int] = None,
     tour: Optional[str] = None,
     limit: int = 50,
@@ -142,9 +144,11 @@ def get_reviews(
     """Get all reviews across the platform with optional filtering and sorting.
 
     Filters:
-    - song_id: Filter by specific song
-    - show_id: Filter by specific show
-    - performance_id: Filter by specific performance
+    - song_id: Filter by specific song ID
+    - song_name: Filter by song name (partial match, case-insensitive)
+    - show_id: Filter by specific show ID
+    - show_date: Filter by show date (YYYY-MM-DD format)
+    - performance_id: Filter by specific performance ID
     - tour: Filter by tour name
     - sort: 'rating' for rating, otherwise by date (default)
     """
@@ -167,6 +171,11 @@ def get_reviews(
     if show_id:
         statement = statement.where(Vote.show_id == show_id)
 
+    if show_date:
+        statement = statement.where(Vote.show_id.in_(
+            select(Show.id).where(Show.date == show_date)
+        ))
+
     if performance_id:
         statement = statement.where(Vote.performance_id == performance_id)
 
@@ -174,9 +183,18 @@ def get_reviews(
         # Join to SongPerformance to filter by song
         statement = statement.join(SongPerformance).where(SongPerformance.song_id == song_id)
 
+    if song_name:
+        # Join to SongPerformance and Song to filter by song name
+        statement = statement.join(SongPerformance).join(Song).where(
+            Song.name.ilike(f"%{song_name}%")
+        )
+
     if tour:
         # Join to Show to filter by tour
-        statement = statement.join(Show).where(Show.tour == tour)
+        if not (show_id or show_date or song_name or song_id):
+            # Only join if not already joined
+            statement = statement.join(Show)
+        statement = statement.where(Show.tour.ilike(f"%{tour}%"))
 
     # Sort by rating if requested, otherwise by date
     if sort == 'rating':
