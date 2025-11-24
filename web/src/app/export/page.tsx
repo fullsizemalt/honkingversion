@@ -60,7 +60,7 @@ export default function ExportPage() {
                 Export Your Data
             </h1>
 
-            <div className="mb-8 p-4 bg-[#1a1a1a] border border-[#ff6b35] rounded">
+            <div className="mb-8 p-4 bg-[#1a1a1a] border border-[#ff6b35]">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#ff6b35] mb-3">
                     Download Your Complete Data
                 </h2>
@@ -71,14 +71,14 @@ export default function ExportPage() {
                 <button
                     onClick={handleDownload}
                     disabled={downloading}
-                    className="inline-block bg-[#ff6b35] text-[#0a0a0a] px-6 py-3 font-[family-name:var(--font-ibm-plex-mono)] rounded hover:bg-[#ff8c5a] font-bold disabled:opacity-60"
+                    className="inline-block bg-[#ff6b35] text-[#0a0a0a] px-6 py-3 font-[family-name:var(--font-ibm-plex-mono)] hover:bg-[#ff8c5a] font-bold disabled:opacity-60"
                 >
                     {downloading ? 'Preparing…' : '⬇ Download CSV'}
                 </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <Link href="/export/instructions" className="block p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded hover:border-[#ff6b35] transition">
+                <Link href="/export/instructions" className="block p-4 bg-[#1a1a1a] border border-[#a0a0a0] hover:border-[#ff6b35] transition">
                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] mb-2">
                         📖 Instructions
                     </h3>
@@ -87,7 +87,7 @@ export default function ExportPage() {
                     </p>
                 </Link>
 
-                <Link href="/export/glossary" className="block p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded hover:border-[#ff6b35] transition">
+                <Link href="/export/glossary" className="block p-4 bg-[#1a1a1a] border border-[#a0a0a0] hover:border-[#ff6b35] transition">
                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] mb-2">
                         📚 Glossary
                     </h3>
@@ -97,7 +97,7 @@ export default function ExportPage() {
                 </Link>
             </div>
 
-            <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded">
+            <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0]">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] mb-3">
                     Why Export?
                 </h2>

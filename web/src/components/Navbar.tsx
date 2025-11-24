@@ -36,7 +36,7 @@ export default function Navbar() {
                                 </Link>
                                 <button
                                     onClick={() => signOut()}
-                                    className="border border-[var(--border)] px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-semibold uppercase text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] hover:text-[var(--text-primary)] transition-colors rounded-full"
+                                    className="border border-[var(--border)] px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-semibold uppercase text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] hover:text-[var(--text-primary)] transition-colors"
                                 >
                                     Sign Out
                                 </button>
@@ -44,7 +44,7 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 href="/auth/signin"
-                                className="border-2 border-[var(--accent-primary)] px-4 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors rounded-full tracking-wide"
+                                className="border-2 border-[var(--accent-primary)] px-4 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors tracking-wide"
                             >
                                 Sign In
                             </Link>
@@ -60,14 +60,14 @@ export default function Navbar() {
                     <div className="flex md:hidden items-center mr-2">
                         {session ? (
                             <Link href="/profile" className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold">
+                                <div className="w-8 h-8 bg-[var(--accent-primary)] flex items-center justify-center text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold">
                                     {session.user?.name?.charAt(0).toUpperCase() || 'U'}
                                 </div>
                             </Link>
                         ) : (
                             <Link
                                 href="/auth/signin"
-                                className="px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[var(--accent-primary)] border border-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors rounded-full"
+                                className="px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase text-[var(--accent-primary)] border border-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors"
                             >
                                 Login
                             </Link>

@@ -92,7 +92,7 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div className="relative pl-4">
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-tertiary)] rounded-full" />
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-tertiary)]" />
                             <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-2 uppercase tracking-tight">
                                 {show.date}
                             </h1>
@@ -123,7 +123,7 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
                         {performances.length > 0 ? (
                             <SetlistDisplay performances={performances} />
                         ) : (
-                            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 rounded-3xl">
+                            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6">
                                 <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-tertiary)]">
                                     No performances found for this show.
                                 </p>

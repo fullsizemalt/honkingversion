@@ -58,7 +58,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-[var(--bg-secondary)] rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-[var(--border)]">
+            <div className="bg-[var(--bg-secondary)] shadow-xl w-full max-w-md overflow-hidden border border-[var(--border)]">
                 <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
                     <h2 className="text-lg font-bold flex items-center gap-2">
                         <MessageSquare className="w-5 h-5 text-amber-500" />
@@ -74,7 +74,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
                 {submitted ? (
                     <div className="p-8 text-center">
-                        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center mx-auto mb-4">
                             <svg
                                 className="w-8 h-8"
                                 fill="none"
@@ -100,7 +100,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                             <button
                                 type="button"
                                 onClick={() => setType("bug")}
-                                className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${type === "bug"
+                                className={`flex items-center justify-center gap-2 p-3 border transition-all ${type === "bug"
                                     ? "bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
                                     : "border-[var(--border)] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)]"
                                     }`}
@@ -111,7 +111,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                             <button
                                 type="button"
                                 onClick={() => setType("feature")}
-                                className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${type === "feature"
+                                className={`flex items-center justify-center gap-2 p-3 border transition-all ${type === "feature"
                                     ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"
                                     : "border-[var(--border)] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)]"
                                     }`}
@@ -128,7 +128,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 required
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
-                                className="w-full p-2 rounded-lg border border-[var(--border)] bg-transparent focus:ring-2 focus:ring-amber-500 outline-none text-[var(--text-primary)]"
+                                className="w-full p-2 border border-[var(--border)] bg-transparent focus:ring-2 focus:ring-amber-500 outline-none text-[var(--text-primary)]"
                                 placeholder="Brief summary..."
                             />
                         </div>
@@ -140,7 +140,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 rows={4}
-                                className="w-full p-2 rounded-lg border border-[var(--border)] bg-transparent focus:ring-2 focus:ring-amber-500 outline-none resize-none text-[var(--text-primary)]"
+                                className="w-full p-2 border border-[var(--border)] bg-transparent focus:ring-2 focus:ring-amber-500 outline-none resize-none text-[var(--text-primary)]"
                                 placeholder="Describe the issue or idea in detail..."
                             />
                         </div>
@@ -160,7 +160,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="px-4 py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors disabled:opacity-50"
+                                className="px-4 py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors disabled:opacity-50"
                             >
                                 {isSubmitting ? "Sending..." : "Submit Feedback"}
                             </button>

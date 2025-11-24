@@ -84,7 +84,7 @@ export default function ProfilePage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
                 <div className="text-center">
-                    <div className="inline-block w-8 h-8 border-4 border-[var(--accent-primary)] border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <div className="inline-block w-8 h-8 border-4 border-[var(--accent-primary)] border-t-transparent animate-spin mb-4"></div>
                     <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm uppercase tracking-wider text-[var(--text-tertiary)]">
                         Loading profile...
                     </p>

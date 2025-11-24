@@ -60,7 +60,7 @@ export default function VenueDetailPage({ params }: { params: Promise<{ slug: st
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="p-4 bg-[#1a1a1a] border border-[#ff6b35] rounded">
+        <div className="p-4 bg-[#1a1a1a] border border-[#ff6b35]">
           <div className="text-[#ff6b35] font-bold text-2xl">{venue.stats.show_count}</div>
           <div className="text-[#a0a0a0] text-sm">
             {venue.stats.show_count === 1 ? 'Show' : 'Shows'}
@@ -69,14 +69,14 @@ export default function VenueDetailPage({ params }: { params: Promise<{ slug: st
 
         {venue.shows.length > 0 && (
           <>
-            <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded">
+            <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0]">
               <div className="text-[#90ee90] font-bold text-2xl">
                 {new Set(venue.shows.map((s) => s.location)).size}
               </div>
               <div className="text-[#a0a0a0] text-sm">Locations</div>
             </div>
 
-            <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded">
+            <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0]">
               <div className="text-[#90ee90] font-bold text-2xl">
                 {
                   new Set(
@@ -116,7 +116,7 @@ export default function VenueDetailPage({ params }: { params: Promise<{ slug: st
                   <Link
                     key={show.id}
                     href={`/shows/${show.date}`}
-                    className="block p-3 bg-[#1a1a1a] border border-[#a0a0a0] rounded hover:border-[#ff6b35] transition"
+                    className="block p-3 bg-[#1a1a1a] border border-[#a0a0a0] hover:border-[#ff6b35] transition"
                   >
                     <div className="flex justify-between items-start">
                       <div>
@@ -134,7 +134,7 @@ export default function VenueDetailPage({ params }: { params: Promise<{ slug: st
         )}
       </div>
 
-      <div className="mt-8 p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded">
+      <div className="mt-8 p-4 bg-[#1a1a1a] border border-[#a0a0a0]">
         <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] mb-2">
           About This Venue
         </h3>

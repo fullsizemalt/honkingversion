@@ -19,7 +19,7 @@ export default function SearchBar() {
             <input
                 type="text"
                 placeholder="Search songs, shows, users..."
-                className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] pl-4 pr-10 py-2 text-sm focus:outline-none focus:border-[var(--accent-primary)] font-[family-name:var(--font-ibm-plex-mono)] rounded-full placeholder:text-[var(--text-tertiary)] transition-colors"
+                className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] pl-4 pr-10 py-2 text-sm focus:outline-none focus:border-[var(--accent-primary)] font-[family-name:var(--font-ibm-plex-mono)] placeholder:text-[var(--text-tertiary)] transition-colors"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />

@@ -52,7 +52,7 @@ export default function SignUp() {
 
     return (
         <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md space-y-8 bg-slate-900 p-8 rounded-2xl shadow-2xl border border-slate-800">
+            <div className="w-full max-w-md space-y-8 bg-slate-900 p-8 shadow-2xl border border-slate-800">
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
                         Create your account
@@ -65,7 +65,7 @@ export default function SignUp() {
                     </p>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="-space-y-px rounded-md shadow-sm">
+                    <div className="-space-y-px shadow-sm">
                         <div>
                             <label htmlFor="username" className="sr-only">Username</label>
                             <input
@@ -73,7 +73,7 @@ export default function SignUp() {
                                 name="username"
                                 type="text"
                                 required
-                                className="relative block w-full rounded-t-md border-0 bg-slate-800 py-1.5 text-white ring-1 ring-inset ring-slate-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6 px-3"
+                                className="relative block w-full-t-md border-0 bg-slate-800 py-1.5 text-white ring-1 ring-inset ring-slate-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6 px-3"
                                 placeholder="Username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -99,7 +99,7 @@ export default function SignUp() {
                                 name="password"
                                 type="password"
                                 required
-                                className="relative block w-full rounded-b-md border-0 bg-slate-800 py-1.5 text-white ring-1 ring-inset ring-slate-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6 px-3"
+                                className="relative block w-full-b-md border-0 bg-slate-800 py-1.5 text-white ring-1 ring-inset ring-slate-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6 px-3"
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -108,7 +108,7 @@ export default function SignUp() {
                     </div>
 
                     {error && (
-                        <div className="text-red-500 text-sm text-center bg-red-900/20 py-2 rounded border border-red-900/50">
+                        <div className="text-red-500 text-sm text-center bg-red-900/20 py-2 border border-red-900/50">
                             {error}
                         </div>
                     )}
@@ -117,7 +117,7 @@ export default function SignUp() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="group relative flex w-full justify-center rounded-md bg-gradient-to-r from-orange-500 to-pink-600 px-3 py-2 text-sm font-semibold text-white hover:from-orange-600 hover:to-pink-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="group relative flex w-full justify-center bg-gradient-to-r from-orange-500 to-pink-600 px-3 py-2 text-sm font-semibold text-white hover:from-orange-600 hover:to-pink-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
                             {loading ? "Creating account..." : "Sign up"}
                         </button>

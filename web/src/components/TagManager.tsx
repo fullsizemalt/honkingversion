@@ -68,7 +68,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 max-w-md w-full rounded-3xl shadow-[0_35px_55px_rgba(23,20,10,0.15)]">
+            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 max-w-md w-full shadow-[0_35px_55px_rgba(23,20,10,0.15)]">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] mb-4">
                     {editTag ? 'Edit Tag' : 'Create New Tag'}
                 </h2>
@@ -83,7 +83,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
-                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
                             placeholder="e.g., Type II Jam"
                         />
                     </div>
@@ -97,13 +97,13 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
                                 type="color"
                                 value={color}
                                 onChange={(e) => setColor(e.target.value)}
-                                className="h-10 w-20 bg-[var(--bg-muted)] border border-[var(--border)] rounded-lg cursor-pointer"
+                                className="h-10 w-20 bg-[var(--bg-muted)] border border-[var(--border)] cursor-pointer"
                             />
                             <input
                                 type="text"
                                 value={color}
                                 onChange={(e) => setColor(e.target.value)}
-                                className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                                className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
                                 placeholder="#ff6b35"
                             />
                         </div>
@@ -117,7 +117,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
                             type="text"
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
                             placeholder="e.g., Jam Type"
                         />
                     </div>
@@ -130,7 +130,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             rows={3}
-                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none resize-none placeholder:text-[var(--text-tertiary)]"
+                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none resize-none placeholder:text-[var(--text-tertiary)]"
                             placeholder="Optional description..."
                         />
                     </div>
@@ -145,14 +145,14 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase rounded-full hover:bg-[var(--accent-secondary)] disabled:opacity-50"
+                            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[var(--accent-secondary)] disabled:opacity-50"
                         >
                             {loading ? 'Creating...' : editTag ? 'Update Tag' : 'Create Tag'}
                         </button>
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase rounded-full hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
                         >
                             Cancel
                         </button>

@@ -32,7 +32,7 @@ export default function NotFound() {
       <div className="mt-4 flex flex-col gap-3">
         <form
           onSubmit={onSearch}
-          className="flex items-center gap-2 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-full px-4 py-3"
+          className="flex items-center gap-2 bg-[var(--bg-secondary)] border border-[var(--border)] px-4 py-3"
         >
           <Search className="w-4 h-4 text-[var(--text-tertiary)]" />
           <input

@@ -28,14 +28,14 @@ export default function PageHeader({ title, description, loggedInMessage }: Page
                         <span className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)]">Please</span>
                         <Link
                             href="/auth/signin"
-                            className="px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase tracking-wider text-[var(--text-inverse)] bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] transition-colors rounded-full shadow-sm"
+                            className="px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase tracking-wider text-[var(--text-inverse)] bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] transition-colors shadow-sm"
                         >
                             Login
                         </Link>
                         <span className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)]">or</span>
                         <Link
                             href="/auth/register"
-                            className="px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase tracking-wider text-[var(--accent-primary)] border-2 border-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors rounded-full"
+                            className="px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase tracking-wider text-[var(--accent-primary)] border-2 border-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors"
                         >
                             Register
                         </Link>

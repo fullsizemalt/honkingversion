@@ -2,7 +2,7 @@
 
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { Users, X } from 'lucide-react';
+import { Users, X, AlertCircle } from 'lucide-react';
 
 /**
  * Dev-only component for quickly switching between test users
@@ -27,10 +27,12 @@ export default function DevUserSwitcher() {
     const [isOpen, setIsOpen] = useState(false);
     const [switching, setSwitching] = useState(false);
     const [devMode, setDevMode] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     // Check if dev mode is enabled
     useEffect(() => {
         const checkDevMode = () => {
+            if (typeof window === 'undefined') return;
             const isDevMode = localStorage.getItem('devMode') === 'true';
             setDevMode(isDevMode);
         };
@@ -49,21 +51,26 @@ export default function DevUserSwitcher() {
 
     const switchUser = async (user: TestUser) => {
         setSwitching(true);
+        setErrorMsg(null);
         try {
             // Sign out current user
             await signOut({ redirect: false });
 
             // Sign in as new user
-            await signIn('credentials', {
+            const res = await signIn('credentials', {
                 username: user.username,
                 password: user.password,
                 redirect: false,
             });
 
-            // Reload to update session
-            window.location.reload();
+            if (res?.error) {
+                setErrorMsg('Quick login failed. Ensure dev users exist in the API.');
+            } else {
+                window.location.reload();
+            }
         } catch (error) {
             console.error('Failed to switch user:', error);
+            setErrorMsg('Switch failed. Check credentials or API availability.');
         } finally {
             setSwitching(false);
             setIsOpen(false);
@@ -75,7 +82,7 @@ export default function DevUserSwitcher() {
             {/* Floating Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-6 right-6 z-50 p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+                className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
                 title="Dev User Switcher"
             >
                 <Users className="w-5 h-5" />
@@ -84,7 +91,7 @@ export default function DevUserSwitcher() {
             {/* Modal */}
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    <div className="bg-[var(--bg-secondary)] border border-[var(--border)] shadow-2xl max-w-md w-full p-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
                         {/* Header */}
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)]">
@@ -92,7 +99,7 @@ export default function DevUserSwitcher() {
                             </h2>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="p-2 rounded-lg hover:bg-[var(--bg-muted)] transition-colors"
+                                className="p-2 hover:bg-[var(--bg-muted)] transition-colors"
                             >
                                 <X className="w-5 h-5 text-[var(--text-secondary)]" />
                             </button>
@@ -100,7 +107,7 @@ export default function DevUserSwitcher() {
 
                         {/* Current User */}
                         {session && (
-                            <div className="mb-4 p-3 rounded-lg bg-[var(--bg-muted)] border border-[var(--border-subtle)]">
+                            <div className="mb-4 p-3 bg-[var(--bg-muted)] border border-[var(--border-subtle)]">
                                 <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1">
                                     Current User
                                 </p>
@@ -117,7 +124,7 @@ export default function DevUserSwitcher() {
                                     key={user.username}
                                     onClick={() => switchUser(user)}
                                     disabled={switching || session?.user?.name === user.username}
-                                    className="w-full p-4 rounded-lg border border-[var(--border)] hover:border-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/5 transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed group"
+                                    className="w-full p-4 border border-[var(--border)] hover:border-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/5 transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed group"
                                 >
                                     <div className="flex items-center justify-between">
                                         <div>
@@ -129,7 +136,7 @@ export default function DevUserSwitcher() {
                                             </p>
                                         </div>
                                         {session?.user?.name === user.username && (
-                                            <span className="px-2 py-1 text-xs font-bold rounded-full bg-green-500/10 text-green-600">
+                                            <span className="px-2 py-1 text-xs font-bold bg-green-500/10 text-green-600">
                                                 Active
                                             </span>
                                         )}
@@ -142,10 +149,17 @@ export default function DevUserSwitcher() {
                         {session && (
                             <button
                                 onClick={() => signOut()}
-                                className="w-full mt-4 p-3 rounded-lg border border-red-500/20 hover:border-red-500 hover:bg-red-500/5 transition-all duration-200 text-red-600 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                                className="w-full mt-4 p-3 border border-red-500/20 hover:border-red-500 hover:bg-red-500/5 transition-all duration-200 text-red-600 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
                             >
                                 Sign Out
                             </button>
+                        )}
+
+                        {errorMsg && (
+                            <div className="mt-3 flex items-center gap-2 text-sm text-amber-400 font-[family-name:var(--font-ibm-plex-mono)]">
+                                <AlertCircle className="w-4 h-4" />
+                                <span>{errorMsg}</span>
+                            </div>
                         )}
 
                         {/* Note */}

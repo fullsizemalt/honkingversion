@@ -61,11 +61,11 @@ export default function ListsPage() {
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6 animate-pulse rounded" />
+                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6 animate-pulse" />
                         ))}
                     </div>
                 ) : lists.length === 0 ? (
-                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded text-center">
+                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
                         <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-secondary)] mb-2">
                             No lists yet
                         </h3>

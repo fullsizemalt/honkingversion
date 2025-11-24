@@ -22,22 +22,22 @@ export default function GlossaryPage() {
                     </p>
 
                     <div className="space-y-3">
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">id</div>
                             <p className="text-[#a0a0a0] text-sm">Your unique HonkingVersion user ID number (integer)</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">username</div>
                             <p className="text-[#a0a0a0] text-sm">Your account username (string, unique)</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">email</div>
                             <p className="text-[#a0a0a0] text-sm">Your registered email address (string, unique)</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">created_at</div>
                             <p className="text-[#a0a0a0] text-sm">Account creation date/time in ISO 8601 format (e.g., 2024-03-15T10:30:00)</p>
                         </div>
@@ -54,12 +54,12 @@ export default function GlossaryPage() {
                     </p>
 
                     <div className="space-y-3">
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">section = "vote"</div>
                             <p className="text-[#a0a0a0] text-sm">Indicates this is a vote entry</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">field = "show" or "performance"</div>
                             <p className="text-[#a0a0a0] text-sm">
                                 Type of item being voted on:
@@ -70,7 +70,7 @@ export default function GlossaryPage() {
                             </p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">value = "id:rating"</div>
                             <p className="text-[#a0a0a0] text-sm">
                                 Format: [ID]:[RATING]
@@ -95,12 +95,12 @@ export default function GlossaryPage() {
                     </p>
 
                     <div className="space-y-3">
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">section = "attended_show"</div>
                             <p className="text-[#a0a0a0] text-sm">Indicates this is an attendance record</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">field = "show_id" or "attended_at"</div>
                             <p className="text-[#a0a0a0] text-sm">
                                 • "show_id" = the ID of the show
@@ -109,7 +109,7 @@ export default function GlossaryPage() {
                             </p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">value</div>
                             <p className="text-[#a0a0a0] text-sm">
                                 For show_id: the show ID number
@@ -130,17 +130,17 @@ export default function GlossaryPage() {
                     </p>
 
                     <div className="space-y-3">
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">section = "following"</div>
                             <p className="text-[#a0a0a0] text-sm">Indicates this is a "following" entry</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">field = "username"</div>
                             <p className="text-[#a0a0a0] text-sm">The username of the user you follow</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">value</div>
                             <p className="text-[#a0a0a0] text-sm">The username (string)</p>
                         </div>
@@ -157,17 +157,17 @@ export default function GlossaryPage() {
                     </p>
 
                     <div className="space-y-3">
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">section = "follower"</div>
                             <p className="text-[#a0a0a0] text-sm">Indicates this is a "follower" entry</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">field = "username"</div>
                             <p className="text-[#a0a0a0] text-sm">The username of the user following you</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">value</div>
                             <p className="text-[#a0a0a0] text-sm">The username (string)</p>
                         </div>
@@ -184,12 +184,12 @@ export default function GlossaryPage() {
                     </p>
 
                     <div className="space-y-3">
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">section = "list"</div>
                             <p className="text-[#a0a0a0] text-sm">Indicates this is a list entry</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">field = "title", "description", or "items"</div>
                             <p className="text-[#a0a0a0] text-sm">
                                 • "title" = the name of your list
@@ -200,7 +200,7 @@ export default function GlossaryPage() {
                             </p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">value</div>
                             <p className="text-[#a0a0a0] text-sm">
                                 For title/description: text string
@@ -218,27 +218,27 @@ export default function GlossaryPage() {
                     </h2>
 
                     <div className="space-y-3">
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">Integer</div>
                             <p className="text-[#a0a0a0] text-sm">Whole numbers (e.g., 42, 12345, 1)</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">String</div>
                             <p className="text-[#a0a0a0] text-sm">Text (e.g., "honkfan42", "My Favorite Shows")</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">Rating (1-10)</div>
                             <p className="text-[#a0a0a0] text-sm">Decimal numbers from 1.0 to 10.0 (e.g., 8.5)</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">ISO 8601 Timestamp</div>
                             <p className="text-[#a0a0a0] text-sm">Date and time in standard format: YYYY-MM-DDTHH:MM:SS</p>
                         </div>
 
-                        <div className="bg-[#1a1a1a] p-3 rounded">
+                        <div className="bg-[#1a1a1a] p-3">
                             <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[#90ee90] font-bold">JSON Array</div>
                             <p className="text-[#a0a0a0] text-sm">List of items in brackets: [1, 2, 3] or ["item1", "item2"]</p>
                         </div>
@@ -250,7 +250,7 @@ export default function GlossaryPage() {
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#90ee90] mb-4">
                         🎯 Rating Scale
                     </h2>
-                    <div className="bg-[#1a1a1a] p-4 rounded space-y-2">
+                    <div className="bg-[#1a1a1a] p-4 space-y-2">
                         <div className="flex justify-between"><span>10</span><span>Perfect / Must Listen</span></div>
                         <div className="flex justify-between"><span>9</span><span>Excellent / Top Tier</span></div>
                         <div className="flex justify-between"><span>8</span><span>Very Good / Highly Recommended</span></div>

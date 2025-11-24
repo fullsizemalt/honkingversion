@@ -76,7 +76,7 @@ function SearchPageContent() {
                                             </p>
                                         )}
                                     </div>
-                                    <span className="text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[#707070] uppercase tracking-wider border border-[#333] px-2 py-1 rounded">
+                                    <span className="text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[#707070] uppercase tracking-wider border border-[#333] px-2 py-1">
                                         {result.type}
                                     </span>
                                 </div>

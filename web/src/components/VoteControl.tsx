@@ -52,7 +52,7 @@ export default function VoteControl({ showId, initialUserVote, onVoteUpdate }: V
     }
 
     return (
-        <div className="flex flex-col items-center gap-2 p-4 bg-slate-900/50 rounded-lg border border-slate-800">
+        <div className="flex flex-col items-center gap-2 p-4 bg-slate-900/50 border border-slate-800">
             <h3 className="text-sm font-medium text-gray-400">Rate this Show</h3>
             <div className="flex gap-1">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => (
@@ -62,7 +62,7 @@ export default function VoteControl({ showId, initialUserVote, onVoteUpdate }: V
                         onMouseEnter={() => setHoverRating(value)}
                         onMouseLeave={() => setHoverRating(0)}
                         onClick={() => handleVote(value)}
-                        className={`w-8 h-8 rounded-full text-sm font-bold transition-all ${(hoverRating || rating) >= value
+                        className={`w-8 h-8 text-sm font-bold transition-all ${(hoverRating || rating) >= value
                             ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg shadow-orange-500/20 scale-110'
                             : 'bg-slate-800 text-gray-500 hover:bg-slate-700'
                             }`}

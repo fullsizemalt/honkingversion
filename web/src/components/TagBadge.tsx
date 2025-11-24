@@ -10,7 +10,7 @@ export default function TagBadge({ tag, onRemove }: TagBadgeProps) {
 
     return (
         <span
-            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-white mr-2 mb-1"
+            className="inline-flex items-center px-2 py-1 text-xs font-medium text-white mr-2 mb-1"
             style={{ backgroundColor: bgColor }}
         >
             {tag.name}

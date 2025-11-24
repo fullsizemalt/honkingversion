@@ -97,7 +97,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 max-w-md w-full rounded-3xl shadow-[0_35px_55px_rgba(23,20,10,0.15)]">
+            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 max-w-md w-full shadow-[0_35px_55px_rgba(23,20,10,0.15)]">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] mb-4">
                     {editList ? 'Edit List' : 'Create New List'}
                 </h2>
@@ -111,7 +111,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             <input
                                 type="text"
                                 placeholder={`Add ${listType.slice(0, -1)} ID`}
-                                className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                                className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         e.preventDefault();
@@ -125,7 +125,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             <button
                                 type="button"
                                 onClick={() => setItems([])}
-                                className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase rounded-lg hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
                             >
                                 Clear
                             </button>
@@ -135,7 +135,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                                 {items.map((item, idx) => (
                                     <span
                                         key={`${item}-${idx}`}
-                                        className="flex items-center gap-2 px-3 py-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] text-xs rounded-full"
+                                        className="flex items-center gap-2 px-3 py-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
                                     >
                                         {String(item)}
                                         <button
@@ -160,7 +160,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             required
-                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
                             placeholder="e.g., Best Shows of 2024"
                         />
                     </div>
@@ -173,7 +173,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             rows={3}
-                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none resize-none placeholder:text-[var(--text-tertiary)]"
+                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none resize-none placeholder:text-[var(--text-tertiary)]"
                             placeholder="Optional description..."
                         />
                     </div>
@@ -185,7 +185,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                         <select
                             value={listType}
                             onChange={(e) => setListType(e.target.value as 'performances' | 'shows' | 'songs')}
-                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 rounded-lg focus:border-[var(--accent-primary)] focus:outline-none"
+                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none"
                         >
                             <option value="shows">Shows</option>
                             <option value="performances">Performances</option>
@@ -203,14 +203,14 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase rounded-full hover:bg-[var(--accent-secondary)] disabled:opacity-50"
+                            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[var(--accent-secondary)] disabled:opacity-50"
                         >
                             {loading ? 'Saving...' : editList ? 'Update List' : 'Create List'}
                         </button>
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase rounded-full hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
                         >
                             Cancel
                         </button>

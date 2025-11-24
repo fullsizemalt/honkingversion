@@ -76,7 +76,7 @@ export function ReviewComposer({ onSubmit, defaultShow }: ReviewComposerProps) {
   }, [body.length]);
 
   return (
-    <div className="space-y-4 border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6 rounded">
+    <div className="space-y-4 border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="block text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] mb-2">
@@ -86,7 +86,7 @@ export function ReviewComposer({ onSubmit, defaultShow }: ReviewComposerProps) {
             value={showDate}
             onChange={(e) => setShowDate(e.target.value)}
             placeholder="YYYY-MM-DD"
-            className="w-full bg-[var(--bg-primary)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)]"
+            className="w-full bg-[var(--bg-primary)] border border-[var(--border)] px-3 py-2 text-[var(--text-primary)]"
           />
         </div>
         <div>
@@ -97,7 +97,7 @@ export function ReviewComposer({ onSubmit, defaultShow }: ReviewComposerProps) {
             value={showVenue}
             onChange={(e) => setShowVenue(e.target.value)}
             placeholder="Venue name"
-            className="w-full bg-[var(--bg-primary)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)]"
+            className="w-full bg-[var(--bg-primary)] border border-[var(--border)] px-3 py-2 text-[var(--text-primary)]"
           />
         </div>
         <div>
@@ -110,7 +110,7 @@ export function ReviewComposer({ onSubmit, defaultShow }: ReviewComposerProps) {
             max={10}
             value={rating}
             onChange={(e) => setRating(Number(e.target.value))}
-            className="w-full bg-[var(--bg-primary)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)]"
+            className="w-full bg-[var(--bg-primary)] border border-[var(--border)] px-3 py-2 text-[var(--text-primary)]"
           />
         </div>
       </div>
@@ -123,7 +123,7 @@ export function ReviewComposer({ onSubmit, defaultShow }: ReviewComposerProps) {
           value={blurb}
           onChange={(e) => setBlurb(e.target.value)}
           placeholder="One-liner"
-          className="w-full bg-[var(--bg-primary)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)]"
+          className="w-full bg-[var(--bg-primary)] border border-[var(--border)] px-3 py-2 text-[var(--text-primary)]"
         />
       </div>
 
@@ -136,7 +136,7 @@ export function ReviewComposer({ onSubmit, defaultShow }: ReviewComposerProps) {
           onChange={(e) => setBody(e.target.value)}
           rows={8}
           placeholder="Share details, highlights, and why it mattered..."
-          className="w-full bg-[var(--bg-primary)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)] resize-vertical"
+          className="w-full bg-[var(--bg-primary)] border border-[var(--border)] px-3 py-2 text-[var(--text-primary)] resize-vertical"
         />
         <div className={`text-xs mt-1 font-[family-name:var(--font-ibm-plex-mono)] ${charColor}`}>
           {body.length}/{MIN_LENGTH} characters
@@ -152,13 +152,13 @@ export function ReviewComposer({ onSubmit, defaultShow }: ReviewComposerProps) {
       <div className="flex gap-3">
         <button
           onClick={handleSubmit}
-          className="px-5 py-2 rounded bg-[var(--accent-primary)] text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] font-bold text-sm hover:opacity-90"
+          className="px-5 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] font-bold text-sm hover:opacity-90"
         >
           Publish Review
         </button>
         <button
           onClick={() => router.push('/reviews')}
-          className="px-5 py-2 rounded border border-[var(--border)] text-[var(--text-secondary)] font-[family-name:var(--font-space-grotesk)] font-bold text-sm hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+          className="px-5 py-2 border border-[var(--border)] text-[var(--text-secondary)] font-[family-name:var(--font-space-grotesk)] font-bold text-sm hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
         >
           Cancel
         </button>

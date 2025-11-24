@@ -9,7 +9,7 @@ interface TopVersionProps {
 export default function TopVersion({ performance }: TopVersionProps) {
     const { avg_rating, vote_count, show, position, set_number, notes, id, song } = performance;
     return (
-        <div className="bg-[#111] text-[#eee] p-6 rounded-lg shadow-lg border border-[#333] mb-6">
+        <div className="bg-[#111] text-[#eee] p-6 shadow-lg border border-[#333] mb-6">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl md:text-3xl font-bold mb-3">
                 Top Version
             </h2>
