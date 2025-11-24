@@ -92,7 +92,7 @@ export default function Home() {
             .slice(0, 10)
             .map((p: any) => ({
               id: p.id,
-              song_name: p.performance?.song?.name || 'Unknown',
+              song_name: p.song?.name || 'Unknown',
               date: p.show?.date || 'Unknown',
               venue: p.show?.venue || 'Unknown',
               avg_rating: p.avg_rating || 0,
