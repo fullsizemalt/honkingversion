@@ -39,11 +39,11 @@ export default function ToursPage() {
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6 animate-pulse rounded" />
+                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6 animate-pulse" />
                         ))}
                     </div>
                 ) : tours.length === 0 ? (
-                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded text-center">
+                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
                         <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             No tours recorded yet. Populate tour names in shows to enable browsing.
                         </p>
@@ -56,7 +56,7 @@ export default function ToursPage() {
                                 href={`/tours/${encodeURIComponent(tour.name)}`}
                                 className="block group"
                             >
-                                <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded hover:border-[var(--accent-primary)] transition-colors">
+                                <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 hover:border-[var(--accent-primary)] transition-colors">
                                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors mb-2">
                                         {tour.name}
                                     </h3>

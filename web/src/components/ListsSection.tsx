@@ -40,7 +40,7 @@ export default function ListsSection({ lists, username }: ListsSectionProps) {
     };
 
     return (
-        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-2xl p-6 shadow-sm">
+        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)]">
                     Lists
@@ -58,7 +58,7 @@ export default function ListsSection({ lists, username }: ListsSectionProps) {
                     <Link
                         key={list.id}
                         href={`/lists/${list.id}`}
-                        className="group block border border-[var(--border-subtle)] rounded-xl p-4 hover:border-[var(--accent-primary)]/30 hover:bg-[var(--bg-muted)]/30 transition-all duration-200"
+                        className="group block border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)]/30 hover:bg-[var(--bg-muted)]/30 transition-all duration-200"
                         style={{
                             animationDelay: `${index * 50}ms`,
                             animation: 'slideIn 0.3s ease-out forwards',
@@ -66,7 +66,7 @@ export default function ListsSection({ lists, username }: ListsSectionProps) {
                         }}
                     >
                         <div className="flex items-start gap-3">
-                            <div className="p-2 rounded-lg bg-[var(--accent-tertiary)]/10 text-[var(--accent-tertiary)] group-hover:bg-[var(--accent-tertiary)]/20 transition-colors">
+                            <div className="p-2 bg-[var(--accent-tertiary)]/10 text-[var(--accent-tertiary)] group-hover:bg-[var(--accent-tertiary)]/20 transition-colors">
                                 <List className="w-4 h-4" />
                             </div>
 
@@ -99,7 +99,7 @@ export default function ListsSection({ lists, username }: ListsSectionProps) {
                 ))}
 
                 {lists.length === 0 && (
-                    <div className="p-12 border border-[var(--border-subtle)] border-dashed rounded-xl text-center">
+                    <div className="p-12 border border-[var(--border-subtle)] border-dashed text-center">
                         <Users className="w-8 h-8 text-[var(--text-tertiary)] mx-auto mb-3" />
                         <p className="text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             No lists created yet.

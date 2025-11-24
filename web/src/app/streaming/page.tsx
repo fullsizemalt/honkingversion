@@ -75,7 +75,7 @@ export default function StreamingPage() {
                         href={service.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-6 bg-[#1a1a1a] border border-[#a0a0a0] rounded hover:border-[#ff6b35] transition group"
+                        className="block p-6 bg-[#1a1a1a] border border-[#a0a0a0] hover:border-[#ff6b35] transition group"
                     >
                         <div className="text-4xl mb-4">{service.icon}</div>
                         <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#f5f5f5] mb-2 group-hover:text-[#ff6b35] transition">
@@ -89,7 +89,7 @@ export default function StreamingPage() {
 
             {/* Tips & Guides */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-                <div className="p-6 bg-[#1a1a1a] border border-[#ff6b35] rounded">
+                <div className="p-6 bg-[#1a1a1a] border border-[#ff6b35]">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#ff6b35] mb-4">
                         Finding Your Favorite Show
                     </h2>
@@ -102,7 +102,7 @@ export default function StreamingPage() {
                     </ul>
                 </div>
 
-                <div className="p-6 bg-[#1a1a1a] border border-[#90ee90] rounded">
+                <div className="p-6 bg-[#1a1a1a] border border-[#90ee90]">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#90ee90] mb-4">
                         About Goose
                     </h2>
@@ -117,7 +117,7 @@ export default function StreamingPage() {
             </div>
 
             {/* Recommended For Discovery */}
-            <div className="p-6 bg-[#1a1a1a] border border-[#a0a0a0] rounded mb-12">
+            <div className="p-6 bg-[#1a1a1a] border border-[#a0a0a0] mb-12">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#f5f5f5] mb-4">
                     🎯 Recommendations by Use Case
                 </h2>
@@ -156,7 +156,7 @@ export default function StreamingPage() {
             </div>
 
             {/* Links & Resources */}
-            <div className="p-6 bg-[#1a1a1a] border border-[#a0a0a0] rounded">
+            <div className="p-6 bg-[#1a1a1a] border border-[#a0a0a0]">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#f5f5f5] mb-4">
                     Additional Resources
 

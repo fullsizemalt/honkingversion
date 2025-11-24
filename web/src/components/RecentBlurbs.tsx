@@ -43,7 +43,7 @@ export default function RecentBlurbs() {
     }, []);
 
     return (
-        <div className="bg-[var(--bg-secondary)] rounded-xl p-6 border border-[var(--border)]">
+        <div className="bg-[var(--bg-secondary)] p-6 border border-[var(--border)]">
             <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold mb-4 flex items-center gap-2 text-[var(--text-primary)]">
                 <Star className="w-4 h-4 text-[var(--accent-primary)]" />
                 Recent Blurbs

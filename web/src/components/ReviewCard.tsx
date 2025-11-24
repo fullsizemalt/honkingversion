@@ -15,7 +15,7 @@ export default function ReviewCard({ review, showContext = false }: ReviewCardPr
         <div className="border border-[#333] bg-[#1a1a1a] p-4 hover:border-[#00d9ff] transition-colors group space-y-3">
             <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-[#333] rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-[#333] flex items-center justify-center">
                         <span className="font-[family-name:var(--font-space-grotesk)] text-xs text-[#f5f5f5] uppercase">
                             {review.user.username.slice(0, 2)}
                         </span>

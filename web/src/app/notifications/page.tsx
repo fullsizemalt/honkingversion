@@ -79,11 +79,11 @@ export default function NotificationsPage() {
                 {loading ? (
                     <div className="space-y-3">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse rounded" />
+                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse" />
                         ))}
                     </div>
                 ) : notifications.length === 0 ? (
-                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded text-center">
+                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
                         <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-secondary)] mb-2">
                             No notifications
                         </h3>

@@ -17,8 +17,8 @@ interface ErrorLayoutProps {
 
 const buttonClass = (variant?: "primary" | "secondary") =>
   variant === "secondary"
-    ? "font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--text-secondary)] border border-[var(--border)] px-6 py-3 rounded-full hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors"
-    : "font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--text-inverse)] bg-[var(--accent-primary)] px-6 py-3 rounded-full hover:opacity-90 transition-colors";
+    ? "font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--text-secondary)] border border-[var(--border)] px-6 py-3 hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors"
+    : "font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--text-inverse)] bg-[var(--accent-primary)] px-6 py-3 hover:opacity-90 transition-colors";
 
 export function ErrorLayout({
   code,

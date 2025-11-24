@@ -62,9 +62,9 @@ export default function FilterBar({ onChange }: FilterBarProps) {
     };
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[#1a1a1a] rounded">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[#1a1a1a]">
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('venue', e.target.value)}
                 disabled={loading}
             >
@@ -79,7 +79,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 )}
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('city', e.target.value)}
             >
                 <option value="">Any City</option>
@@ -91,7 +91,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 <option value="san-francisco">San Francisco, CA</option>
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('state', e.target.value)}
             >
                 <option value="">Any State</option>
@@ -102,7 +102,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 <option value="TX">Texas</option>
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('country', e.target.value)}
             >
                 <option value="">Any Country</option>
@@ -110,7 +110,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 <option value="CA">Canada</option>
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('dow', e.target.value)}
             >
                 <option value="">Day of Week</option>
@@ -123,7 +123,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 <option value="6">Saturday</option>
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('dom', e.target.value)}
             >
                 <option value="">Day of Month</option>
@@ -134,7 +134,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 ))}
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('month', e.target.value)}
             >
                 <option value="">Month</option>
@@ -145,7 +145,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 ))}
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('year', e.target.value)}
             >
                 <option value="">Year</option>
@@ -156,7 +156,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 ))}
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('sort', e.target.value)}
             >
                 <option value="">Sort By</option>
@@ -165,7 +165,7 @@ export default function FilterBar({ onChange }: FilterBarProps) {
                 <option value="date">Date</option>
             </select>
             <select
-                className="bg-[#2a2a2a] text-[#f5f5f5] p-2 rounded"
+                className="bg-[#2a2a2a] text-[#f5f5f5] p-2"
                 onChange={e => handleSelect('limit', e.target.value)}
             >
                 <option value="">Limit</option>

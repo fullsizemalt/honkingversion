@@ -33,7 +33,7 @@ export default function BadgeShowcase({ badges, username }: BadgeShowcaseProps) 
     const hasMore = badges.length > 6;
 
     return (
-        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-2xl p-6 shadow-sm">
+        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)]">
                     Badges
@@ -50,7 +50,7 @@ export default function BadgeShowcase({ badges, username }: BadgeShowcaseProps) 
                     {displayBadges.map((badge, index) => (
                         <div
                             key={badge.id}
-                            className="group relative p-4 rounded-xl border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]/30 bg-[var(--bg-muted)]/30 hover:bg-[var(--bg-muted)]/60 transition-all duration-200 cursor-pointer"
+                            className="group relative p-4 border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]/30 bg-[var(--bg-muted)]/30 hover:bg-[var(--bg-muted)]/60 transition-all duration-200 cursor-pointer"
                             style={{
                                 animationDelay: `${index * 75}ms`,
                                 animation: 'popIn 0.4s ease-out forwards',
@@ -74,7 +74,7 @@ export default function BadgeShowcase({ badges, username }: BadgeShowcaseProps) 
 
                             {/* Tooltip on Hover */}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                                <div className="bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg p-3 shadow-lg min-w-[200px]">
+                                <div className="bg-[var(--bg-primary)] border border-[var(--border)] p-3 shadow-lg min-w-[200px]">
                                     <p className="font-[family-name:var(--font-space-grotesk)] text-xs font-bold text-[var(--text-primary)] mb-1">
                                         {badge.badge_name}
                                     </p>
@@ -94,7 +94,7 @@ export default function BadgeShowcase({ badges, username }: BadgeShowcaseProps) 
                     ))}
                 </div>
             ) : (
-                <div className="p-8 border border-[var(--border-subtle)] border-dashed rounded-xl text-center">
+                <div className="p-8 border border-[var(--border-subtle)] border-dashed text-center">
                     <Trophy className="w-8 h-8 text-[var(--text-tertiary)] mx-auto mb-3" />
                     <p className="text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                         No badges earned yet.

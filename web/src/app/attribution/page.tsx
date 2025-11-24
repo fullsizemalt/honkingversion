@@ -12,7 +12,7 @@ export default function Attribution() {
             <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] py-10">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="relative pl-4">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-purple)] rounded-full" />
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-purple)]" />
                         <h1 className="font-[family-name:var(--font-space-grotesk)] text-5xl font-bold text-[var(--text-primary)] mb-2 uppercase tracking-tight">
                             Attribution & Policy
                         </h1>
@@ -26,7 +26,7 @@ export default function Attribution() {
             {/* Content */}
             <div className="max-w-4xl mx-auto px-4 py-12">
                 {/* El Goose Attribution */}
-                <section className="mb-12 border border-[var(--border)] p-6 bg-[var(--bg-secondary)] rounded-3xl shadow-[0_20px_45px_rgba(20,20,20,0.08)]">
+                <section className="mb-12 border border-[var(--border)] p-6 bg-[var(--bg-secondary)] shadow-[0_20px_45px_rgba(20,20,20,0.08)]">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] mb-4 uppercase tracking-[0.35em]">
                         El Goose Data Attribution
                     </h2>
@@ -40,7 +40,7 @@ export default function Attribution() {
                             , a comprehensive database of Goose setlists, performances, and related information.
                         </p>
 
-                        <div className="bg-[var(--bg-muted)] border border-[var(--border-subtle)] p-4 rounded-2xl">
+                        <div className="bg-[var(--bg-muted)] border border-[var(--border-subtle)] p-4">
                             <p className="font-bold mb-2">El Goose API Details:</p>
                             <ul className="list-disc list-inside space-y-1 text-[var(--text-secondary)]">
                                 <li>Base URL: <code className="text-[var(--accent-tertiary)]">https://elgoose.net/api/v2</code></li>
@@ -58,7 +58,7 @@ export default function Attribution() {
                 </section>
 
                 {/* Usage Policy */}
-                <section className="mb-12 border border-[var(--border)] p-6 bg-[var(--bg-secondary)] rounded-3xl shadow-[0_20px_45px_rgba(20,20,20,0.08)]">
+                <section className="mb-12 border border-[var(--border)] p-6 bg-[var(--bg-secondary)] shadow-[0_20px_45px_rgba(20,20,20,0.08)]">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] mb-4 uppercase tracking-[0.35em]">
                         API Usage Policy
                     </h2>
@@ -91,7 +91,7 @@ export default function Attribution() {
                             </ul>
                         </div>
 
-                        <div className="bg-[var(--bg-muted)] border border-[var(--border-subtle)] p-4 rounded-2xl">
+                        <div className="bg-[var(--bg-muted)] border border-[var(--border-subtle)] p-4">
                             <p className="font-bold mb-2 text-[var(--accent-tertiary)]">Policy Document:</p>
                             <p className="text-[var(--text-secondary)] text-xs">
                                 For complete technical and legal details, see the{' '}
@@ -103,7 +103,7 @@ export default function Attribution() {
                 </section>
 
                 {/* Compliance */}
-                <section className="mb-12 border border-[var(--border)] p-6 bg-[var(--bg-secondary)] rounded-3xl shadow-[0_20px_45px_rgba(20,20,20,0.08)]">
+                <section className="mb-12 border border-[var(--border)] p-6 bg-[var(--bg-secondary)] shadow-[0_20px_45px_rgba(20,20,20,0.08)]">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] mb-4 uppercase tracking-[0.35em]">
                         Compliance & Contact
                     </h2>
@@ -119,7 +119,7 @@ export default function Attribution() {
                             please contact us through the project repository or reach out directly.
                         </p>
 
-                        <div className="bg-[var(--bg-muted)] border border-[var(--border-subtle)] p-4 rounded-2xl">
+                        <div className="bg-[var(--bg-muted)] border border-[var(--border-subtle)] p-4">
                             <p className="font-bold mb-2 text-[var(--accent-tertiary)]">Project Information:</p>
                             <p className="text-[var(--text-secondary)] text-xs">
                                 Repository: <a href="https://git.runfoo.run/runfoo/honkingversion" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline">git.runfoo.run/runfoo/honkingversion</a>

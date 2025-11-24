@@ -58,7 +58,7 @@ export default function StatsPage() {
                     description="Community activity and performance trends"
                 />
                 <div className="max-w-7xl mx-auto px-4 py-12">
-                    <div className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded">
+                    <div className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
                         <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             Failed to load stats. Please try again later.
                         </p>
@@ -78,7 +78,7 @@ export default function StatsPage() {
             <div className="max-w-7xl mx-auto px-4 py-12 space-y-8">
 
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
                         <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Top Songs</h2>
                         <div className="space-y-3">
                             {stats.top_songs.map((s, idx) => (
@@ -93,7 +93,7 @@ export default function StatsPage() {
                         </div>
                     </div>
 
-                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
                         <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Top Venues</h2>
                         <div className="space-y-3">
                             {stats.top_venues.map((v, idx) => (
@@ -109,7 +109,7 @@ export default function StatsPage() {
                     </div>
                 </section>
 
-                <section className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                <section className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Trending Performances (Last 30 Days)</h2>
                     <div className="space-y-4">
                         {stats.trending_performances.map((p) => (
@@ -131,7 +131,7 @@ export default function StatsPage() {
                 </section>
 
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
                         <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Most Active Voters</h2>
                         <div className="space-y-3">
                             {stats.leaderboards.votes_cast.map((u, idx) => (
@@ -146,7 +146,7 @@ export default function StatsPage() {
                         </div>
                     </div>
 
-                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded">
+                    <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
                         <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Most Followed Users</h2>
                         <div className="space-y-3">
                             {stats.leaderboards.followers.map((u, idx) => (

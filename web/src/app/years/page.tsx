@@ -35,11 +35,11 @@ export default function YearsPage() {
                 {loading ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse rounded" />
+                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse" />
                         ))}
                     </div>
                 ) : years.length === 0 ? (
-                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded text-center">
+                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
                         <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             No years available.
                         </p>
@@ -52,7 +52,7 @@ export default function YearsPage() {
                                 href={`/years/${year}`}
                                 className="block group"
                             >
-                                <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded text-center hover:border-[var(--accent-primary)] transition-colors group">
+                                <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 text-center hover:border-[var(--accent-primary)] transition-colors group">
                                     <div className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
                                         {year}
                                     </div>

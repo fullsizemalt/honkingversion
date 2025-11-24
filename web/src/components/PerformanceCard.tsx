@@ -10,7 +10,7 @@ export default function PerformanceCard({ performance }: PerformanceCardProps) {
 
     return (
         <Link href={`/performances/${performance.id}`} className="block group">
-            <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-5 rounded-3xl hover:border-[var(--accent-primary)] hover:shadow-[0_25px_45px_rgba(20,20,20,0.08)] transition-all relative overflow-hidden h-full">
+            <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-5 hover:border-[var(--accent-primary)] hover:shadow-[0_25px_45px_rgba(20,20,20,0.08)] transition-all relative overflow-hidden h-full">
                 {/* Sharp accent bar on left */}
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-primary)] opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -27,7 +27,7 @@ export default function PerformanceCard({ performance }: PerformanceCardProps) {
 
                 {/* Cover badge if applicable */}
                 {performance.song.is_cover && performance.song.original_artist && (
-                    <div className="inline-block px-2 py-0.5 bg-[var(--accent-purple)]/15 text-[var(--accent-purple)] font-[family-name:var(--font-ibm-plex-mono)] text-[9px] font-bold uppercase mb-2 rounded-full">
+                    <div className="inline-block px-2 py-0.5 bg-[var(--accent-purple)]/15 text-[var(--accent-purple)] font-[family-name:var(--font-ibm-plex-mono)] text-[9px] font-bold uppercase mb-2">
                         {performance.song.original_artist}
                     </div>
                 )}
@@ -42,7 +42,7 @@ export default function PerformanceCard({ performance }: PerformanceCardProps) {
                 <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between">
                     {performance.avg_rating ? (
                         <div className="flex items-center gap-2">
-                            <div className="w-12 h-7 bg-[var(--accent-primary)] flex items-center justify-center font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold text-[var(--text-inverse)] rounded">
+                            <div className="w-12 h-7 bg-[var(--accent-primary)] flex items-center justify-center font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold text-[var(--text-inverse)]">
                                 {performance.avg_rating}
                             </div>
                             <span className="font-[family-name:var(--font-ibm-plex-mono)] text-[10px] text-[var(--text-tertiary)] tracking-[0.35em]">

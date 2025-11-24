@@ -31,7 +31,7 @@ export default function MarkAllReadButton({ token }: Props) {
         <button
             onClick={handleClick}
             disabled={loading}
-            className="px-3 py-2 rounded-md border border-[#333] text-sm text-white hover:border-[#00d9ff] disabled:opacity-50"
+            className="px-3 py-2 border border-[#333] text-sm text-white hover:border-[#00d9ff] disabled:opacity-50"
         >
             {loading ? 'Marking…' : 'Mark all read'}
         </button>

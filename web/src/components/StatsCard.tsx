@@ -20,7 +20,7 @@ export default function StatsCard({ stats }: StatsCardProps) {
     ];
 
     return (
-        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-sm hover:shadow-md transition-all duration-300">
             <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)] mb-6">
                 Stats
             </h3>
@@ -43,9 +43,9 @@ export default function StatsCard({ stats }: StatsCardProps) {
                                 {item.value.toLocaleString()}
                             </span>
                         </div>
-                        <div className="mt-2 h-1 bg-[var(--bg-muted)] rounded-full overflow-hidden">
+                        <div className="mt-2 h-1 bg-[var(--bg-muted)] overflow-hidden">
                             <div
-                                className="h-full rounded-full transition-all duration-500 ease-out"
+                                className="h-full transition-all duration-500 ease-out"
                                 style={{
                                     width: `${Math.min((item.value / Math.max(...statItems.map(s => s.value))) * 100, 100)}%`,
                                     backgroundColor: item.color,

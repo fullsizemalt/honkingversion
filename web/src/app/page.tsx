@@ -123,7 +123,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Column 1: Trending Performances */}
-          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-3xl p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
+          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
               <span>Trending</span>
               <span className="text-xs text-[var(--accent-primary)] tracking-normal">Last 30 Days</span>
@@ -139,9 +139,9 @@ export default function Home() {
                   const heatIndicator = getHeatIndicator(heatLevel);
 
                   return (
-                    <div key={perf.performance_id} className="border border-[var(--border-subtle)] p-4 rounded-2xl hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60">
+                    <div key={perf.performance_id} className="border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60">
                       <div className="flex items-start gap-3">
-                        <div className={`px-3 py-1 text-[11px] font-semibold tracking-widest rounded-full min-w-max ${heatColor}`}>
+                        <div className={`px-3 py-1 text-[11px] font-semibold tracking-widest min-w-max ${heatColor}`}>
                           {heatIndicator}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -167,7 +167,7 @@ export default function Home() {
           </div>
 
           {/* Column 2: Top Rated Performances */}
-          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-3xl p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
+          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
               <span>Highest Rated</span>
             </h2>
@@ -177,7 +177,7 @@ export default function Home() {
             ) : topPerformances.length > 0 ? (
               <div className="space-y-4">
                 {topPerformances.slice(0, 8).map((perf) => (
-                  <div key={perf.id} className="border border-[var(--border-subtle)] p-4 rounded-2xl hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60">
+                  <div key={perf.id} className="border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <p className="font-[family-name:var(--font-space-grotesk)] text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors truncate">
@@ -209,13 +209,13 @@ export default function Home() {
             <TopMembers />
 
             {!session && (
-              <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-3xl p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
+              <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6">
                   Join Us
                 </h2>
                 <Link
                   href="/auth/register"
-                  className="block text-center font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--accent-primary)] border border-[var(--accent-primary)] p-3 rounded-full hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors tracking-[0.3em]"
+                  className="block text-center font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--accent-primary)] border border-[var(--accent-primary)] p-3 hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors tracking-[0.3em]"
                 >
                   JOIN THE COMMUNITY
                 </Link>

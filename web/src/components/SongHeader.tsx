@@ -7,7 +7,7 @@ interface SongHeaderProps {
 
 export default function SongHeader({ song }: SongHeaderProps) {
     return (
-        <div className="bg-[var(--bg-secondary)] text-[var(--text-primary)] p-6 rounded-3xl shadow-[0_35px_55px_rgba(23,20,10,0.12)] border border-[var(--border)]">
+        <div className="bg-[var(--bg-secondary)] text-[var(--text-primary)] p-6 shadow-[0_35px_55px_rgba(23,20,10,0.12)] border border-[var(--border)]">
             <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold mb-2 uppercase tracking-tight">
                 {song.name}
             </h1>

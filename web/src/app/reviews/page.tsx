@@ -47,7 +47,7 @@ export default function ReviewsPage() {
                 <div className="flex justify-end">
                     <Link
                         href="/reviews/new"
-                        className="px-4 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] rounded font-[family-name:var(--font-space-grotesk)] text-sm font-bold hover:opacity-90"
+                        className="px-4 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold hover:opacity-90"
                     >
                         Write a Review
                     </Link>
@@ -95,7 +95,7 @@ export default function ReviewsPage() {
                         {[1, 2, 3].map((i) => (
                             <div
                                 key={i}
-                                className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse rounded"
+                                className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse"
                             />
                         ))}
                     </div>
@@ -106,7 +106,7 @@ export default function ReviewsPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded text-center">
+                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
                         <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-secondary)] mb-2">
                             No reviews yet
                         </h3>

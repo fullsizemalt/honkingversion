@@ -52,7 +52,7 @@ export function PrefsForm() {
   };
 
   return (
-    <div className="space-y-6 border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6 rounded">
+    <div className="space-y-6 border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-6">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)]">
@@ -86,7 +86,7 @@ export function PrefsForm() {
           <select
             value={prefs.digest_frequency as string}
             onChange={(e) => updatePref("digest_frequency", e.target.value)}
-            className="bg-[var(--bg-primary)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)]"
+            className="bg-[var(--bg-primary)] border border-[var(--border)] px-3 py-2 text-[var(--text-primary)]"
           >
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
@@ -110,7 +110,7 @@ export function PrefsForm() {
           <select
             value={prefs.do_not_disturb as string}
             onChange={(e) => updatePref("do_not_disturb", e.target.value)}
-            className="bg-[var(--bg-primary)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)]"
+            className="bg-[var(--bg-primary)] border border-[var(--border)] px-3 py-2 text-[var(--text-primary)]"
           >
             <option value="off">Off</option>
             <option value="evenings">Evenings</option>

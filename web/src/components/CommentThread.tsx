@@ -140,13 +140,13 @@ export default function CommentThread({ voteId }: CommentThreadProps) {
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     placeholder="Leave a comment"
-                    className="w-full bg-[#0f0f0f] border border-[#333] rounded-md p-2 text-sm text-white focus:border-[#00d9ff] outline-none"
+                    className="w-full bg-[#0f0f0f] border border-[#333] p-2 text-sm text-white focus:border-[#00d9ff] outline-none"
                     rows={3}
                 />
                 <button
                     onClick={handleSubmit}
                     disabled={submitting || !body.trim()}
-                    className="px-3 py-2 text-sm bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-md disabled:opacity-50"
+                    className="px-3 py-2 text-sm bg-gradient-to-r from-orange-500 to-pink-600 text-white disabled:opacity-50"
                 >
                     {submitting ? 'Posting…' : 'Post Comment'}
                 </button>

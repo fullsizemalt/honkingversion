@@ -68,7 +68,7 @@ export default function ActivityFeed({ activities, title = "Recent Activity" }: 
     });
 
     return (
-        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-2xl p-6 shadow-sm">
+        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-sm">
             <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)] mb-4">
                 {title}
             </h3>
@@ -84,7 +84,7 @@ export default function ActivityFeed({ activities, title = "Recent Activity" }: 
                     <button
                         key={tab.key}
                         onClick={() => setFilter(tab.key as typeof filter)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${filter === tab.key
+                        className={`flex items-center gap-2 px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${filter === tab.key
                             ? 'bg-[var(--accent-primary)] text-[var(--text-inverse)] shadow-sm scale-105'
                             : 'bg-[var(--bg-muted)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]/80 hover:scale-102'
                             }`}
@@ -99,7 +99,7 @@ export default function ActivityFeed({ activities, title = "Recent Activity" }: 
                 {filteredActivities.map((activity, index) => (
                     <div
                         key={activity.id}
-                        className="group border border-[var(--border-subtle)] rounded-xl p-4 hover:border-[var(--accent-primary)]/30 hover:bg-[var(--bg-muted)]/30 transition-all duration-200 cursor-pointer"
+                        className="group border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)]/30 hover:bg-[var(--bg-muted)]/30 transition-all duration-200 cursor-pointer"
                         onClick={() => setExpandedId(expandedId === activity.id ? null : activity.id)}
                         style={{
                             animationDelay: `${index * 50}ms`,
@@ -109,7 +109,7 @@ export default function ActivityFeed({ activities, title = "Recent Activity" }: 
                     >
                         {/* Header */}
                         <div className="flex items-start gap-3">
-                            <div className="p-2 rounded-lg bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] group-hover:bg-[var(--accent-primary)]/20 transition-colors">
+                            <div className="p-2 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] group-hover:bg-[var(--accent-primary)]/20 transition-colors">
                                 {getActivityIcon(activity)}
                             </div>
 
@@ -156,7 +156,7 @@ export default function ActivityFeed({ activities, title = "Recent Activity" }: 
                 ))}
 
                 {filteredActivities.length === 0 && (
-                    <div className="p-12 border border-[var(--border-subtle)] border-dashed rounded-xl text-center">
+                    <div className="p-12 border border-[var(--border-subtle)] border-dashed text-center">
                         <p className="text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             No {filter !== 'all' ? filter : 'activity'} yet.
                         </p>

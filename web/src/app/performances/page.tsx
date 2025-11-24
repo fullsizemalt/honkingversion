@@ -54,7 +54,7 @@ export default function PerformancesPage() {
             <div className="max-w-7xl mx-auto px-4 py-12">
                 {/* Stats Bar */}
                 <div className="mb-8 grid grid-cols-3 gap-4">
-                    <div className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 rounded">
+                    <div className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4">
                         <div className="font-[family-name:var(--font-ibm-plex-mono)] text-2xl font-bold text-[var(--accent-primary)]">
                             {performances.length}
                         </div>
@@ -62,7 +62,7 @@ export default function PerformancesPage() {
                             Performances
                         </div>
                     </div>
-                    <div className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 rounded">
+                    <div className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4">
                         <div className="font-[family-name:var(--font-ibm-plex-mono)] text-2xl font-bold text-[var(--accent-secondary)]">
                             {new Set(performances.map(p => p.song.slug)).size}
                         </div>
@@ -70,7 +70,7 @@ export default function PerformancesPage() {
                             Songs
                         </div>
                     </div>
-                    <div className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 rounded">
+                    <div className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4">
                         <div className="font-[family-name:var(--font-ibm-plex-mono)] text-2xl font-bold text-[var(--accent-tertiary)]">
                             {new Set(performances.map(p => p.show.date)).size}
                         </div>
@@ -135,12 +135,12 @@ export default function PerformancesPage() {
                         {[1, 2, 3, 4, 5, 6].map((i) => (
                             <div
                                 key={i}
-                                className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse rounded"
+                                className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse"
                             />
                         ))}
                     </div>
                 ) : error ? (
-                    <div className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded">
+                    <div className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
                         <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             Error loading performances: {error}
                         </p>
@@ -155,7 +155,7 @@ export default function PerformancesPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded text-center">
+                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
                         <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-secondary)] mb-2">
                             No performances yet
                         </h3>

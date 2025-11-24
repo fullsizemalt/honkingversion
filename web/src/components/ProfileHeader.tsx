@@ -47,8 +47,8 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                 <div className="flex flex-col md:flex-row gap-8 items-start">
                     {/* Profile Picture */}
                     <div className="relative group">
-                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] p-1 transition-transform duration-300 hover:scale-105">
-                            <div className="w-full h-full rounded-full bg-[var(--bg-secondary)] flex items-center justify-center overflow-hidden">
+                        <div className="w-32 h-32 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] p-1 transition-transform duration-300 hover:scale-105">
+                            <div className="w-full h-full bg-[var(--bg-secondary)] flex items-center justify-center overflow-hidden">
                                 {user.profile_picture_url ? (
                                     <img
                                         src={user.profile_picture_url}
@@ -72,7 +72,7 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                                 <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl font-bold text-[var(--text-primary)] tracking-tight">
                                     {user.display_name || user.username}
                                 </h1>
-                                <span className={`px-3 py-1 text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider rounded-full ${roleBadge.color} transition-colors duration-200`}>
+                                <span className={`px-3 py-1 text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider ${roleBadge.color} transition-colors duration-200`}>
                                     {roleBadge.label}
                                 </span>
                             </div>
@@ -83,7 +83,7 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
 
                             {/* Selected Title */}
                             {selectedTitle && (
-                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--accent-primary)]/10 to-[var(--accent-secondary)]/10 border border-[var(--accent-primary)]/20 transition-all duration-300 hover:border-[var(--accent-primary)]/40">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[var(--accent-primary)]/10 to-[var(--accent-secondary)]/10 border border-[var(--accent-primary)]/20 transition-all duration-300 hover:border-[var(--accent-primary)]/40">
                                     {selectedTitle.icon && <span>{selectedTitle.icon}</span>}
                                     <span
                                         className="font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase tracking-widest"
@@ -110,7 +110,7 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                                         href={`https://twitter.com/${user.social_links.twitter}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="p-2 rounded-lg border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
+                                        className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
                                     >
                                         <Twitter className="w-4 h-4 text-[var(--text-secondary)]" />
                                     </a>
@@ -120,7 +120,7 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                                         href={`https://instagram.com/${user.social_links.instagram}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="p-2 rounded-lg border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
+                                        className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
                                     >
                                         <Instagram className="w-4 h-4 text-[var(--text-secondary)]" />
                                     </a>
@@ -130,7 +130,7 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                                         href={user.social_links.custom_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="p-2 rounded-lg border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
+                                        className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
                                     >
                                         <LinkIcon className="w-4 h-4 text-[var(--text-secondary)]" />
                                     </a>
@@ -143,7 +143,7 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                     {isCurrentUser && (
                         <Link
                             href="/profile/edit"
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] hover:border-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/5 transition-all duration-200 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
+                            className="flex items-center gap-2 px-4 py-2 border border-[var(--border)] hover:border-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/5 transition-all duration-200 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
                         >
                             <Edit className="w-4 h-4" />
                             Edit Profile

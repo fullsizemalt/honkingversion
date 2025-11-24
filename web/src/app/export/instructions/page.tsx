@@ -33,7 +33,7 @@ export default function InstructionsPage() {
                         <li>Go to <a href="/export" className="text-[#ff6b35] hover:underline">/export</a></li>
                         <li>Make sure you're signed in to your account</li>
                         <li>Click the "Download CSV" button</li>
-                        <li>Your browser will automatically download a file named <code className="bg-[#1a1a1a] px-2 py-1 rounded text-[#90ee90]">user_[ID]_data.csv</code></li>
+                        <li>Your browser will automatically download a file named <code className="bg-[#1a1a1a] px-2 py-1 text-[#90ee90]">user_[ID]_data.csv</code></li>
                     </ol>
                 </section>
 
@@ -44,7 +44,7 @@ export default function InstructionsPage() {
                     <p className="mb-3">
                         The CSV file uses a simple three-column format that's easy to parse:
                     </p>
-                    <div className="bg-[#1a1a1a] p-4 rounded mb-4 font-[family-name:var(--font-ibm-plex-mono)] text-sm overflow-x-auto">
+                    <div className="bg-[#1a1a1a] p-4 mb-4 font-[family-name:var(--font-ibm-plex-mono)] text-sm overflow-x-auto">
                         <div>section | field | value</div>
                         <div>--------|-------|-------</div>
                         <div>profile | username | yourname</div>
@@ -67,30 +67,30 @@ export default function InstructionsPage() {
                         Data Sections Explained
                     </h2>
 
-                    <div className="bg-[#1a1a1a] p-4 rounded mb-4">
+                    <div className="bg-[#1a1a1a] p-4 mb-4">
                         <h3 className="font-bold text-[#f5f5f5] mb-2">Profile</h3>
                         <p>Your account metadata: ID, username, email, and creation timestamp</p>
                     </div>
 
-                    <div className="bg-[#1a1a1a] p-4 rounded mb-4">
+                    <div className="bg-[#1a1a1a] p-4 mb-4">
                         <h3 className="font-bold text-[#f5f5f5] mb-2">Vote</h3>
                         <p>Rating entries with format "id:rating". The "target" field indicates whether it's a show vote or performance vote.</p>
                         <p className="text-sm mt-2 text-[#90ee90]">Example: vote | show | 101:8.5</p>
                     </div>
 
-                    <div className="bg-[#1a1a1a] p-4 rounded mb-4">
+                    <div className="bg-[#1a1a1a] p-4 mb-4">
                         <h3 className="font-bold text-[#f5f5f5] mb-2">Attended Show</h3>
                         <p>Shows you've marked as attended, including the date you marked them.</p>
                         <p className="text-sm mt-2 text-[#90ee90]">Example: attended_show | show_id | 42</p>
                     </div>
 
-                    <div className="bg-[#1a1a1a] p-4 rounded mb-4">
+                    <div className="bg-[#1a1a1a] p-4 mb-4">
                         <h3 className="font-bold text-[#f5f5f5] mb-2">Following / Followers</h3>
                         <p>Users you follow and users who follow you, listed by username.</p>
                         <p className="text-sm mt-2 text-[#90ee90]">Example: following | username | honkfan42</p>
                     </div>
 
-                    <div className="bg-[#1a1a1a] p-4 rounded mb-4">
+                    <div className="bg-[#1a1a1a] p-4 mb-4">
                         <h3 className="font-bold text-[#f5f5f5] mb-2">List</h3>
                         <p>Your custom lists with title, description, and JSON-formatted items.</p>
                         <p className="text-sm mt-2 text-[#90ee90]">Example: list | title | My Favorite Red Rocks Shows</p>

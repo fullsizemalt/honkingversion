@@ -32,7 +32,7 @@ export default function SetlistDisplay({ performances }: SetlistDisplayProps) {
     return (
         <div className="space-y-6">
             {Object.entries(sets).map(([setNum, setPerfs]) => (
-                <div key={setNum} className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 rounded-3xl shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
+                <div key={setNum} className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] mb-4 uppercase tracking-[0.35em]">
                         {setNames[parseInt(setNum) - 1] || `Set ${setNum}`}
                     </h3>
@@ -40,7 +40,7 @@ export default function SetlistDisplay({ performances }: SetlistDisplayProps) {
                         {setPerfs.map((perf) => (
                             <div
                                 key={perf.id}
-                                className="flex items-center justify-between gap-4 p-4 bg-[var(--bg-muted)] border border-[var(--border-subtle)] hover:border-[var(--accent-tertiary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all rounded-2xl"
+                                className="flex items-center justify-between gap-4 p-4 bg-[var(--bg-muted)] border border-[var(--border-subtle)] hover:border-[var(--accent-tertiary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all"
                             >
                                 <div className="flex items-center gap-3 flex-1">
                                     <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] w-8">

@@ -74,7 +74,7 @@ export default function PerformanceComparisonsPage() {
                 Compare Performances
             </h1>
 
-            <div className="mb-8 p-4 bg-[#1a1a1a] border border-[#ff6b35] rounded">
+            <div className="mb-8 p-4 bg-[#1a1a1a] border border-[#ff6b35]">
                 <p className="text-[#a0a0a0] mb-4">
                     Enter performance IDs separated by commas to compare them side-by-side. You can find performance IDs on show pages.
                 </p>
@@ -84,12 +84,12 @@ export default function PerformanceComparisonsPage() {
                         placeholder="e.g., 123, 456, 789"
                         value={perfIds}
                         onChange={e => setPerfIds(e.target.value)}
-                        className="flex-1 bg-[#2a2a2a] text-[#f5f5f5] p-3 rounded border border-[#a0a0a0] focus:border-[#ff6b35] outline-none"
+                        className="flex-1 bg-[#2a2a2a] text-[#f5f5f5] p-3 border border-[#a0a0a0] focus:border-[#ff6b35] outline-none"
                     />
                     <button
                         onClick={handleFetch}
                         disabled={loading}
-                        className="bg-[#ff6b35] text-[#0a0a0a] px-6 py-3 font-bold rounded hover:bg-[#ff8c5a] disabled:opacity-50"
+                        className="bg-[#ff6b35] text-[#0a0a0a] px-6 py-3 font-bold hover:bg-[#ff8c5a] disabled:opacity-50"
                     >
                         {loading ? 'Loading...' : 'Compare'}
                     </button>
@@ -99,7 +99,7 @@ export default function PerformanceComparisonsPage() {
             </div>
 
             {performances.length === 0 && !loading ? (
-                <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded text-center text-[#a0a0a0]">
+                <div className="p-4 bg-[#1a1a1a] border border-[#a0a0a0] text-center text-[#a0a0a0]">
                     <p>Enter performance IDs above to see a comparison.</p>
                 </div>
             ) : (
@@ -247,7 +247,7 @@ export default function PerformanceComparisonsPage() {
                 </div>
             )}
 
-            <div className="mt-8 p-4 bg-[#1a1a1a] border border-[#a0a0a0] rounded text-sm text-[#a0a0a0]">
+            <div className="mt-8 p-4 bg-[#1a1a1a] border border-[#a0a0a0] text-sm text-[#a0a0a0]">
                 <h3 className="font-bold text-[#f5f5f5] mb-2">How to Find Performance IDs</h3>
                 <ol className="list-decimal list-inside space-y-1">
                     <li>Navigate to a show page</li>

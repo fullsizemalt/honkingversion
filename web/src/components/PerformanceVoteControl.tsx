@@ -96,7 +96,7 @@ export default function PerformanceVoteControl({
                             onMouseEnter={() => setHoverRating(value)}
                             onMouseLeave={() => setHoverRating(0)}
                             onClick={() => handleVote(value)}
-                            className={`w-6 h-6 rounded text-xs font-bold transition-all border ${(hoverRating || rating) >= value
+                            className={`w-6 h-6 text-xs font-bold transition-all border ${(hoverRating || rating) >= value
                                 ? 'bg-[color:rgba(0,168,210,0.18)] text-[var(--accent-tertiary)] border-[color:rgba(0,168,210,0.35)]'
                                 : 'bg-[var(--bg-secondary)] text-[var(--text-tertiary)] border-[var(--border)] hover:border-[var(--accent-tertiary)]'
                                 }`}
@@ -110,7 +110,7 @@ export default function PerformanceVoteControl({
     }
 
     return (
-        <div className="flex flex-col gap-3 p-4 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl shadow-[0_15px_35px_rgba(23,20,10,0.08)]">
+        <div className="flex flex-col gap-3 p-4 bg-[var(--bg-secondary)] border border-[var(--border)] shadow-[0_15px_35px_rgba(23,20,10,0.08)]">
             <div className="flex items-center justify-between">
                 <h4 className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] uppercase tracking-[0.35em]">
                     Rate {songName}
@@ -130,7 +130,7 @@ export default function PerformanceVoteControl({
                         onMouseEnter={() => setHoverRating(value)}
                         onMouseLeave={() => setHoverRating(0)}
                         onClick={() => handleVote(value)}
-                        className={`w-9 h-9 rounded-xl text-sm font-bold transition-all border ${(hoverRating || rating) >= value
+                        className={`w-9 h-9 text-sm font-bold transition-all border ${(hoverRating || rating) >= value
                             ? 'bg-[color:rgba(0,168,210,0.18)] text-[var(--accent-tertiary)] scale-110 border-[color:rgba(0,168,210,0.35)]'
                             : 'bg-[var(--bg-muted)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] border-[var(--border)]'
                             }`}

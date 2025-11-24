@@ -61,11 +61,11 @@ export default function VenuesPage() {
                 {loading ? (
                     <div className="space-y-3">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse rounded" />
+                            <div key={i} className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 animate-pulse" />
                         ))}
                     </div>
                 ) : filteredVenues.length === 0 ? (
-                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] rounded text-center">
+                    <div className="p-12 border-2 border-dashed border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
                         <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             {venues.length === 0 ? 'No venues available.' : 'No venues match your search.'}
                         </p>
@@ -74,7 +74,7 @@ export default function VenuesPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredVenues.map((v) => (
                             <Link key={v.slug} href={`/venues/${v.slug}`} className="block group">
-                                <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 rounded hover:border-[var(--accent-primary)] transition-colors">
+                                <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 hover:border-[var(--accent-primary)] transition-colors">
                                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
                                         {v.name}
                                     </h3>
