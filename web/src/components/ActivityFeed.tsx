@@ -5,7 +5,11 @@ import { MessageSquare, Star, FileText, ThumbsUp } from 'lucide-react';
 
 interface Activity {
     id: number;
-    user_id: number;
+    user_id?: number;
+    user?: {
+        id: number;
+        username: string;
+    };
     rating?: number;
     blurb?: string;
     full_review?: string;
