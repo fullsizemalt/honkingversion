@@ -11,7 +11,7 @@ export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     return (
-        <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg-secondary)]/95 backdrop-blur supports-[backdrop-filter]:bg-[color:rgba(255,255,255,0.85)] shadow-[0_8px_20px_rgba(15,23,42,0.08)] dark:bg-[var(--bg-primary)]/90">
+        <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg-secondary)]/95 backdrop-blur shadow-[0_8px_20px_rgba(15,23,42,0.08)] dark:bg-[var(--bg-primary)]/90">
             <div className="max-w-7xl mx-auto px-4">
                 {/* Top Row */}
                 <div className="flex items-center justify-between h-16">
@@ -69,16 +69,11 @@ export default function Navbar() {
                 {/* Bottom Row - Navigation Menu */}
                 <div className="hidden md:flex gap-6 font-[family-name:var(--font-ibm-plex-mono)] text-[11px] uppercase tracking-[0.2em] border-t border-[var(--border-subtle)] py-3">
                     <Link href="/shows" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Shows</Link>
-                    <Link href="/venues" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Venues</Link>
-                    <Link href="/performance-comparisons" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Comparisons</Link>
-                    <Link href="/streaming" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Streaming</Link>
-                    <Link href="/attribution" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Attribution</Link>
-                    <Link href="/songs" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">
-                        Songs
-                    </Link>
-                    <Link href="/lists" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">
-                        Lists
-                    </Link>
+                    <Link href="/songs" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Songs</Link>
+                    <Link href="/lists" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Lists</Link>
+                    <Link href="/reviews" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Reviews</Link>
+                    <Link href="/performance-comparisons" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Trending</Link>
+                    <Link href="/performances" className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors py-1 border-b-2 border-transparent hover:border-[var(--accent-primary)]">Performances</Link>
                 </div>
             </div>
 
@@ -91,10 +86,11 @@ export default function Navbar() {
                                 <SearchBar />
                             </div>
                             <Link href="/shows" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Shows</Link>
-                            <Link href="/venues" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Venues</Link>
-                            <Link href="/performance-comparisons" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Comparisons</Link>
-                            <Link href="/streaming" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Streaming</Link>
-                            <Link href="/attribution" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Attribution</Link>
+                            <Link href="/songs" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Songs</Link>
+                            <Link href="/lists" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Lists</Link>
+                            <Link href="/reviews" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Reviews</Link>
+                            <Link href="/performance-comparisons" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Trending</Link>
+                            <Link href="/performances" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Performances</Link>
                             {session ? (
                                 <button
                                     onClick={() => signOut()}

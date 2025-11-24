@@ -5,6 +5,9 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { getApiEndpoint } from "@/lib/api";
 import { StatsResponse } from "@/types";
+import RecentComments from "@/components/RecentComments";
+import TopMembers from "@/components/TopMembers";
+import RecentBlurbs from "@/components/RecentBlurbs";
 
 interface TrendingPerformance {
   performance_id: number;
@@ -57,7 +60,6 @@ export default function Home() {
   const { data: session } = useSession();
   const [trendingPerformances, setTrendingPerformances] = useState<TrendingPerformance[]>([]);
   const [topPerformances, setTopPerformances] = useState<TopPerformance[]>([]);
-  const [topUsers, setTopUsers] = useState<Array<{ username: string; votes: number }>>([]);
   const [loading, setLoading] = useState(true);
   const [maxTrendingVotes, setMaxTrendingVotes] = useState(1);
 
@@ -73,7 +75,6 @@ export default function Home() {
           if (trending.length > 0) {
             setMaxTrendingVotes(Math.max(...trending.map(p => p.votes_last_30d)));
           }
-          setTopUsers((stats.leaderboards?.votes_cast || []).slice(0, 10));
         }
 
         // Fetch all performances for top-rated
@@ -220,46 +221,14 @@ export default function Home() {
           </div>
 
           {/* Column 3: Community Leaderboard */}
-          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-3xl p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6">
-              Community
-            </h2>
-
-            <div className="mb-8">
-              <h3 className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] uppercase tracking-[0.35em] mb-4">
-                Top Voters
-              </h3>
-              {loading ? (
-                <p className="text-[var(--text-tertiary)] text-sm">Loading...</p>
-              ) : topUsers.length > 0 ? (
-                <div className="space-y-2">
-                  {topUsers.slice(0, 10).map((user, idx) => (
-                    <Link
-                      key={user.username}
-                      href={`/u/${user.username}`}
-                      className="flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-muted)]/60 hover:bg-[var(--bg-muted)] transition-all border border-[var(--border-subtle)] hover:border-[var(--accent-primary)] group"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] min-w-max">
-                          #{idx + 1}
-                        </span>
-                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)] group-hover:text-[var(--accent-primary)] transition-colors truncate">
-                          {user.username}
-                        </span>
-                      </div>
-                      <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] group-hover:text-[var(--accent-primary)] transition-colors flex-shrink-0">
-                        {user.votes}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[var(--text-tertiary)] text-sm">No users yet</p>
-              )}
-            </div>
+          <div className="flex flex-col gap-8">
+            <TopMembers />
 
             {!session && (
-              <div className="pt-6 border-t border-[var(--border-subtle)]">
+              <div className="border border-[var(--border)] bg-[var(--bg-secondary)] rounded-3xl p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
+                <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6">
+                  Join Us
+                </h2>
                 <Link
                   href="/auth/register"
                   className="block text-center font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--accent-primary)] border border-[var(--accent-primary)] p-3 rounded-full hover:bg-[var(--accent-primary)] hover:text-[var(--text-inverse)] transition-colors tracking-[0.3em]"
@@ -269,6 +238,12 @@ export default function Home() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* New Row: Blurbs and Comments */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+          <RecentBlurbs />
+          <RecentComments />
         </div>
       </div>
     </div>

@@ -58,15 +58,15 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="bg-[var(--bg-secondary)] rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-[var(--border)]">
+                <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
                     <h2 className="text-lg font-bold flex items-center gap-2">
                         <MessageSquare className="w-5 h-5 text-amber-500" />
                         Send Feedback
                     </h2>
                     <button
                         onClick={onClose}
-                        className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                        className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -89,8 +89,8 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 />
                             </svg>
                         </div>
-                        <h3 className="text-xl font-bold mb-2">Thank You!</h3>
-                        <p className="text-zinc-600 dark:text-zinc-400">
+                        <h3 className="text-xl font-bold mb-2 text-[var(--text-primary)]">Thank You!</h3>
+                        <p className="text-[var(--text-secondary)]">
                             Your feedback has been received.
                         </p>
                     </div>
@@ -102,7 +102,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 onClick={() => setType("bug")}
                                 className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${type === "bug"
                                     ? "bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
-                                    : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                                    : "border-[var(--border)] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)]"
                                     }`}
                             >
                                 <Bug className="w-4 h-4" />
@@ -113,7 +113,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 onClick={() => setType("feature")}
                                 className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${type === "feature"
                                     ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"
-                                    : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                                    : "border-[var(--border)] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)]"
                                     }`}
                             >
                                 <Lightbulb className="w-4 h-4" />
@@ -128,7 +128,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 required
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
-                                className="w-full p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-transparent focus:ring-2 focus:ring-amber-500 outline-none"
+                                className="w-full p-2 rounded-lg border border-[var(--border)] bg-transparent focus:ring-2 focus:ring-amber-500 outline-none text-[var(--text-primary)]"
                                 placeholder="Brief summary..."
                             />
                         </div>
@@ -140,7 +140,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 rows={4}
-                                className="w-full p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-transparent focus:ring-2 focus:ring-amber-500 outline-none resize-none"
+                                className="w-full p-2 rounded-lg border border-[var(--border)] bg-transparent focus:ring-2 focus:ring-amber-500 outline-none resize-none text-[var(--text-primary)]"
                                 placeholder="Describe the issue or idea in detail..."
                             />
                         </div>
@@ -153,7 +153,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                                className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                             >
                                 Cancel
                             </button>

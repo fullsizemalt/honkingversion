@@ -60,20 +60,35 @@ class ElGooseScraper:
         Fetch setlist data for a specific date from El Goose API.
         Returns list of songs or None if no show found.
         """
+        from services.cache_manager import CacheManager
+        cache = CacheManager()
+        cache_key = f"show_date_{date_str}"
+        
+        # Check cache first
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            # logger.info(f"Using cached data for {date_str}") # Reduce noise in bulk scrape
+            return cached_data
+
         try:
             url = f"{EL_GOOSE_BASE_URL}/setlists/showdate/{date_str}.json"
             response = requests.get(url, timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
+                result = None
                 # Check if it's wrapped in 'data' key
                 if isinstance(data, dict) and 'data' in data:
                     if data.get('error') and data['error'] != 0:
                         return None
-                    return data['data']
+                    result = data['data']
                 elif isinstance(data, list) and len(data) > 0:
-                    return data
-
+                    result = data
+                
+                if result:
+                    cache.set(cache_key, result)
+                    return result
+            
             return None
         except Exception as e:
             logger.warning(f"Error fetching {date_str}: {e}")

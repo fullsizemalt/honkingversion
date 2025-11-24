@@ -39,6 +39,16 @@ class ShowFetcher:
         Returns:
             List of show data or None if not found
         """
+        from services.cache_manager import CacheManager
+        cache = CacheManager()
+        cache_key = f"show_date_{date_str}"
+        
+        # Check cache first
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            logger.info(f"Using cached data for {date_str}")
+            return cached_data
+
         try:
             url = f"{EL_GOOSE_BASE_URL}/setlists/showdate/{date_str}.json"
             response = requests.get(url, timeout=10)
@@ -47,12 +57,17 @@ class ShowFetcher:
                 data = response.json()
 
                 # Handle wrapped response
+                result = None
                 if isinstance(data, dict) and "data" in data:
                     if data.get("error") and data["error"] != 0:
                         return None
-                    return data["data"]
+                    result = data["data"]
                 elif isinstance(data, list) and len(data) > 0:
-                    return data
+                    result = data
+                
+                if result:
+                    cache.set(cache_key, result)
+                    return result
 
             return None
         except Exception as e:
