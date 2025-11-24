@@ -67,7 +67,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         // Fetch stats for trending and user leaderboard
-        const statsRes = await fetch(getApiEndpoint('/stats'));
+        const statsRes = await fetch(getApiEndpoint('/stats/'));
         if (statsRes.ok) {
           const stats: StatsResponse = await statsRes.json();
           const trending = stats.trending_performances || [];
@@ -78,7 +78,7 @@ export default function Home() {
         }
 
         // Fetch all performances for top-rated
-        const perfRes = await fetch(getApiEndpoint('/performances/?limit=100'));
+        const perfRes = await fetch(getApiEndpoint('/performances/top-rated?limit=12&min_votes=3'));
         if (perfRes.ok) {
           const perfs = await perfRes.json();
           // Filter and sort by rating

@@ -10,8 +10,7 @@ from models import Show, Song, SongPerformance, Vote, User, UserFollow, Notifica
 router = APIRouter(prefix="/stats", tags=["stats"])
 
 
-@router.get("/")
-def get_stats(session: Session = Depends(get_session)) -> Dict[str, Any]:
+def build_stats_payload(session: Session) -> Dict[str, Any]:
     # Top songs by play count
     song_counts = session.exec(
         select(Song.name, Song.slug, func.count(SongPerformance.id).label("plays"))
@@ -148,3 +147,10 @@ def get_stats(session: Session = Depends(get_session)) -> Dict[str, Any]:
             for row in new_submissions
         ],
     }
+
+
+@router.get("", include_in_schema=False)
+@router.get("/")
+def get_stats(session: Session = Depends(get_session)) -> Dict[str, Any]:
+    """Return overall site stats (supports both /stats and /stats/)."""
+    return build_stats_payload(session)

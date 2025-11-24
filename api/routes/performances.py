@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 from typing import List, Optional
 from pydantic import BaseModel
 
@@ -58,6 +58,61 @@ def list_performances(
         })
     
     return performances
+
+
+@router.get("/top-rated")
+def list_top_rated_performances(
+    limit: int = 10,
+    min_votes: int = 1,
+    session: Session = Depends(get_session)
+):
+    """
+    Return the highest-rated performances by average vote.
+    Only performances with at least ``min_votes`` are considered.
+    """
+    statement = (
+        select(
+            SongPerformance,
+            Song,
+            Show,
+            func.count(Vote.id).label("vote_count"),
+            func.avg(Vote.rating).label("avg_rating")
+        )
+        .join(Song, SongPerformance.song_id == Song.id)
+        .join(Show, SongPerformance.show_id == Show.id)
+        .join(Vote, Vote.performance_id == SongPerformance.id)
+        .group_by(SongPerformance.id, Song.id, Show.id)
+        .having(func.count(Vote.id) >= min_votes)
+        .order_by(func.avg(Vote.rating).desc(), func.count(Vote.id).desc())
+        .limit(limit)
+    )
+
+    results = session.exec(statement).all()
+    top_performances = []
+    for perf, song, show, vote_count, avg_rating in results:
+        top_performances.append({
+            "id": perf.id,
+            "position": perf.position,
+            "set_number": perf.set_number,
+            "notes": perf.notes,
+            "song": {
+                "id": song.id,
+                "name": song.name,
+                "slug": song.slug,
+                "is_cover": song.is_cover,
+                "original_artist": song.original_artist
+            },
+            "show": {
+                "id": show.id,
+                "date": show.date,
+                "venue": show.venue,
+                "location": show.location
+            },
+            "vote_count": vote_count,
+            "avg_rating": round(avg_rating, 1) if avg_rating else None
+        })
+
+    return top_performances
 
 @router.get("/{performance_id}")
 def get_performance(
