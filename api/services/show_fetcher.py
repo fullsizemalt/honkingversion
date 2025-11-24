@@ -18,7 +18,7 @@ from datetime import datetime
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
-from api.models import Show, Song, SongPerformance
+from models import Show, Song, SongPerformance
 
 logger = logging.getLogger(__name__)
 
@@ -220,7 +220,7 @@ class ShowFetcher:
     @staticmethod
     def get_or_fetch_show(session: Session, date_str: str) -> Show:
         """
-        Get show from api.database, or fetch from El Goose and populate if not found.
+        Get show from database, or fetch from El Goose and populate if not found.
 
         This is the main entry point for on-demand show fetching.
 

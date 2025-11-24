@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
-from api.database import engine, create_db_and_tables
-from api.models import User, Show, Vote, UserList
+from database import engine, create_db_and_tables
+from models import User, Show, Vote, UserList
 import random
 import json
 from datetime import datetime, timedelta
