@@ -150,24 +150,26 @@ export default function Footer() {
 
                 {/* Bottom Bar */}
                 <div className="pt-8 border-t border-[var(--border-subtle)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div className="flex flex-wrap gap-6 text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wide text-[var(--text-tertiary)]">
-                        <Link href="/updates" className="hover:text-[var(--text-primary)] transition-colors">
-                            Updates
-                        </Link>
-                        <button onClick={() => setIsFeedbackOpen(true)} className="hover:text-[var(--text-primary)] transition-colors">
-                            Report Issue
-                        </button>
-                        <Link href="/attribution" className="hover:text-[var(--text-primary)] transition-colors">
-                            Attribution
-                        </Link>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-wrap gap-6 text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wide text-[var(--text-tertiary)]">
+                            <Link href="/updates" className="hover:text-[var(--text-primary)] transition-colors">
+                                Updates
+                            </Link>
+                            <button onClick={() => setIsFeedbackOpen(true)} className="hover:text-[var(--text-primary)] transition-colors">
+                                Report Issue
+                            </button>
+                            <Link href="/attribution" className="hover:text-[var(--text-primary)] transition-colors">
+                                Attribution
+                            </Link>
+                        </div>
+                        <p className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-tertiary)] italic normal-case tracking-normal max-w-md">
+                            Honkingversion loves Goose but is in no way affiliated with The Organization or affiliated enterprises.
+                        </p>
                     </div>
 
                     <div className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-[0.2em] text-[var(--text-tertiary)] text-right">
                         <p className="mb-2">
                             Data provided by <a href="https://elgoose.net" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline">El Goose</a>
-                        </p>
-                        <p className="mb-2 italic normal-case tracking-normal">
-                            Honkingversion loves Goose but is in no way affiliated with The Organization or affiliated enterprises.
                         </p>
                         <p>
                             © {new Date().getFullYear()} Honkingversion.runfoo.run
