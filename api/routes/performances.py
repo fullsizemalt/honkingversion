@@ -3,9 +3,9 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from pydantic import BaseModel
 
-from database import get_session
-from models import SongPerformance, Song, Show, Vote, User
-from routes.auth import get_current_user
+from api.database import get_session
+from api.models import SongPerformance, Song, Show, Vote, User
+from api.routes.auth import get_current_user
 
 router = APIRouter(prefix="/performances", tags=["performances"])
 
