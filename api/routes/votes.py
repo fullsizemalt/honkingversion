@@ -3,13 +3,13 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from pydantic import BaseModel
 
-from api.database import get_session
-from api.database import get_session
-from api.models import User, Vote, Show, UserRead
-from api.routes.auth import get_current_user
+from database import get_session
+from database import get_session
+from models import User, Vote, Show, UserRead
+from routes.auth import get_current_user
 from datetime import datetime
-from api.services.notifications import create_notification
-from api.models import UserFollow
+from services.notifications import create_notification
+from models import UserFollow
 
 router = APIRouter(prefix="/votes", tags=["votes"])
 
@@ -102,7 +102,7 @@ def get_show_votes(
     
     return votes_read
 
-from api.models import SongPerformance, PerformanceTag, ShowTag, Tag
+from models import SongPerformance, PerformanceTag, ShowTag, Tag
 from sqlalchemy.orm import selectinload
 
 class ShowSummary(BaseModel):

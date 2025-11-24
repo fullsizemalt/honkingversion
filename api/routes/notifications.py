@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlmodel import Session, select
 
-from api.database import get_session
-from api.models import Notification, User
-from api.routes.auth import get_current_user
+from database import get_session
+from models import Notification, User
+from routes.auth import get_current_user
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 

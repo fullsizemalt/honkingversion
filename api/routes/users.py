@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
 
-from api.database import get_session
-from api.database import get_session
-from api.models import User, UserList, UserRead, UserStats, Vote, UserFollow, UserShowAttendance
+from database import get_session
+from database import get_session
+from models import User, UserList, UserRead, UserStats, Vote, UserFollow, UserShowAttendance
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-from api.routes.auth import get_current_user, get_current_user_optional
+from routes.auth import get_current_user, get_current_user_optional
 
 @router.get("/me", response_model=UserRead)
 def read_users_me(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
@@ -179,7 +179,7 @@ def get_feed(
         
     # Fetch votes from these users
     from sqlalchemy.orm import selectinload
-    from api.models import SongPerformance, PerformanceTag, ShowTag, Tag
+    from models import SongPerformance, PerformanceTag, ShowTag, Tag
 
     feed = session.exec(
         select(Vote)

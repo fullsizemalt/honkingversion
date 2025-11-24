@@ -4,8 +4,8 @@ from typing import List, Dict, Any
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select, func
 
-from api.database import get_session
-from api.models import Show, Song, SongPerformance, Vote, User, UserFollow
+from database import get_session
+from models import Show, Song, SongPerformance, Vote, User, UserFollow
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 

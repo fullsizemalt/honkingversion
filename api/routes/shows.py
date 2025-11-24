@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func
 from typing import List, Optional
 
-from api.database import get_session
-from api.models import Show, SongPerformance, Song
-from api.services.show_fetcher import ShowFetcher
-from api.services.date_parser import parse_date
+from database import get_session
+from models import Show, SongPerformance, Song
+from services.show_fetcher import ShowFetcher
+from services.date_parser import parse_date
 
 router = APIRouter(prefix="/shows", tags=["shows"])
 

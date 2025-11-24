@@ -5,10 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlmodel import Session, select, func
 
-from api.database import get_session
-from api.models import CommentVote, ReviewComment, User, Vote
-from api.routes.auth import get_current_user
-from api.services.notifications import create_notification
+from database import get_session
+from models import CommentVote, ReviewComment, User, Vote
+from routes.auth import get_current_user
+from services.notifications import create_notification
 
 router = APIRouter(prefix="/comments", tags=["comments"])
 

@@ -4,9 +4,9 @@ from typing import List
 from pydantic import BaseModel
 from datetime import datetime
 
-from api.database import get_session
-from api.models import User, Show, UserShowAttendance
-from api.routes.auth import get_current_user
+from database import get_session
+from models import User, Show, UserShowAttendance
+from routes.auth import get_current_user
 
 router = APIRouter(prefix="/attended", tags=["attended"])
 
