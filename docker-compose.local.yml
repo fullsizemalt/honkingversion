@@ -1,0 +1,16 @@
+services:
+  api:
+    ports:
+      - "8000:8000"
+
+  web:
+    ports:
+      - "3000:3000"
+    build:
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+        INTERNAL_API_URL: http://api:8000
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - INTERNAL_API_URL=http://api:8000
+      - NEXT_PUBLIC_BROWSER_API_URL=/api/hv

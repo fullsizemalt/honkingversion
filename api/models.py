@@ -27,7 +27,10 @@ class User(SQLModel, table=True):
         sa_relationship_kwargs={"foreign_keys": "Notification.user_id"}
     )
     review_comments: List["ReviewComment"] = Relationship(back_populates="user")
-    earned_titles: List["UserTitle"] = Relationship(back_populates="user")
+    earned_titles: List["UserTitle"] = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"foreign_keys": "UserTitle.user_id"},
+    )
     earned_badges: List["UserBadge"] = Relationship(back_populates="user")
     followed_lists: List["ListFollow"] = Relationship(
         back_populates="user",
@@ -140,7 +143,10 @@ class UserTitle(SQLModel, table=True):
     icon: Optional[str] = None  # Emoji or icon identifier
     earned_at: datetime = Field(default_factory=datetime.utcnow)
     
-    user: User = Relationship(back_populates="earned_titles")
+    user: User = Relationship(
+        back_populates="earned_titles",
+        sa_relationship_kwargs={"foreign_keys": "UserTitle.user_id"},
+    )
 
 class UserBadge(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

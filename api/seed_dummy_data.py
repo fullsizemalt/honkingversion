@@ -6,9 +6,11 @@ from pathlib import Path
 from sqlmodel import Session, SQLModel, create_engine, select
 from models import Show, Song, SongPerformance, Vote, User, ReviewComment
 
-# Setup DB
+# Setup DB (use SEED_DB_PATH override for safety when testing)
 DB_PATH = Path(__file__).parent / "database.db"
-engine = create_engine(f"sqlite:///{DB_PATH}", echo=False)
+db_override = __import__("os").environ.get("SEED_DB_PATH")
+sqlite_path = Path(db_override) if db_override else DB_PATH
+engine = create_engine(f"sqlite:///{sqlite_path}", echo=False)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)

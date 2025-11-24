@@ -6,6 +6,8 @@ const upstreamApi =
   "http://api:8000";
 
 const nextConfig: NextConfig = {
+  // Force webpack (Turbopack hits port-binding restrictions in some environments).
+  webpack: (config) => config,
   async rewrites() {
     return [
       {

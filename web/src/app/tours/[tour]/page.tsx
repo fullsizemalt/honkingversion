@@ -18,8 +18,9 @@ async function fetchTour(tour: string): Promise<TourDetail | null> {
     return res.json()
 }
 
-export default async function TourDetailPage({ params }: { params: { tour: string } }) {
-    const data = await fetchTour(params.tour)
+export default async function TourDetailPage({ params }: { params: Promise<{ tour: string }> }) {
+    const { tour } = await params
+    const data = await fetchTour(tour)
 
     if (!data) {
         return (
