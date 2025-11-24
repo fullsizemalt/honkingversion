@@ -131,11 +131,23 @@ class UserReviewRead(BaseModel):
 @router.get("/", response_model=List[UserReviewRead])
 def get_reviews(
     sort: Optional[str] = None,
+    song_id: Optional[int] = None,
+    show_id: Optional[int] = None,
+    performance_id: Optional[int] = None,
+    tour: Optional[str] = None,
     limit: int = 50,
     offset: int = 0,
     session: Session = Depends(get_session)
 ):
-    """Get all reviews across the platform with optional sorting."""
+    """Get all reviews across the platform with optional filtering and sorting.
+
+    Filters:
+    - song_id: Filter by specific song
+    - show_id: Filter by specific show
+    - performance_id: Filter by specific performance
+    - tour: Filter by tour name
+    - sort: 'rating' for rating, otherwise by date (default)
+    """
     statement = (
         select(Vote)
         .options(
@@ -150,6 +162,21 @@ def get_reviews(
     statement = statement.where(
         (Vote.blurb != None) | (Vote.full_review != None)
     )
+
+    # Apply filters
+    if show_id:
+        statement = statement.where(Vote.show_id == show_id)
+
+    if performance_id:
+        statement = statement.where(Vote.performance_id == performance_id)
+
+    if song_id:
+        # Join to SongPerformance to filter by song
+        statement = statement.join(SongPerformance).where(SongPerformance.song_id == song_id)
+
+    if tour:
+        # Join to Show to filter by tour
+        statement = statement.join(Show).where(Show.tour == tour)
 
     # Sort by rating if requested, otherwise by date
     if sort == 'rating':
