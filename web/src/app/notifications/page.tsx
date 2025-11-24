@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { getApiEndpoint } from '@/lib/api'
 import { Notification } from '@/types'
@@ -61,9 +62,17 @@ export default function NotificationsPage() {
                             {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
                         </p>
                     </div>
-                    {unreadCount > 0 && session?.user?.accessToken && (
-                        <MarkAllReadButton token={session.user.accessToken} />
-                    )}
+                    <div className="flex items-center gap-3">
+                        <Link
+                            href="/notifications/settings"
+                            className="text-sm text-[var(--accent-primary)] underline underline-offset-4 font-[family-name:var(--font-space-grotesk)]"
+                        >
+                            Preferences
+                        </Link>
+                        {unreadCount > 0 && session?.user?.accessToken && (
+                            <MarkAllReadButton token={session.user.accessToken} />
+                        )}
+                    </div>
                 </div>
 
                 {/* Notifications List */}
