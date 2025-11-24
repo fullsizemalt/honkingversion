@@ -166,6 +166,9 @@ export default function Footer() {
                         <p className="mb-2">
                             Data provided by <a href="https://elgoose.net" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline">El Goose</a>
                         </p>
+                        <p className="mb-2 italic normal-case tracking-normal">
+                            Honkingversion loves Goose but is in no way affiliated with The Organization or affiliated enterprises.
+                        </p>
                         <p>
                             © {new Date().getFullYear()} Honkingversion.runfoo.run
                         </p>
