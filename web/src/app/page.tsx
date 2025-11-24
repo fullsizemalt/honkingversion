@@ -4,38 +4,100 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { getApiEndpoint } from "@/lib/api";
-import { Song, StatsResponse, Review } from "@/types";
+import { StatsResponse } from "@/types";
+
+interface TrendingPerformance {
+  performance_id: number;
+  song_name: string;
+  date: string;
+  venue: string;
+  votes_last_30d: number;
+  avg_rating: number | null;
+}
+
+interface TopPerformance {
+  id: number;
+  song_name: string;
+  date: string;
+  venue: string;
+  avg_rating: number;
+  vote_count: number;
+}
+
+// Calculate heat level (0-3) based on vote velocity
+const getHeatLevel = (votes: number, maxVotes: number): number => {
+  if (maxVotes === 0) return 0;
+  const ratio = votes / maxVotes;
+  if (ratio >= 0.7) return 3;
+  if (ratio >= 0.4) return 2;
+  if (ratio >= 0.1) return 1;
+  return 0;
+};
+
+// Get heat color based on level
+const getHeatColor = (level: number): string => {
+  switch (level) {
+    case 3:
+      return 'text-red-500 bg-red-950';
+    case 2:
+      return 'text-orange-400 bg-orange-950';
+    case 1:
+      return 'text-yellow-400 bg-yellow-950';
+    default:
+      return 'text-gray-400 bg-gray-900';
+  }
+};
+
+// Get heat indicator visual
+const getHeatIndicator = (level: number): string => {
+  return '🔥'.repeat(Math.max(1, level));
+};
 
 export default function Home() {
   const { data: session } = useSession();
-  const [hotSongs, setHotSongs] = useState<Song[]>([]);
+  const [trendingPerformances, setTrendingPerformances] = useState<TrendingPerformance[]>([]);
+  const [topPerformances, setTopPerformances] = useState<TopPerformance[]>([]);
   const [topUsers, setTopUsers] = useState<Array<{ username: string; votes: number }>>([]);
-  const [recentPerformances, setRecentPerformances] = useState<Review[]>([]);
-  const [recentComments, setRecentComments] = useState<Array<{ id: number; body: string; username: string; created_at: string }>>([]);
   const [loading, setLoading] = useState(true);
+  const [maxTrendingVotes, setMaxTrendingVotes] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch stats for hot songs and leaderboard
+        // Fetch stats for trending and user leaderboard
         const statsRes = await fetch(getApiEndpoint('/stats'));
         if (statsRes.ok) {
           const stats: StatsResponse = await statsRes.json();
-          setHotSongs(
-            (stats.top_songs || []).slice(0, 4).map(song => ({
-              name: song.name,
-              slug: song.slug,
-              times_played: song.plays
-            }))
-          );
-          setTopUsers((stats.leaderboards?.votes_cast || []).slice(0, 8));
+          const trending = stats.trending_performances || [];
+          setTrendingPerformances(trending);
+          if (trending.length > 0) {
+            setMaxTrendingVotes(Math.max(...trending.map(p => p.votes_last_30d)));
+          }
+          setTopUsers((stats.leaderboards?.votes_cast || []).slice(0, 10));
         }
 
-        // Fetch recent performances
-        const perfRes = await fetch(getApiEndpoint('/performances/?limit=20'));
+        // Fetch all performances for top-rated
+        const perfRes = await fetch(getApiEndpoint('/performances/?limit=100'));
         if (perfRes.ok) {
           const perfs = await perfRes.json();
-          setRecentPerformances(perfs.slice(0, 5));
+          // Filter and sort by rating
+          const topRated = perfs
+            .filter((p: any) => p.avg_rating && p.vote_count && p.vote_count > 0)
+            .sort((a: any, b: any) => {
+              const aRating = a.avg_rating || 0;
+              const bRating = b.avg_rating || 0;
+              return bRating - aRating;
+            })
+            .slice(0, 10)
+            .map((p: any) => ({
+              id: p.id,
+              song_name: p.performance?.song?.name || 'Unknown',
+              date: p.show?.date || 'Unknown',
+              venue: p.show?.venue || 'Unknown',
+              avg_rating: p.avg_rating || 0,
+              vote_count: p.vote_count || 0
+            }));
+          setTopPerformances(topRated);
         }
       } catch (error) {
         console.error('Failed to fetch homepage data', error);
@@ -49,171 +111,165 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
-      {/* Login/Register CTA */}
-      {!session && (
-        <div className="bg-[#1a1a1a] border-b border-[#333] py-4">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0]">
-              Please <Link href="/auth/signin" className="text-[#ff6b35] hover:underline">login</Link> or{" "}
-              <Link href="/auth/register" className="text-[#ff6b35] hover:underline">register</Link>.
+      {/* Hero Section */}
+      <div className="border-b-2 border-[#333] bg-[var(--bg-primary)] py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="mb-2">
+            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[var(--text-primary)] uppercase tracking-tight">
+              HONKINGVERSION
+            </h1>
+            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] mt-2">
+              explore the best live performances from Goose
             </p>
           </div>
-        </div>
-      )}
-
-      {/* Hero Section */}
-      <div className="border-b-2 border-[#333] bg-[var(--bg-primary)] py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">
-            HONKINGVERSION
-          </h1>
-          <p className="font-[family-name:var(--font-ibm-plex-mono)] text-lg text-[#a0a0a0] mb-6">
-            find the best versions of goose songs
-          </p>
-          <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#707070] mb-8">
-            we're on the search for the dankest versions of goose songs.
-          </p>
-          <Link href="/songs" className="inline-block font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[#ff6b35] border-b-2 border-[#ff6b35] pb-1 hover:opacity-70 transition-opacity">
-            GET STARTED
-          </Link>
+          {!session && (
+            <div className="mt-4 font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0]">
+              <span>Please </span>
+              <Link href="/auth/signin" className="text-[#ff6b35] hover:underline">login</Link>
+              <span> or </span>
+              <Link href="/auth/register" className="text-[#ff6b35] hover:underline">register</Link>
+              <span> to vote on your favorite performances.</span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* 3-Column Dashboard */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Hot Songs */}
-        <section className="mb-16">
-          <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6">
-            choose a hot song below to get started on your heady journey.
-          </h2>
-          <div className="space-y-2 mb-6">
-            {hotSongs.length > 0 ? (
-              hotSongs.map((song) => (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Column 1: Trending Performances */}
+          <div className="border border-[#333] bg-[#0f0f0f] p-6">
+            <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6 flex items-center gap-2">
+              <span>Trending</span>
+              <span className="text-sm text-[#ff6b35]">Last 30 Days</span>
+            </h2>
+
+            {loading ? (
+              <p className="text-[#707070] text-sm">Loading...</p>
+            ) : trendingPerformances.length > 0 ? (
+              <div className="space-y-4">
+                {trendingPerformances.slice(0, 8).map((perf, idx) => {
+                  const heatLevel = getHeatLevel(perf.votes_last_30d, maxTrendingVotes);
+                  const heatColor = getHeatColor(heatLevel);
+                  const heatIndicator = getHeatIndicator(heatLevel);
+
+                  return (
+                    <div key={perf.performance_id} className={`border border-[#333] p-3 hover:border-[#ff6b35] transition-colors cursor-pointer group`}>
+                      <div className="flex items-start gap-3">
+                        <div className={`px-2 py-1 text-xs font-bold ${heatColor} rounded min-w-max`}>
+                          {heatIndicator}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[#f5f5f5] group-hover:text-[#ff6b35] transition-colors truncate">
+                            {perf.song_name}
+                          </p>
+                          <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070] mt-1">
+                            {perf.venue} • {perf.date}
+                          </p>
+                          <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] mt-2">
+                            {perf.votes_last_30d} votes
+                            {perf.avg_rating && ` • ${perf.avg_rating.toFixed(1)}/10`}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-[#707070] text-sm">No trending performances yet</p>
+            )}
+          </div>
+
+          {/* Column 2: Top Rated Performances */}
+          <div className="border border-[#333] bg-[#0f0f0f] p-6">
+            <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6 flex items-center gap-2">
+              <span>Highest Rated</span>
+            </h2>
+
+            {loading ? (
+              <p className="text-[#707070] text-sm">Loading...</p>
+            ) : topPerformances.length > 0 ? (
+              <div className="space-y-4">
+                {topPerformances.slice(0, 8).map((perf) => (
+                  <div key={perf.id} className="border border-[#333] p-3 hover:border-[#ff6b35] transition-colors cursor-pointer group">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[#f5f5f5] group-hover:text-[#ff6b35] transition-colors truncate">
+                          {perf.song_name}
+                        </p>
+                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070] mt-1">
+                          {perf.venue} • {perf.date}
+                        </p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#ff6b35]">
+                          {perf.avg_rating.toFixed(1)}
+                        </p>
+                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070]">
+                          {perf.vote_count} votes
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[#707070] text-sm">No rated performances yet</p>
+            )}
+          </div>
+
+          {/* Column 3: Community Leaderboard */}
+          <div className="border border-[#333] bg-[#0f0f0f] p-6">
+            <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6">
+              Community
+            </h2>
+
+            <div className="mb-8">
+              <h3 className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0] uppercase tracking-wider mb-4">
+                Top Voters
+              </h3>
+              {loading ? (
+                <p className="text-[#707070] text-sm">Loading...</p>
+              ) : topUsers.length > 0 ? (
+                <div className="space-y-2">
+                  {topUsers.slice(0, 10).map((user, idx) => (
+                    <Link
+                      key={user.username}
+                      href={`/u/${user.username}`}
+                      className="flex items-center justify-between p-2 hover:bg-[#1a1a1a] transition-colors border border-transparent hover:border-[#333] group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070] min-w-max">
+                          #{idx + 1}
+                        </span>
+                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] group-hover:text-[#ff6b35] transition-colors truncate">
+                          {user.username}
+                        </span>
+                      </div>
+                      <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#707070] group-hover:text-[#ff6b35] transition-colors flex-shrink-0">
+                        {user.votes}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[#707070] text-sm">No users yet</p>
+              )}
+            </div>
+
+            {!session && (
+              <div className="pt-6 border-t border-[#333]">
                 <Link
-                  key={song.slug}
-                  href={`/songs/${song.slug}`}
-                  className="block font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-2 border-l-2 border-transparent hover:border-[#ff6b35] pl-2"
+                  href="/auth/register"
+                  className="block text-center font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[#ff6b35] border border-[#ff6b35] p-3 hover:bg-[#ff6b35] hover:text-[#0a0a0a] transition-colors"
                 >
-                  {song.name}
+                  JOIN THE COMMUNITY
                 </Link>
-              ))
-            ) : (
-              <p className="text-[#707070] text-sm">Loading songs...</p>
+              </div>
             )}
           </div>
-          <Link href="/songs" className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#ff6b35] hover:underline uppercase tracking-wider">
-            view all songs
-          </Link>
-        </section>
-
-        {/* Get Involved */}
-        <section className="mb-16 border-t border-[#333] pt-12">
-          <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-tight mb-4">
-            get involved.
-          </h2>
-          <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] mb-4">
-            sign up and join our community of goose enthusiasts. we'd love to hear your favorite versions.
-          </p>
-          {!session && (
-            <Link href="/auth/register" className="inline-block font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[#ff6b35] border-b-2 border-[#ff6b35] pb-1 hover:opacity-70 transition-opacity">
-              SIGN UP
-            </Link>
-          )}
-        </section>
-
-        {/* Leaderboard */}
-        <section className="mb-16 border-t border-[#333] pt-12">
-          <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6">
-            leader board.
-          </h2>
-          <div className="space-y-3">
-            {topUsers.length > 0 ? (
-              topUsers.map((user) => (
-                <div key={user.username} className="flex items-center justify-between font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                  <Link
-                    href={`/u/${user.username}`}
-                    className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors"
-                  >
-                    {user.username}
-                  </Link>
-                  <span className="text-[#ff6b35]">+{user.votes}</span>
-                </div>
-              ))
-            ) : (
-              <p className="text-[#707070] text-sm">Loading leaderboard...</p>
-            )}
-          </div>
-        </section>
-
-        {/* Hot Songs (Repeated) */}
-        <section className="mb-16 border-t border-[#333] pt-12">
-          <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6">
-            hot songs
-          </h2>
-          <div className="space-y-2">
-            {hotSongs.length > 0 ? (
-              hotSongs.map((song) => (
-                <Link
-                  key={`repeat-${song.slug}`}
-                  href={`/songs/${song.slug}`}
-                  className="block font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] hover:text-[#ff6b35] transition-colors py-2 border-l-2 border-transparent hover:border-[#ff6b35] pl-2"
-                >
-                  {song.name}
-                </Link>
-              ))
-            ) : (
-              <p className="text-[#707070] text-sm">Loading songs...</p>
-            )}
-          </div>
-        </section>
-
-        {/* New Submissions */}
-        <section className="mb-16 border-t border-[#333] pt-12">
-          <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6">
-            new submissions
-          </h2>
-          <div className="space-y-3">
-            {recentPerformances.length > 0 ? (
-              recentPerformances.map((perf) => (
-                <div key={perf.id} className="font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                  <Link
-                    href={`/shows/${perf.show?.date}`}
-                    className="text-[#a0a0a0] hover:text-[#ff6b35] transition-colors"
-                  >
-                    {perf.performance?.song.name}, {perf.show?.venue}, {perf.show?.date}
-                  </Link>
-                </div>
-              ))
-            ) : (
-              <p className="text-[#707070] text-sm">Loading submissions...</p>
-            )}
-          </div>
-          <Link href="/shows" className="inline-block mt-4 font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#ff6b35] hover:underline uppercase tracking-wider">
-            more submissions
-          </Link>
-        </section>
-
-        {/* Recent Comments */}
-        <section className="border-t border-[#333] pt-12">
-          <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-tight mb-6">
-            recent comments
-          </h2>
-          <div className="space-y-3">
-            {recentPerformances.length > 0 ? (
-              recentPerformances.slice(0, 3).map((perf) => (
-                <div key={`comment-${perf.id}`} className="font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                  <p className="text-[#a0a0a0] italic mb-1">"{perf.blurb}"</p>
-                  <p className="text-[#707070] text-xs">— {perf.user.username}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-[#707070] text-sm">Loading comments...</p>
-            )}
-          </div>
-          <Link href="/shows" className="inline-block mt-4 font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#ff6b35] hover:underline uppercase tracking-wider">
-            more comments
-          </Link>
-        </section>
+        </div>
       </div>
     </div>
   );
