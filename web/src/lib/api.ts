@@ -4,13 +4,16 @@
  */
 
 export const getApiUrl = (): string => {
-  // When running on the server (SSR/data fetching in Next.js) hit the docker
-  // network URL directly. The browser should keep using the public URL.
-  if (typeof window === 'undefined' && process.env.INTERNAL_API_URL) {
-    return process.env.INTERNAL_API_URL;
+  // Server-side (SSR / Next API routes) should talk to the internal Docker network
+  if (typeof window === 'undefined') {
+    if (process.env.INTERNAL_API_URL) {
+      return process.env.INTERNAL_API_URL;
+    }
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   }
 
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  // In the browser, always route through our local proxy path so we avoid CORS/TLS drama.
+  return process.env.NEXT_PUBLIC_BROWSER_API_URL || '/api/hv';
 };
 
 export const getApiEndpoint = (path: string): string => {

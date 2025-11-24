@@ -23,6 +23,7 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=https://api.honkingversion.runfoo.run
       - INTERNAL_API_URL=http://api:8000
+      - NEXT_PUBLIC_BROWSER_API_URL=/api/hv
       - NEXTAUTH_SECRET=ee38f08185c0cc5962b0de17d0dc553621dd27e54ea6aa49fc2134e84cbddb20
     depends_on:
       - api
