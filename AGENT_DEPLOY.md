@@ -147,7 +147,7 @@ Should return: `Welcome`
   - **Middle Column**: Highest Rated Performances
   - **Right Column**: Top 10 Community Voters
 
-## After Deployment: Push to Forgejo
+## After Deployment: Updates and Future Changes
 
 Once seeding is complete and verified:
 ```bash
@@ -155,7 +155,9 @@ cd /root/ANTIGRAVITY/honkingversion
 git push origin master
 ```
 
-This triggers CI/CD - no more manual builds needed for future changes!
+**⚠️ NOTE**: Pushing to Forgejo does NOT automatically trigger deployment. The `.github/workflows/deploy.yml` is a GitHub Actions template that won't work on Forgejo.
+
+For future code changes, you'll need to manually re-run the deployment steps (pull, rebuild, restart services).
 
 ## Troubleshooting
 

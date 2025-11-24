@@ -1,23 +1,24 @@
 # Honkingversion Deployment Guide
 
-## CI/CD Pipeline
+## CI/CD Pipeline Status
 
-This project uses GitHub Actions for automated building and deployment.
+⚠️ **IMPORTANT**: The `.github/workflows/deploy.yml` is a GitHub Actions template but will NOT work with Forgejo (git.runfoo.run).
 
-### How It Works
+### Current Status
+- **Repository**: Forgejo (git.runfoo.run) ✅
+- **GitHub Actions**: Not active (different platform)
+- **Forgejo Actions**: Not configured yet
+- **Deployment**: Manual via SSH required
 
-1. **On Push to Master**:
-   - GitHub Actions builds Docker images for API and Web
-   - Images are pushed to GitHub Container Registry (ghcr.io)
-   - SSH deployment is triggered to production server
+### To Enable CI/CD on Forgejo (Future Enhancement)
+1. Enable Forgejo Actions in repository settings
+2. Set up Forgejo runners
+3. Convert workflow to Forgejo syntax
+4. Configure secrets in Forgejo
 
-2. **Setup Required**:
+### For Now: Manual Deployment (Recommended)
 
-   Add these secrets to your GitHub repository settings:
-
-   - `DEPLOY_HOST`: Your VPS hostname (e.g., `67.217.57.230`)
-   - `DEPLOY_USER`: SSH user on VPS (e.g., `root`)
-   - `DEPLOY_KEY`: Private SSH key for VPS access
+Use the SSH deployment method described below.
 
 ### Manual Deployment
 
