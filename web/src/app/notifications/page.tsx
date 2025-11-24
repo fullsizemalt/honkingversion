@@ -32,7 +32,7 @@ export default function NotificationsPage() {
         }
 
         const loadNotifications = async () => {
-            const data = await fetchNotifications(session.user.accessToken)
+            const data = await fetchNotifications(session.user.accessToken || '')
             setNotifications(data)
             setLoading(false)
         }
@@ -87,11 +87,10 @@ export default function NotificationsPage() {
                         {notifications.map((n) => (
                             <div
                                 key={n.id}
-                                className={`p-4 border transition-colors ${
-                                    n.read_at
+                                className={`p-4 border transition-colors ${n.read_at
                                         ? 'border-[var(--border-subtle)] bg-[var(--bg-secondary)]'
                                         : 'border-[var(--accent-primary)] bg-[var(--bg-secondary)]'
-                                }`}
+                                    }`}
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="text-sm text-[var(--text-primary)] font-[family-name:var(--font-ibm-plex-mono)]">
