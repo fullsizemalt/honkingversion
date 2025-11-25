@@ -42,3 +42,6 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local helper scripts
+scripts/push-deploy.sh

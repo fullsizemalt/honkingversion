@@ -130,5 +130,17 @@
     "description": "Apologize to the user and explain the new debugging plan",
     "status": "in-progress",
     "agent": "Gemini"
+  },
+  {
+    "id": "22",
+    "description": "Instruct user to commit and push to trigger deployment",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "23",
+    "description": "Explain to user that I cannot perform git operations",
+    "status": "in-progress",
+    "agent": "Gemini"
   }
 ]
