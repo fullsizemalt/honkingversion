@@ -188,8 +188,8 @@
   {
     "id": "28",
     "description": "QUICK WIN: Dark mode toggle in settings with system preference detection",
-    "status": "pending",
-    "agent": null,
+    "status": "in-progress",
+    "agent": "Claude Code",
     "category": "Mobile UX",
     "effort": "1-2 hours",
     "dependencies": []

@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
+import { useToast } from '@/components/ToastContainer';
+import { Moon, Sun, Monitor } from 'lucide-react';
 
 interface UserPreferences {
     theme: 'light' | 'dark' | 'system';
@@ -9,6 +12,8 @@ interface UserPreferences {
 }
 
 export default function PreferencesSettings() {
+    const { theme, setTheme } = useTheme();
+    const { addToast } = useToast();
     const [preferences, setPreferences] = useState<UserPreferences>({
         theme: 'system',
         language: 'en',
@@ -17,18 +22,32 @@ export default function PreferencesSettings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         fetchPreferences();
     }, []);
+
+    useEffect(() => {
+        // Sync next-themes theme with preferences
+        if (theme && theme !== preferences.theme) {
+            setPreferences(prev => ({ ...prev, theme: theme as 'light' | 'dark' | 'system' }));
+        }
+    }, [theme, preferences.theme]);
 
     const fetchPreferences = async () => {
         try {
             // Fetch from localStorage for now (MVP)
             const stored = localStorage.getItem('userPreferences');
             if (stored) {
-                setPreferences(JSON.parse(stored));
+                const parsed = JSON.parse(stored);
+                setPreferences(parsed);
+                // Apply saved theme
+                if (parsed.theme) {
+                    setTheme(parsed.theme);
+                }
+            } else if (theme) {
+                // Use next-themes default
+                setPreferences(prev => ({ ...prev, theme: theme as 'light' | 'dark' | 'system' }));
             }
         } catch (err) {
             setError('Failed to load preferences');
@@ -40,21 +59,20 @@ export default function PreferencesSettings() {
     const handleSave = async () => {
         setSaving(true);
         setError(null);
-        setSuccess(false);
 
         try {
-            // Save to localStorage for now (MVP)
+            // Save to localStorage
             localStorage.setItem('userPreferences', JSON.stringify(preferences));
 
-            // Apply theme immediately
-            if (preferences.theme !== 'system') {
-                document.documentElement.setAttribute('data-theme', preferences.theme);
-            }
+            // Apply theme using next-themes
+            setTheme(preferences.theme);
 
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 3000);
+            // Show success toast
+            addToast('Preferences updated successfully!', 'success');
         } catch (err) {
-            setError('An error occurred while saving');
+            const message = 'An error occurred while saving';
+            setError(message);
+            addToast(message, 'error');
         } finally {
             setSaving(false);
         }
@@ -81,39 +99,81 @@ export default function PreferencesSettings() {
                 </div>
             )}
 
-            {success && (
-                <div className="mb-4 p-3 bg-green-100 border border-green-300 rounded text-green-700 text-sm">
-                    Preferences updated successfully!
-                </div>
-            )}
-
             <div className="space-y-6">
                 {/* Theme Setting */}
                 <div className="pb-6 border-b border-[var(--border-subtle)]">
                     <h3 className="font-[family-name:var(--font-ibm-plex-mono)] text-sm uppercase tracking-wider text-[var(--text-primary)] mb-3">
-                        Theme
+                        Appearance
                     </h3>
-                    <p className="text-xs text-[var(--text-tertiary)] mb-3">
-                        Choose how the site looks
+                    <p className="text-xs text-[var(--text-tertiary)] mb-4">
+                        Choose how the site looks. System preference follows your device settings.
                     </p>
-                    <div className="space-y-2">
-                        {['light', 'dark', 'system'].map((option) => (
-                            <label key={option} className="flex items-center cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="theme"
-                                    value={option}
-                                    checked={preferences.theme === option}
-                                    onChange={(e) => setPreferences({ ...preferences, theme: e.target.value as 'light' | 'dark' | 'system' })}
-                                    className="mr-3"
-                                />
-                                <span className="text-sm text-[var(--text-secondary)] capitalize">
-                                    {option === 'light' && 'Light - Bright theme'}
-                                    {option === 'dark' && 'Dark - Dark theme'}
-                                    {option === 'system' && 'System - Follow device settings'}
-                                </span>
-                            </label>
-                        ))}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label
+                            className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                                preferences.theme === 'light'
+                                    ? 'border-[var(--accent-primary)] bg-[var(--bg-muted)]'
+                                    : 'border-[var(--border-subtle)] hover:border-[var(--border)]'
+                            }`}
+                        >
+                            <input
+                                type="radio"
+                                name="theme"
+                                value="light"
+                                checked={preferences.theme === 'light'}
+                                onChange={(e) => setPreferences({ ...preferences, theme: e.target.value as 'light' | 'dark' | 'system' })}
+                                className="hidden"
+                            />
+                            <Sun className="w-5 h-5 text-yellow-500" />
+                            <div>
+                                <div className="font-bold text-sm text-[var(--text-primary)]">Light</div>
+                                <div className="text-xs text-[var(--text-tertiary)]">Bright theme</div>
+                            </div>
+                        </label>
+
+                        <label
+                            className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                                preferences.theme === 'dark'
+                                    ? 'border-[var(--accent-primary)] bg-[var(--bg-muted)]'
+                                    : 'border-[var(--border-subtle)] hover:border-[var(--border)]'
+                            }`}
+                        >
+                            <input
+                                type="radio"
+                                name="theme"
+                                value="dark"
+                                checked={preferences.theme === 'dark'}
+                                onChange={(e) => setPreferences({ ...preferences, theme: e.target.value as 'light' | 'dark' | 'system' })}
+                                className="hidden"
+                            />
+                            <Moon className="w-5 h-5 text-blue-500" />
+                            <div>
+                                <div className="font-bold text-sm text-[var(--text-primary)]">Dark</div>
+                                <div className="text-xs text-[var(--text-tertiary)]">Dark theme</div>
+                            </div>
+                        </label>
+
+                        <label
+                            className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                                preferences.theme === 'system'
+                                    ? 'border-[var(--accent-primary)] bg-[var(--bg-muted)]'
+                                    : 'border-[var(--border-subtle)] hover:border-[var(--border)]'
+                            }`}
+                        >
+                            <input
+                                type="radio"
+                                name="theme"
+                                value="system"
+                                checked={preferences.theme === 'system'}
+                                onChange={(e) => setPreferences({ ...preferences, theme: e.target.value as 'light' | 'dark' | 'system' })}
+                                className="hidden"
+                            />
+                            <Monitor className="w-5 h-5 text-[var(--accent-primary)]" />
+                            <div>
+                                <div className="font-bold text-sm text-[var(--text-primary)]">System</div>
+                                <div className="text-xs text-[var(--text-tertiary)]">Device setting</div>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
