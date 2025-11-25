@@ -10,6 +10,9 @@ DEV_USERS = [
     ("testuser", "test123", "user"),
     ("poweruser", "power123", "power_user"),
     ("mod", "mod123", "mod"),
+    ("demouser", "demopassword", "user"),
+    ("demomod", "demopassword", "mod"),
+    ("adminmond", "adminpassword", "admin"),
 ]
 
 
