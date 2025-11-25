@@ -57,7 +57,8 @@ def get_show(date_str: str, session: Session = Depends(get_session)):
 
 @router.get("/")
 def list_shows(session: Session = Depends(get_session)):
-    statement = select(Show).limit(10)
+    """Get all shows, sorted by date (newest first)."""
+    statement = select(Show).order_by(Show.date.desc())
     shows = session.exec(statement).all()
     return shows
 
