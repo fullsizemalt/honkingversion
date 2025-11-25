@@ -57,7 +57,10 @@ export default function CreateListPage() {
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
-            <PageHeader title="Create a New List" />
+            <PageHeader
+                title="Create a New List"
+                description="Start a new public or private list to share with the community."
+            />
 
             <div className="max-w-2xl mx-auto px-4 py-12">
                 <form onSubmit={handleSubmit} className="space-y-6">
