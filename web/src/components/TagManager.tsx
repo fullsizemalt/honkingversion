@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { getApiEndpoint } from '@/lib/api';
 import { Tag } from '@/types/tag';
@@ -9,10 +9,11 @@ interface TagManagerProps {
     isOpen: boolean;
     onClose: () => void;
     onTagCreated?: (tag: Tag) => void;
+    onTagUpdated?: (tag: Tag) => void;
     editTag?: Tag;
 }
 
-export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: TagManagerProps) {
+export default function TagManager({ isOpen, onClose, onTagCreated, onTagUpdated, editTag }: TagManagerProps) {
     const { data: session } = useSession();
     const [name, setName] = useState(editTag?.name || '');
     const [color, setColor] = useState(editTag?.color || '#ff6b35');
@@ -20,6 +21,17 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
     const [category, setCategory] = useState(editTag?.category || '');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // Sync form state when opening or switching tag to edit
+    useEffect(() => {
+        if (isOpen) {
+            setName(editTag?.name || '');
+            setColor(editTag?.color || '#ff6b35');
+            setDescription(editTag?.description || '');
+            setCategory(editTag?.category || '');
+            setError('');
+        }
+    }, [editTag, isOpen]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,8 +46,9 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
 
         try {
             const tagData = { name, color, description, category };
-            const res = await fetch(getApiEndpoint('/tags/'), {
-                method: 'POST',
+            const isEditing = Boolean(editTag);
+            const res = await fetch(getApiEndpoint(isEditing ? `/tags/${editTag?.id}` : '/tags/'), {
+                method: isEditing ? 'PUT' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`
@@ -45,11 +58,15 @@ export default function TagManager({ isOpen, onClose, onTagCreated, editTag }: T
 
             if (!res.ok) {
                 const data = await res.json();
-                throw new Error(data.detail || 'Failed to create tag');
+                throw new Error(data.detail || `Failed to ${isEditing ? 'update' : 'create'} tag`);
             }
 
             const newTag = await res.json();
-            onTagCreated?.(newTag);
+            if (isEditing) {
+                onTagUpdated?.(newTag);
+            } else {
+                onTagCreated?.(newTag);
+            }
             onClose();
 
             // Reset form

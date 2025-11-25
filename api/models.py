@@ -164,6 +164,7 @@ class Tag(SQLModel, table=True):
     name: str = Field(index=True, unique=True)
     category: str  # "jam_type", "venue_type", "special"
     color: Optional[str] = None  # Hex color for UI display
+    description: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     performance_tags: List["PerformanceTag"] = Relationship(back_populates="tag")

@@ -2,7 +2,7 @@ import React from 'react';
 import { getApiEndpoint } from '@/lib/api';
 import SongHeader from '@/components/SongHeader';
 import TopVersion from '@/components/TopVersion';
-import PerformanceTimeline from '@/components/PerformanceTimeline';
+import PerformanceFilter from '@/components/PerformanceFilter';
 
 import { Performance } from '@/types';
 
@@ -111,7 +111,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                         </div>
 
                         {sortedPerformances.length > 0 ? (
-                            <PerformanceTimeline performances={sortedPerformances} />
+                            <PerformanceFilter performances={sortedPerformances} />
                         ) : (
                             <div className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded p-8 text-center">
                                 <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">

@@ -1,6 +1,8 @@
 'use client';
 
-import { Trophy, Award, Star, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Trophy, Award, Star, Zap, Lock } from 'lucide-react';
+import { getApiEndpoint } from '@/lib/api';
 
 interface Badge {
     id: number;
@@ -9,6 +11,14 @@ interface Badge {
     badge_icon: string;
     unlock_criteria?: string;
     earned_at: string;
+}
+
+interface SystemBadge {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    criteria: string;
 }
 
 interface BadgeShowcaseProps {
@@ -28,9 +38,50 @@ const getRelativeTime = (dateString: string) => {
     return `${Math.floor(diffDays / 365)}y ago`;
 };
 
-export default function BadgeShowcase({ badges, username }: BadgeShowcaseProps) {
-    const displayBadges = badges.slice(0, 6);
-    const hasMore = badges.length > 6;
+export default function BadgeShowcase({ badges: userBadges, username }: BadgeShowcaseProps) {
+    const [systemBadges, setSystemBadges] = useState<SystemBadge[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSystemBadges = async () => {
+            try {
+                const res = await fetch(getApiEndpoint('/profile/badges/system'));
+                if (res.ok) {
+                    const data = await res.json();
+                    setSystemBadges(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch system badges:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSystemBadges();
+    }, []);
+
+    // Merge user badges with system badges to determine status
+    const allBadges = systemBadges.map(sysBadge => {
+        const earned = userBadges.find(ub => ub.badge_name === sysBadge.name);
+        return {
+            ...sysBadge,
+            earned: !!earned,
+            earnedAt: earned?.earned_at,
+            userBadgeId: earned?.id
+        };
+    });
+
+    // Sort: Earned first, then by ID
+    const sortedBadges = [...allBadges].sort((a, b) => {
+        if (a.earned && !b.earned) return -1;
+        if (!a.earned && b.earned) return 1;
+        return 0;
+    });
+
+    const displayBadges = sortedBadges.slice(0, 8); // Show 8 badges
+    const hasMore = sortedBadges.length > 8;
+
+    if (loading) return null;
 
     return (
         <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-sm">
@@ -40,80 +91,58 @@ export default function BadgeShowcase({ badges, username }: BadgeShowcaseProps) 
                 </h3>
                 {hasMore && (
                     <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
-                        +{badges.length - 6} more
+                        +{sortedBadges.length - 8} more
                     </span>
                 )}
             </div>
 
-            {badges.length > 0 ? (
-                <div className="grid grid-cols-2 gap-3">
-                    {displayBadges.map((badge, index) => (
-                        <div
-                            key={badge.id}
-                            className="group relative p-4 border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]/30 bg-[var(--bg-muted)]/30 hover:bg-[var(--bg-muted)]/60 transition-all duration-200 cursor-pointer"
-                            style={{
-                                animationDelay: `${index * 75}ms`,
-                                animation: 'popIn 0.4s ease-out forwards',
-                                opacity: 0
-                            }}
-                        >
-                            {/* Badge Icon */}
-                            <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-200">
-                                {badge.badge_icon}
+            <div className="grid grid-cols-4 gap-2">
+                {displayBadges.map((badge, index) => (
+                    <div
+                        key={badge.id}
+                        className={`group relative aspect-square flex flex-col items-center justify-center p-2 border transition-all duration-200 cursor-default
+                            ${badge.earned
+                                ? 'border-[var(--border-subtle)] bg-[var(--bg-muted)]/30 hover:border-[var(--accent-primary)]/30 hover:bg-[var(--bg-muted)]/60'
+                                : 'border-transparent bg-[var(--bg-primary)] opacity-50 grayscale hover:opacity-70'
+                            }`}
+                    >
+                        {/* Badge Icon */}
+                        <div className={`text-2xl mb-1 transition-transform duration-200 ${badge.earned ? 'group-hover:scale-110' : ''}`}>
+                            {badge.icon}
+                        </div>
+
+                        {/* Locked Icon Overlay */}
+                        {!badge.earned && (
+                            <div className="absolute top-1 right-1 text-[var(--text-tertiary)] opacity-50">
+                                <Lock className="w-3 h-3" />
                             </div>
+                        )}
 
-                            {/* Badge Name */}
-                            <h4 className="font-[family-name:var(--font-space-grotesk)] text-xs font-bold text-[var(--text-primary)] mb-1 line-clamp-1">
-                                {badge.badge_name}
-                            </h4>
-
-                            {/* Earned Date */}
-                            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">
-                                {getRelativeTime(badge.earned_at)}
-                            </p>
-
-                            {/* Tooltip on Hover */}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                                <div className="bg-[var(--bg-primary)] border border-[var(--border)] p-3 shadow-lg min-w-[200px]">
-                                    <p className="font-[family-name:var(--font-space-grotesk)] text-xs font-bold text-[var(--text-primary)] mb-1">
-                                        {badge.badge_name}
+                        {/* Tooltip on Hover */}
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-48">
+                            <div className="bg-[var(--bg-primary)] border border-[var(--border)] p-3 shadow-lg text-center">
+                                <p className="font-[family-name:var(--font-space-grotesk)] text-xs font-bold text-[var(--text-primary)] mb-1">
+                                    {badge.name}
+                                </p>
+                                <p className="text-[10px] text-[var(--text-secondary)] mb-2 leading-tight">
+                                    {badge.description}
+                                </p>
+                                {badge.earned ? (
+                                    <p className="font-[family-name:var(--font-ibm-plex-mono)] text-[10px] text-[var(--accent-primary)] uppercase tracking-wide">
+                                        Earned {getRelativeTime(badge.earnedAt!)}
                                     </p>
-                                    {badge.badge_description && (
-                                        <p className="text-xs text-[var(--text-secondary)] mb-2">
-                                            {badge.badge_description}
-                                        </p>
-                                    )}
-                                    {badge.unlock_criteria && (
+                                ) : (
+                                    <div className="border-t border-[var(--border)] pt-2 mt-2">
                                         <p className="font-[family-name:var(--font-ibm-plex-mono)] text-[10px] text-[var(--text-tertiary)] uppercase tracking-wide">
-                                            {badge.unlock_criteria}
+                                            Unlock: {badge.criteria}
                                         </p>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    ))}
-                </div>
-            ) : (
-                <div className="p-8 border border-[var(--border-subtle)] border-dashed text-center">
-                    <Trophy className="w-8 h-8 text-[var(--text-tertiary)] mx-auto mb-3" />
-                    <p className="text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                        No badges earned yet.
-                    </p>
-                </div>
-            )}
-
-            <style jsx>{`
-                @keyframes popIn {
-                    from {
-                        opacity: 0;
-                        transform: scale(0.8);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: scale(1);
-                    }
-                }
-            `}</style>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
