@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getApiEndpoint } from '@/lib/api';
+import { apiClient } from '@/lib/api-client';
 import PageHeader from '@/components/PageHeader';
 
 type Venue = {
@@ -18,11 +18,8 @@ export default function VenuesPage() {
     useEffect(() => {
         const fetchVenues = async () => {
             try {
-                const res = await fetch(getApiEndpoint('/venues'));
-                if (res.ok) {
-                    const data = await res.json();
-                    setVenues(data);
-                }
+                const data = await apiClient.get<Venue[]>('/venues');
+                setVenues(data);
             } catch (e) {
                 console.error('Failed to fetch venues', e);
             } finally {

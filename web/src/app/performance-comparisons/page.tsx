@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { getApiEndpoint } from '@/lib/api';
 import TagBadge from '@/components/TagBadge';
 import { Tag } from '@/types/tag';
+import { Sparkline } from '@/components/charts/Sparkline';
 
 interface Performance {
     id: number;
@@ -193,6 +194,29 @@ function PerformanceComparisonsContent() {
                                         {perf.show.venue}
                                     </td>
                                 ))}
+                            </tr>
+
+                            {/* Vote intensity (relative line) */}
+                            <tr className="border-b border-[#a0a0a0]">
+                                <td className="bg-[#1a1a1a] text-[#f5f5f5] font-bold p-3">Vote Intensity</td>
+                                {performances.map(perf => {
+                                    const maxVotes = Math.max(...performances.map(p => p.vote_count || 0), 1);
+                                    const normalized = perf.vote_count / maxVotes;
+                                    return (
+                                        <td key={perf.id} className="bg-[#2a2a2a] text-[#f5f5f5] p-3 border-l border-[#a0a0a0]">
+                                            <div className="flex items-center gap-2">
+                                                <Sparkline
+                                                    values={[0, normalized]}
+                                                    width={80}
+                                                    height={18}
+                                                    stroke="var(--accent-primary)"
+                                                    strokeWidth={3}
+                                                />
+                                                <span className="text-xs text-[var(--text-secondary)]">{perf.vote_count} votes</span>
+                                            </div>
+                                        </td>
+                                    );
+                                })}
                             </tr>
 
                             {/* Votes */}
