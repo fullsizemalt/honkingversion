@@ -7,14 +7,27 @@ interface PageHeaderProps {
     title: string;
     description: string;
     loggedInMessage?: string;
+    breadcrumbs?: { label: string; href: string }[];
 }
 
-export default function PageHeader({ title, description, loggedInMessage }: PageHeaderProps) {
+export default function PageHeader({ title, description, loggedInMessage, breadcrumbs }: PageHeaderProps) {
     const { data: session } = useSession();
 
     return (
         <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] py-12">
             <div className="max-w-7xl mx-auto px-4">
+                {breadcrumbs && breadcrumbs.length > 0 && (
+                    <nav className="mb-3 text-[var(--text-tertiary)] text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-[0.3em] flex flex-wrap items-center gap-2">
+                        {breadcrumbs.map((crumb, idx) => (
+                            <span key={crumb.href} className="flex items-center gap-2">
+                                {idx > 0 && <span className="text-[var(--border)]">/</span>}
+                                <Link href={crumb.href} className="hover:text-[var(--text-secondary)] transition-colors">
+                                    {crumb.label}
+                                </Link>
+                            </span>
+                        ))}
+                    </nav>
+                )}
                 <div className="mb-2">
                     <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl font-bold text-[var(--text-primary)] uppercase tracking-tight">
                         {title}
