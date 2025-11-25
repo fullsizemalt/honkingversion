@@ -6,6 +6,7 @@ import { useState } from 'react'
 import ThemeToggle from './ThemeToggle'
 import SearchBar from './SearchBar'
 import { NotificationBadge } from './notifications/Badge'
+import { Calendar, Music, ListTodo, MessageSquare, TrendingUp, Disc3, User, Settings, LogOut, Menu, X } from 'lucide-react'
 
 export default function Navbar() {
     const { data: session } = useSession()
@@ -124,15 +125,14 @@ export default function Navbar() {
                     {/* Mobile menu button */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="md:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)]"
+                        className="md:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors"
+                        aria-label="Toggle navigation menu"
                     >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            {isMenuOpen ? (
-                                <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            ) : (
-                                <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            )}
-                        </svg>
+                        {isMenuOpen ? (
+                            <X className="w-6 h-6" />
+                        ) : (
+                            <Menu className="w-6 h-6" />
+                        )}
                     </button>
                 </div>
 
