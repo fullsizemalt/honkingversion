@@ -10,6 +10,7 @@ import { NotificationBadge } from './notifications/Badge'
 export default function Navbar() {
     const { data: session } = useSession()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
 
     return (
         <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg-secondary)]/95 backdrop-blur shadow-[0_8px_20px_rgba(15,23,42,0.08)] dark:bg-[var(--bg-primary)]/90">
@@ -32,16 +33,51 @@ export default function Navbar() {
                         <ThemeToggle />
                         <NotificationBadge />
                         {session ? (
-                            <div className="flex items-center gap-4">
-                                <Link href="/profile" className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
-                                    {session.user?.name}
-                                </Link>
+                            <div className="relative flex items-center gap-4">
                                 <button
-                                    onClick={() => signOut()}
-                                    className="border border-[var(--border)] px-3 py-1.5 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-semibold uppercase text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => setIsProfileMenuOpen((open) => !open)}
+                                    className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[var(--accent-primary)] text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold shadow-sm hover:shadow-md transition-shadow"
+                                    aria-label="Profile menu"
                                 >
-                                    Sign Out
+                                    {session.user?.name?.charAt(0).toUpperCase() || 'U'}
                                 </button>
+
+                                {isProfileMenuOpen && (
+                                    <div
+                                        className="absolute right-0 top-12 min-w-[180px] rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] shadow-[0_12px_30px_rgba(15,23,42,0.18)]"
+                                        onMouseLeave={() => setIsProfileMenuOpen(false)}
+                                    >
+                                        <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+                                            <p className="text-[var(--text-primary)] font-semibold leading-tight">{session.user?.name || 'Account'}</p>
+                                            <p className="text-[var(--text-secondary)] text-xs">{session.user?.email}</p>
+                                        </div>
+                                        <div className="py-1">
+                                            <Link
+                                                href="/profile"
+                                                className="block px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] hover:text-[var(--text-primary)]"
+                                                onClick={() => setIsProfileMenuOpen(false)}
+                                            >
+                                                Profile
+                                            </Link>
+                                            <Link
+                                                href="/settings"
+                                                className="block px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] hover:text-[var(--text-primary)]"
+                                                onClick={() => setIsProfileMenuOpen(false)}
+                                            >
+                                                Settings
+                                            </Link>
+                                            <button
+                                                onClick={() => {
+                                                    setIsProfileMenuOpen(false)
+                                                    signOut()
+                                                }}
+                                                className="w-full text-left px-4 py-2 text-sm text-[var(--accent-primary)] hover:bg-[var(--bg-muted)] hover:text-[var(--accent-primary)]"
+                                            >
+                                                Log Out
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <Link
@@ -66,11 +102,15 @@ export default function Navbar() {
                     {/* Mobile Auth */}
                     <div className="flex md:hidden items-center mr-2">
                         {session ? (
-                            <Link href="/profile" className="flex items-center gap-2">
-                                <div className="w-8 h-8 bg-[var(--accent-primary)] flex items-center justify-center text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold">
+                            <button
+                                onClick={() => setIsProfileMenuOpen((open) => !open)}
+                                className="flex items-center gap-2"
+                                aria-label="Profile menu"
+                            >
+                                <div className="w-9 h-9 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold">
                                     {session.user?.name?.charAt(0).toUpperCase() || 'U'}
                                 </div>
-                            </Link>
+                            </button>
                         ) : (
                             <Link
                                 href="/auth/signin"
@@ -122,12 +162,20 @@ export default function Navbar() {
                             <Link href="/performance-comparisons" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Trending</Link>
                             <Link href="/performances" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">Performances</Link>
                             {session ? (
-                                <button
-                                    onClick={() => signOut()}
-                                    className="block w-full text-left py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2"
-                                >
-                                    Sign Out ({session.user?.name})
-                                </button>
+                                <div className="space-y-1">
+                                    <Link href="/profile" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">
+                                        Profile
+                                    </Link>
+                                    <Link href="/settings" className="block py-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2">
+                                        Settings
+                                    </Link>
+                                    <button
+                                        onClick={() => signOut()}
+                                        className="block w-full text-left py-2 text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] border-l-2 border-transparent hover:border-[var(--accent-primary)] pl-2"
+                                    >
+                                        Log Out
+                                    </button>
+                                </div>
                             ) : (
                                 <Link href="/auth/signin" className="block py-2 text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] border-l-2 border-[var(--accent-primary)] pl-2 font-bold">
                                     Sign In
