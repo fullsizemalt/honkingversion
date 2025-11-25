@@ -16,7 +16,10 @@ async function fetchNotifications(token: string): Promise<Notification[]> {
         },
         cache: 'no-store',
     })
-    if (!res.ok) return []
+    if (!res.ok) {
+        const detail = await res.text().catch(() => '')
+        throw new Error(detail || `Failed to fetch notifications (${res.status})`)
+    }
     return res.json()
 }
 
@@ -26,6 +29,8 @@ export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [loading, setLoading] = useState(true)
     const [banner, setBanner] = useState<string | null>(null)
+    const [error, setError] = useState<string | null>(null)
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
     const grouped = notifications.reduce<Record<string, { first: Notification; count: number }>>((acc, n) => {
         const key = `${n.type}-${n.object_type}-${n.object_id}`
         if (!acc[key]) {
@@ -45,11 +50,21 @@ export default function NotificationsPage() {
         }
 
         let active = true
-        const loadNotifications = async () => {
-            const data = await fetchNotifications(session.user.accessToken || '')
-            if (!active) return
-            setNotifications(data)
-            setLoading(false)
+        const loadNotifications = async (showLoading?: boolean) => {
+            if (showLoading) setLoading(true)
+            setError(null)
+            try {
+                const data = await fetchNotifications(session.user.accessToken || '')
+                if (!active) return
+                setNotifications(data)
+                setLastUpdated(new Date())
+            } catch (err) {
+                if (!active) return
+                const message = err instanceof Error ? err.message : 'Unable to load notifications.'
+                setError(message)
+            } finally {
+                if (active) setLoading(false)
+            }
         }
         loadNotifications()
         const id = setInterval(loadNotifications, 30000)
@@ -80,8 +95,40 @@ export default function NotificationsPage() {
                         <p className="text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm uppercase tracking-wider">
                             {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
                         </p>
+                        {lastUpdated && (
+                            <p className="text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] text-xs mt-1">
+                                Last updated {lastUpdated.toLocaleTimeString()}
+                            </p>
+                        )}
                     </div>
                     <div className="flex items-center gap-3">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (session?.user?.accessToken) {
+                                    // force a foreground refresh and show spinner
+                                    const load = async () => {
+                                        setLoading(true)
+                                        setError(null)
+                                        try {
+                                            const data = await fetchNotifications(session.user.accessToken || '')
+                                            setNotifications(data)
+                                            setLastUpdated(new Date())
+                                        } catch (err) {
+                                            const message = err instanceof Error ? err.message : 'Unable to load notifications.'
+                                            setError(message)
+                                        } finally {
+                                            setLoading(false)
+                                        }
+                                    }
+                                    load()
+                                }
+                            }}
+                            className="text-sm font-[family-name:var(--font-space-grotesk)] border border-[var(--border-strong)] px-3 py-1 rounded hover:border-[var(--accent-primary)] transition-colors"
+                            disabled={loading}
+                        >
+                            {loading ? 'Refreshing…' : 'Refresh'}
+                        </button>
                         <Link
                             href="/notifications/settings"
                             className="text-sm text-[var(--accent-primary)] underline underline-offset-4 font-[family-name:var(--font-space-grotesk)]"
@@ -98,6 +145,7 @@ export default function NotificationsPage() {
                                 }}
                             />
                         )}
+                    </div>
                 </div>
 
                 {banner && (
@@ -105,7 +153,11 @@ export default function NotificationsPage() {
                         {banner}
                     </div>
                 )}
-                </div>
+                {error && (
+                    <div className="mb-4 p-3 border border-[var(--accent-danger)] text-[var(--accent-danger)] bg-[var(--accent-danger)]/5 rounded font-[family-name:var(--font-ibm-plex-mono)] text-sm">
+                        {error}
+                    </div>
+                )}
 
                 {/* Notifications List */}
                 {loading ? (
