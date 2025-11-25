@@ -106,5 +106,29 @@
     "description": "List Following & Privacy",
     "status": "pending",
     "agent": null
+  },
+  {
+    "id": "18",
+    "description": "Explain to the user why the testing environment is empty and how the fix works",
+    "status": "in-progress",
+    "agent": "Gemini"
+  },
+  {
+    "id": "19",
+    "description": "Investigate why frontend widgets are still empty after seeding fix",
+    "status": "in-progress",
+    "agent": "Gemini"
+  },
+  {
+    "id": "20",
+    "description": "Explain to the user the new plan to debug the seeding issue",
+    "status": "in-progress",
+    "agent": "Gemini"
+  },
+  {
+    "id": "21",
+    "description": "Apologize to the user and explain the new debugging plan",
+    "status": "in-progress",
+    "agent": "Gemini"
   }
 ]

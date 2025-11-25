@@ -25,6 +25,7 @@ export default function TopMembers() {
                     throw new Error('Failed to fetch top members');
                 }
                 const data = await res.json();
+                console.log("Top members data:", data);
                 setMembers(data);
             } catch (err) {
                 if ((err as Error).name !== 'AbortError') {

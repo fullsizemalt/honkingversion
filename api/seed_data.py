@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from database import engine, create_db_and_tables
-from models import User, Show, Vote, UserList
+from models import User, Show, Vote, UserList, Song, SongPerformance, ReviewComment
 import random
 import json
 from datetime import datetime, timedelta
@@ -12,10 +12,18 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def create_seed_data():
+import argparse
+
+def create_seed_data(force: bool = False):
     create_db_and_tables()
     
     with Session(engine) as session:
+        # Check if data already exists
+        user_count = session.exec(select(func.count(User.id))).one()
+        if not force and user_count > 0:
+            print("--- Database already seeded. Skipping. Use --force to re-seed. ---")
+            return
+            
         print("--- Starting Seed Data Generation ---")
 
         # --- Helper Functions ---
@@ -52,29 +60,38 @@ def create_seed_data():
                 # print(f"Created Show: {date} @ {venue}") # Reduce spam
             return show
 
-        def create_vote(user, show, rating, comment=None):
+        def create_vote(user, show, rating, comment=None, blurb=None, created_at=None):
             # Check if vote exists
             existing_vote = session.exec(select(Vote).where(Vote.user_id == user.id, Vote.show_id == show.id)).first()
             if not existing_vote:
-                vote = Vote(user_id=user.id, show_id=show.id, rating=rating, comment=comment)
+                vote = Vote(
+                    user_id=user.id,
+                    show_id=show.id,
+                    rating=rating,
+                    comment=comment,
+                    blurb=blurb,
+                    created_at=created_at or datetime.utcnow()
+                )
                 session.add(vote)
                 session.commit()
+                return vote
+            return existing_vote
 
         def create_list(user, title, description, items):
             # Check if list exists (by title for simplicity)
             existing_list = session.exec(select(UserList).where(UserList.user_id == user.id, UserList.title == title)).first()
             if not existing_list:
                 user_list = UserList(
-                    user_id=user.id, 
-                    title=title, 
-                    description=description, 
+                    user_id=user.id,
+                    title=title,
+                    description=description,
                     items=json.dumps(items)
                 )
                 session.add(user_list)
                 session.commit()
                 print(f"Created List for {user.username}: {title}")
 
-        # --- 1. Create Shows (Pool of ~15 shows) ---
+        # --- 1. Create Shows and Songs ---
         shows_data = [
             (1001, "2022-12-16", "Fox Theatre", "Boulder, CO"),
             (1002, "2022-12-17", "Fox Theatre", "Boulder, CO"), # Goosemas
@@ -99,9 +116,6 @@ def create_seed_data():
         print(f"Ensured {len(all_shows)} shows exist.")
 
         # --- 2. Create Users & Activity ---
-
-        # --- 2. Create Users & Activity ---
-        
         personas = [
             {"prefix": "jam_fan", "count": 5, "min_rating": 7, "max_rating": 10, "vote_prob": 0.8, "comment_prob": 0.4, "comments": ["Killer jams!", "Type II madness.", "Ted Tapes vibes."]},
             {"prefix": "song_fan", "count": 5, "min_rating": 6, "max_rating": 9, "vote_prob": 0.6, "comment_prob": 0.3, "comments": ["Great setlist flow.", "Love this song.", "Solid playing."]},
@@ -122,8 +136,23 @@ def create_seed_data():
                     if random.random() < p["vote_prob"]:
                         rating = random.randint(p["min_rating"], p["max_rating"])
                         comment = random.choice(p["comments"]) if random.random() < p["comment_prob"] else None
-                        create_vote(user, show, rating, comment)
-        
+                        blurb = comment if random.random() < 0.5 else None
+                        created_at = datetime.utcnow() - timedelta(days=random.randint(0, 30))
+                        vote = create_vote(user, show, rating, comment, blurb, created_at)
+                        
+                        # Create comments on votes
+                        if vote and random.random() < 0.2:
+                            commenter = get_or_create_user(f"commenter_{random.randint(1,5)}", f"commenter_{random.randint(1,5)}@example.com")
+                            review_comment = ReviewComment(
+                                vote_id=vote.id,
+                                user_id=commenter.id,
+                                body="Great review!",
+                                created_at=datetime.utcnow()
+                            )
+                            session.add(review_comment)
+                            session.commit()
+
+
         # Create some lists for the main user
         honky_king = session.exec(select(User).where(User.username == "honky_king")).first()
         if honky_king:
@@ -132,8 +161,19 @@ def create_seed_data():
              
              list2_shows = [s.id for s in all_shows[5:10]]
              create_list(honky_king, "Cap Run Highlights", "The residency was nuts.", list2_shows)
+             
+        # Ensure at least one performance has more than 3 votes
+        first_perf = session.exec(select(SongPerformance)).first()
+        if first_perf:
+            for i in range(4):
+                user = get_or_create_user(f"voter_{i}", f"voter_{i}@example.com")
+                create_vote(user, first_perf.show, random.randint(7,10), created_at=datetime.utcnow() - timedelta(days=random.randint(0, 30)))
+
 
         print("--- Seed Data Generation Complete ---")
 
 if __name__ == "__main__":
-    create_seed_data()
+    parser = argparse.ArgumentParser(description="Seed the database with dummy data.")
+    parser.add_argument("--force", action="store_true", help="Force re-seeding even if data exists.")
+    args = parser.parse_args()
+    create_seed_data(force=args.force)

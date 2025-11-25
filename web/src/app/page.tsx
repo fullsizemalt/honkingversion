@@ -71,6 +71,7 @@ export default function Home() {
         const statsRes = await fetch(getApiEndpoint('/stats/'));
         if (statsRes.ok) {
           const stats: StatsResponse = await statsRes.json();
+          console.log("Stats data:", stats);
           const trending = stats.trending_performances || [];
           setTrendingPerformances(trending);
           if (trending.length > 0) {
@@ -82,6 +83,7 @@ export default function Home() {
         const perfRes = await fetch(getApiEndpoint('/performances/top-rated?limit=12&min_votes=3'));
         if (perfRes.ok) {
           const perfs = await perfRes.json();
+          console.log("Top performances data:", perfs);
           // Filter and sort by rating
           const topRated = perfs
             .filter((p: any) => p.avg_rating && p.vote_count && p.vote_count > 0)

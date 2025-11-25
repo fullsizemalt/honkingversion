@@ -19,7 +19,7 @@ export default function ListsSection({ lists: initialLists, username }: ListsSec
     const [followedLists, setFollowedLists] = useState<UserList[]>([]);
     const [loadingFollowed, setLoadingFollowed] = useState(false);
 
-    const isCurrentUser = session?.user?.username === username;
+    const isCurrentUser = (session?.user as any)?.username === username;
 
     useEffect(() => {
         if (activeTab === 'followed' && isCurrentUser && followedLists.length === 0) {

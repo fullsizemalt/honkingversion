@@ -131,5 +131,8 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             cd ~/ANTIGRAVITY/honkingversion
-            docker compose exec api python seed_data.py
-            echo "Database seeding complete!"
+            echo "--- Running database seed script... ---"
+            docker compose exec api python seed_data.py --force > seed.log 2>&1
+            echo "--- Seed script output: ---"
+            cat seed.log
+            echo "--- Database seeding complete! ---"

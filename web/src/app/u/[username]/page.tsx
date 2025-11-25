@@ -1,3 +1,4 @@
+'use client';
 import { notFound } from "next/navigation";
 import ProfileHeader from "@/components/ProfileHeader";
 import PublicActivityFeed from "@/components/PublicActivityFeed";
@@ -6,6 +7,8 @@ import BadgeShowcase from "@/components/BadgeShowcase";
 import { getApiEndpoint } from '@/lib/api';
 import { User, Review } from "@/types";
 import { UserList } from "@/types/list";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 // Mock data fetcher (replace with API call)
 async function getUser(username: string): Promise<User | null> {
@@ -82,26 +85,44 @@ async function getUserBadges(username: string): Promise<Badge[]> {
 }
 
 interface PageProps {
-    params: Promise<{ username: string }>;
+    params: { username: string };
 }
 
-export default async function PublicProfilePage({ params }: PageProps) {
-    const { username } = await params;
-    const user = await getUser(username);
+export default function PublicProfilePage({ params }: PageProps) {
+    const { username } = params;
+    const { data: session } = useSession();
+    const [user, setUser] = useState<User | null>(null);
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [lists, setLists] = useState<UserList[]>([]);
+    const [attendedShows, setAttendedShows] = useState<AttendedShow[]>([]);
+    const [badges, setBadges] = useState<Badge[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userData = await getUser(username);
+            if (!userData) {
+                notFound();
+                return;
+            }
+            setUser(userData);
+            setReviews(await getUserReviews(username));
+            setLists(await getUserLists(username));
+            setAttendedShows(await getUserAttendedShows(username));
+            setBadges(await getUserBadges(username));
+        };
+        fetchData();
+    }, [username]);
 
     if (!user) {
-        notFound();
+        return <div>Loading...</div>; // Or a proper loading skeleton
     }
 
-    const reviews = await getUserReviews(username);
-    const lists = await getUserLists(username);
-    const attendedShows = await getUserAttendedShows(username);
-    const badges = await getUserBadges(username);
+    const isCurrentUser = session?.user?.name === user.username;
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
             <div className="max-w-7xl mx-auto px-4 py-8">
-                <ProfileHeader user={user} isCurrentUser={false} />
+                <ProfileHeader user={user} isCurrentUser={isCurrentUser} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">

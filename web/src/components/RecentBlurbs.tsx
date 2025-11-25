@@ -30,6 +30,7 @@ export default function RecentBlurbs() {
                     throw new Error('Failed to fetch recent blurbs');
                 }
                 const data = await res.json();
+                console.log("Recent blurbs data:", data);
                 setBlurbs(data);
             } catch (err) {
                 if ((err as Error).name !== 'AbortError') {

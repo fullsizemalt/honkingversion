@@ -29,6 +29,7 @@ export default function RecentComments() {
                     throw new Error('Failed to fetch recent comments');
                 }
                 const data = await res.json();
+                console.log("Recent comments data:", data);
                 setComments(data);
             } catch (err) {
                 if ((err as Error).name !== 'AbortError') {
