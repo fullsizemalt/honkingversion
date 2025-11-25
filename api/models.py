@@ -56,7 +56,11 @@ class Show(SQLModel, table=True):
     location: str
     tour: Optional[str] = Field(default=None, index=True)
     setlist_data: str # JSON string
-    
+
+    # External links
+    bandcamp_url: Optional[str] = None
+    nugs_url: Optional[str] = None
+
     votes: List["Vote"] = Relationship(back_populates="show")
     performances: List["SongPerformance"] = Relationship(back_populates="show")
     show_tags: List["ShowTag"] = Relationship(back_populates="show")
@@ -112,6 +116,10 @@ class SongPerformance(SQLModel, table=True):
     # Honking vote count denormalized cache
     honking_vote_count: int = Field(default=0, index=True)
     honking_votes_updated_at: Optional[datetime] = None
+
+    # External links
+    bandcamp_url: Optional[str] = None
+    nugs_url: Optional[str] = None
 
     song: Song = Relationship(
         back_populates="performances",
