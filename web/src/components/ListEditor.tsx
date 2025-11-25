@@ -73,7 +73,6 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
         };
         fetchRecentShows();
     }, [isOpen]);
-
     const addShowByDate = async () => {
         if (!showSearch.trim()) return;
         try {
