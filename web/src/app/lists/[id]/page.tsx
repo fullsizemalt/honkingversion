@@ -72,30 +72,31 @@ export default function ListDetailPage() {
             const results: any[] = [];
             for (const raw of itemsArray) {
                 const itemId = typeof raw === 'object' && raw?.id ? raw.id : raw;
+                const label = typeof raw === 'object' && raw?.label ? raw.label : null;
                 try {
                     if (list.list_type === 'shows') {
                         const res = await fetch(getApiEndpoint(`/shows/id/${itemId}`), { cache: 'no-store' });
                         if (res.ok) {
-                            results.push({ type: 'show', data: await res.json(), id: itemId });
+                            results.push({ type: 'show', data: await res.json(), id: itemId, label });
                             continue;
                         }
                     } else if (list.list_type === 'performances') {
                         const res = await fetch(getApiEndpoint(`/performances/${itemId}`), { cache: 'no-store' });
                         if (res.ok) {
-                            results.push({ type: 'performance', data: await res.json(), id: itemId });
+                            results.push({ type: 'performance', data: await res.json(), id: itemId, label });
                             continue;
                         }
                     } else if (list.list_type === 'songs') {
                         const res = await fetch(getApiEndpoint(`/songs/id/${itemId}`), { cache: 'no-store' });
                         if (res.ok) {
-                            results.push({ type: 'song', data: await res.json(), id: itemId });
+                            results.push({ type: 'song', data: await res.json(), id: itemId, label });
                             continue;
                         }
                     }
                 } catch (e) {
                     console.error('Failed to fetch item detail', e);
                 }
-                results.push({ type: 'unknown', id: itemId });
+                results.push({ type: 'unknown', id: itemId, label });
             }
             setItemDetails(results);
         };
@@ -276,7 +277,7 @@ export default function ListDetailPage() {
                             }
                             return (
                                 <div key={index} className="bg-[#1a1a1a] border border-[#333] p-4 text-[#f5f5f5]">
-                                    Item ID: {entry.id}
+                                    {entry.label || `Item ID: ${entry.id}`}
                                 </div>
                             );
                         })

@@ -4,12 +4,21 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { getApiEndpoint } from '@/lib/api';
 
+type ListItem = {
+    id: number;
+    type: 'show';
+    label: string;
+    date?: string;
+    venue?: string;
+};
+
 interface UserList {
     id?: number;
     title: string;
     description?: string;
     list_type?: 'shows' | 'performances' | 'songs';
     items?: any[];
+    is_public?: boolean;
 }
 
 interface ListEditorProps {
@@ -23,23 +32,51 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
     const { data: session } = useSession();
     const [title, setTitle] = useState(editList?.title || '');
     const [description, setDescription] = useState(editList?.description || '');
-    const [listType, setListType] = useState(editList?.list_type || 'shows');
-    const [items, setItems] = useState<any[]>(Array.isArray(editList?.items) ? editList?.items ?? [] : []);
+    const [listType, setListType] = useState<'shows' | 'performances' | 'songs'>((editList?.list_type as any) || 'shows');
+    const [items, setItems] = useState<ListItem[]>(Array.isArray(editList?.items) ? (editList?.items as ListItem[]) ?? [] : []);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isPublic, setIsPublic] = useState(editList?.is_public ?? true);
+    const [showSearch, setShowSearch] = useState('');
+    const [showSuggestion, setShowSuggestion] = useState<string | null>(null);
 
     useEffect(() => {
         if (editList) {
             setTitle(editList.title);
             setDescription(editList.description || '');
-            setListType(editList.list_type || 'shows');
-            setItems(Array.isArray(editList.items) ? editList.items : []);
+            setListType((editList.list_type as any) || 'shows');
+            setItems(Array.isArray(editList.items) ? (editList.items as ListItem[]) : []);
+            setIsPublic(editList.is_public ?? true);
         }
     }, [editList]);
 
+    const addShowByDate = async () => {
+        if (!showSearch.trim()) return;
+        try {
+            const res = await fetch(getApiEndpoint(`/shows/${showSearch.trim()}`));
+            if (!res.ok) {
+                setShowSuggestion('Show not found for that date');
+                return;
+            }
+            const data = await res.json();
+            const newItem: ListItem = {
+                id: data.id,
+                type: 'show',
+                label: `${data.date} @ ${data.venue}`,
+                date: data.date,
+                venue: data.venue,
+            };
+            setItems((prev) => [...prev, newItem]);
+            setShowSuggestion(null);
+            setShowSearch('');
+        } catch (e) {
+            setShowSuggestion('Error fetching show');
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const accessToken = session?.user?.accessToken
+        const accessToken = session?.user?.accessToken;
         if (!accessToken) {
             setError('You must be logged in to create lists');
             return;
@@ -49,11 +86,20 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
         setError('');
 
         try {
+            const normalizedItems = items.map((item) => ({
+                id: item.id,
+                type: item.type,
+                label: item.label,
+                date: item.date,
+                venue: item.venue,
+            }));
+
             const listData = {
                 title,
                 description,
                 list_type: listType,
-                items
+                items: JSON.stringify(normalizedItems),
+                is_public: isPublic,
             };
 
             const url = editList
@@ -80,11 +126,12 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
             onListSaved?.(savedList);
             onClose();
 
-            // Reset form if creating new
             if (!editList) {
                 setTitle('');
                 setDescription('');
                 setListType('shows');
+                setItems([]);
+                setIsPublic(true);
             }
         } catch (err: any) {
             setError(err.message);
@@ -97,72 +144,42 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 max-w-md w-full shadow-[0_35px_55px_rgba(23,20,10,0.15)]">
+            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 max-w-xl w-full shadow-[0_35px_55px_rgba(23,20,10,0.15)]">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] mb-4">
                     {editList ? 'Edit List' : 'Create New List'}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
-                            Items
-                        </label>
-                        <div className="flex gap-2 mb-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
+                                List Title *
+                            </label>
                             <input
                                 type="text"
-                                placeholder={`Add ${listType.slice(0, -1)} ID`}
-                                className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        const val = (e.target as HTMLInputElement).value.trim();
-                                        if (!val) return;
-                                        setItems([...items, Number.isNaN(Number(val)) ? val : Number(val)]);
-                                        (e.target as HTMLInputElement).value = '';
-                                    }
-                                }}
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                required
+                                className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                                placeholder="e.g., Best Shows of 2024"
                             />
-                            <button
-                                type="button"
-                                onClick={() => setItems([])}
-                                className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
-                            >
-                                Clear
-                            </button>
                         </div>
-                        {items.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                                {items.map((item, idx) => (
-                                    <span
-                                        key={`${item}-${idx}`}
-                                        className="flex items-center gap-2 px-3 py-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
-                                    >
-                                        {String(item)}
-                                        <button
-                                            type="button"
-                                            className="text-[var(--accent-primary)] hover:text-[var(--accent-secondary)]"
-                                            onClick={() => setItems(items.filter((_, i) => i !== idx))}
-                                        >
-                                            ✕
-                                        </button>
-                                    </span>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    <div>
-                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
-                            List Title *
-                        </label>
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                            className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
-                            placeholder="e.g., Best Shows of 2024"
-                        />
+                        <div>
+                            <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
+                                Visibility
+                            </label>
+                            <select
+                                value={isPublic ? 'public' : 'private'}
+                                onChange={(e) => setIsPublic(e.target.value === 'public')}
+                                className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none"
+                            >
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                            </select>
+                            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
+                                Public lists can be shared; private lists are visible only to you.
+                            </p>
+                        </div>
                     </div>
 
                     <div>
@@ -180,6 +197,57 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
 
                     <div>
                         <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
+                            Add Show by Date (YYYY-MM-DD)
+                        </label>
+                        <div className="flex gap-2 mb-2">
+                            <input
+                                type="text"
+                                value={showSearch}
+                                onChange={(e) => setShowSearch(e.target.value)}
+                                placeholder="2025-07-20"
+                                className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                            />
+                            <button
+                                type="button"
+                                onClick={addShowByDate}
+                                className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                            >
+                                Add
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setItems([])}
+                                className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                            >
+                                Clear
+                            </button>
+                        </div>
+                        {showSuggestion && (
+                            <p className="text-xs text-amber-400">{showSuggestion}</p>
+                        )}
+                        {items.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {items.map((item, idx) => (
+                                    <span
+                                        key={`${item.id}-${idx}`}
+                                        className="flex items-center gap-2 px-3 py-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
+                                    >
+                                        {item.label}
+                                        <button
+                                            type="button"
+                                            className="text-[var(--accent-primary)] hover:text-[var(--accent-secondary)]"
+                                            onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                                        >
+                                            ✕
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
                             List Type
                         </label>
                         <select
@@ -188,8 +256,8 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none"
                         >
                             <option value="shows">Shows</option>
-                            <option value="performances">Performances</option>
-                            <option value="songs">Songs</option>
+                            <option value="performances" disabled>Performances (coming soon)</option>
+                            <option value="songs" disabled>Songs (coming soon)</option>
                         </select>
                     </div>
 
