@@ -2,8 +2,8 @@
   {
     "id": "0",
     "description": "Phase 1: Song pages & performance voting UI (frontend for /songs/[slug] and show pages wired to vote endpoints)",
-    "status": "pending",
-    "agent": null
+    "status": "completed",
+    "agent": "Claude Code"
   },
   {
     "id": "1",
@@ -20,7 +20,7 @@
   {
     "id": "3",
     "description": "Tags UI: create/edit tags, display badges, filter shows/performances by tag",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "codex"
   },
   {
