@@ -1,7 +1,7 @@
 'use client'
 
 import { signIn } from "next-auth/react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
@@ -11,13 +11,6 @@ export default function SignIn() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
-    const [showDevLogin, setShowDevLogin] = useState(false)
-
-    // Check for dev mode on mount
-    useEffect(() => {
-        const isDevMode = localStorage.getItem('devMode') === 'true';
-        setShowDevLogin(isDevMode);
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -128,37 +121,35 @@ export default function SignIn() {
                     </div>
                 </form>
 
-                {/* Dev Mode Quick Login */}
-                {showDevLogin && (
-                    <div className="mt-6 p-4 bg-purple-900/20 border border-purple-500/30">
-                        <p className="text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider text-purple-400 mb-3 text-center">
-                            🔧 Quick Login (Dev Mode)
-                        </p>
-                        <div className="grid grid-cols-3 gap-2">
-                            <button
-                                onClick={() => quickLogin('testuser', 'test123')}
-                                disabled={loading}
-                                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-white transition-colors disabled:opacity-50"
-                            >
-                                User
-                            </button>
-                            <button
-                                onClick={() => quickLogin('poweruser', 'power123')}
-                                disabled={loading}
-                                className="px-3 py-2 bg-blue-900/30 hover:bg-blue-900/50 border border-blue-700/50 text-xs font-semibold text-blue-300 transition-colors disabled:opacity-50"
-                            >
-                                Power
-                            </button>
-                            <button
-                                onClick={() => quickLogin('admin', 'admin123')}
-                                disabled={loading}
-                                className="px-3 py-2 bg-orange-900/30 hover:bg-orange-900/50 border border-orange-700/50 text-xs font-semibold text-orange-300 transition-colors disabled:opacity-50"
-                            >
-                                Admin
-                            </button>
-                        </div>
+                {/* Demo Account Quick Login */}
+                <div className="mt-6 p-4 bg-slate-800/50 border border-slate-700">
+                    <p className="text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider text-slate-400 mb-3 text-center">
+                        🎪 Quick Demo Login
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                        <button
+                            onClick={() => quickLogin('demouser', 'demopassword')}
+                            disabled={loading}
+                            className="px-3 py-2 bg-slate-700 hover:bg-slate-600 border border-slate-600 text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                        >
+                            User
+                        </button>
+                        <button
+                            onClick={() => quickLogin('demomod', 'demopassword')}
+                            disabled={loading}
+                            className="px-3 py-2 bg-blue-900/40 hover:bg-blue-900/60 border border-blue-700/50 text-xs font-semibold text-blue-300 transition-colors disabled:opacity-50"
+                        >
+                            Mod
+                        </button>
+                        <button
+                            onClick={() => quickLogin('demoadmin', 'demopassword')}
+                            disabled={loading}
+                            className="px-3 py-2 bg-orange-900/40 hover:bg-orange-900/60 border border-orange-700/50 text-xs font-semibold text-orange-300 transition-colors disabled:opacity-50"
+                        >
+                            Admin
+                        </button>
                     </div>
-                )}
+                </div>
 
                 <div className="mt-6">
                     <div className="relative">
