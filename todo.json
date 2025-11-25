@@ -170,8 +170,8 @@
   {
     "id": "26",
     "description": "QUICK WIN: Help documentation page with FAQ and getting started guide",
-    "status": "pending",
-    "agent": null,
+    "status": "in-progress",
+    "agent": "Claude Code",
     "category": "Community Features",
     "effort": "1-2 hours",
     "dependencies": []

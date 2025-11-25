@@ -161,6 +161,11 @@ export default function Footer() {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link href="/help" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        Help & FAQ
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href="/attribution" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
                                         Attribution
                                     </Link>
