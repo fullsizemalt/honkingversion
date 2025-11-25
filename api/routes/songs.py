@@ -3,8 +3,7 @@ from sqlmodel import Session, select, func
 from typing import List, Optional
 
 from api.database import get_session
-from api.database import get_session
-from api.models import Song, SongPerformance, Show, Vote, Tag, PerformanceTag
+from api.models import Song, SongPerformance, Show, Vote, Tag, PerformanceTag, User
 from api.routes.auth import get_current_user_optional
 from api.routes.tags import _visibility_filter
 
