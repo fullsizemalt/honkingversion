@@ -6,8 +6,10 @@ import SettingsNav from '@/components/Settings/SettingsNav';
 import ProfileSettings from '@/components/Settings/ProfileSettings';
 import AccountSettings from '@/components/Settings/AccountSettings';
 import PrivacySettings from '@/components/Settings/PrivacySettings';
+import PreferencesSettings from '@/components/Settings/PreferencesSettings';
+import SessionsSettings from '@/components/Settings/SessionsSettings';
 
-type SettingsSection = 'profile' | 'account' | 'privacy';
+type SettingsSection = 'profile' | 'account' | 'privacy' | 'preferences' | 'sessions';
 
 export default function SettingsPage() {
     const [activeSection, setActiveSection] = useState<SettingsSection>('profile');
@@ -51,6 +53,8 @@ export default function SettingsPage() {
                         {activeSection === 'profile' && <ProfileSettings />}
                         {activeSection === 'account' && <AccountSettings />}
                         {activeSection === 'privacy' && <PrivacySettings />}
+                        {activeSection === 'preferences' && <PreferencesSettings />}
+                        {activeSection === 'sessions' && <SessionsSettings />}
                     </div>
                 </div>
             </div>
