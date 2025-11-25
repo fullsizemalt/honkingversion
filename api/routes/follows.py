@@ -11,10 +11,10 @@ from api.services.notifications import create_notification
 
 router = APIRouter(prefix="/follows", tags=["follows"])
 
-# class UserSummary(BaseModel):
-#     id: int
-#     username: str
-#     created_at: datetime
+class UserSummary(BaseModel):
+    id: int
+    username: str
+    created_at: datetime
 
 @router.post("/{username}")
 def follow_user(
