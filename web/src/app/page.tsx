@@ -196,7 +196,10 @@ export default function Home() {
                             {perf.song_name}
                           </p>
                           <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] mt-1 uppercase tracking-[0.35em]">
-                            {perf.venue} • {perf.date}
+                            <Link href={`/shows/${perf.date}`} className="hover:text-[var(--accent-primary)] transition-colors">
+                              {perf.venue}
+                            </Link>{' '}
+                            • {perf.date}
                           </p>
                           <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mt-2">
                             {perf.votes_last_30d} votes
@@ -237,7 +240,10 @@ export default function Home() {
                           {perf.song_name}
                         </p>
                         <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] mt-1 uppercase tracking-[0.35em]">
-                          {perf.venue} • {perf.date}
+                          <Link href={`/shows/${perf.date}`} className="hover:text-[var(--accent-primary)] transition-colors">
+                            {perf.venue}
+                          </Link>{' '}
+                          • {perf.date}
                         </p>
                       </div>
                       <div className="text-right flex-shrink-0">
