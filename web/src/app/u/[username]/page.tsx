@@ -8,7 +8,8 @@ import { getApiEndpoint } from '@/lib/api';
 import { User, Review } from "@/types";
 import { UserList } from "@/types/list";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { LineChart } from "@/components/charts/LineChart";
 
 // Mock data fetcher (replace with API call)
 async function getUser(username: string): Promise<User | null> {
@@ -96,6 +97,21 @@ export default function PublicProfilePage({ params }: PageProps) {
     const [attendedShows, setAttendedShows] = useState<AttendedShow[]>([]);
     const [badges, setBadges] = useState<Badge[]>([]);
 
+    const reviewActivity = useMemo(() => {
+        if (!reviews.length) return [];
+        // bucket reviews into last 8 weeks
+        const now = new Date();
+        const buckets = Array(8).fill(0);
+        reviews.forEach((rev) => {
+            const d = new Date(rev.created_at);
+            const diffWeeks = Math.floor((now.getTime() - d.getTime()) / (7 * 24 * 60 * 60 * 1000));
+            if (diffWeeks >= 0 && diffWeeks < buckets.length) {
+                buckets[buckets.length - diffWeeks - 1] += 1;
+            }
+        });
+        return buckets;
+    }, [reviews]);
+
     useEffect(() => {
         const fetchData = async () => {
             const resolvedParams = params ? await Promise.resolve(params) : { username: '' };
@@ -166,6 +182,19 @@ export default function PublicProfilePage({ params }: PageProps) {
                                         </span>
                                     </div>
                                 </div>
+                                {reviewActivity.length > 0 && (
+                                    <div className="border-t border-[var(--border)] pt-4 mt-4">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-[var(--text-secondary)]">Review Activity</span>
+                                            <span className="text-[var(--text-primary)] font-bold">last 8 wks</span>
+                                        </div>
+                                        <LineChart
+                                            series={[{ label: "Reviews", values: reviewActivity, color: "var(--accent-primary)" }]}
+                                            height={72}
+                                            width={220}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
