@@ -77,6 +77,18 @@ def get_user_profile(
         except:
             social_links = {}
     
+    # Serialize selected_title
+    selected_title_dict = None
+    if selected_title:
+        selected_title_dict = {
+            "id": selected_title.id,
+            "title_name": selected_title.title_name,
+            "title_description": getattr(selected_title, "title_description", None),
+            "color": selected_title.color,
+            "icon": getattr(selected_title, "icon", None),
+            "earned_at": selected_title.earned_at
+        }
+    
     return {
         "user": {
             "id": user.id,
@@ -95,7 +107,7 @@ def get_user_profile(
             "followers": 0,  # TODO: implement followers
             "following": 0   # TODO: implement following
         },
-        "selected_title": selected_title,
+        "selected_title": selected_title_dict,
         "badges": badges,
         "recent_activity": recent_activity
     }
@@ -217,4 +229,3 @@ def update_selected_title(
     session.refresh(current_user)
     
     return {"success": True, "selected_title_id": title_id}
-
