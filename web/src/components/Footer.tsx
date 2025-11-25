@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import FeedbackModal from './FeedbackModal';
 import { ExternalLink, Wrench, Check, Github, Mail } from 'lucide-react';
+import HealthBadges from './HealthBadges';
 
 export default function Footer() {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -214,9 +215,12 @@ export default function Footer() {
                     </div>
 
                     <div className="border-t border-[var(--border-subtle)] pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        <p className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-tertiary)] italic normal-case tracking-normal max-w-md">
-                            Honkingversion loves Goose but is in no way affiliated with The Organization or affiliated enterprises.
-                        </p>
+                        <div className="space-y-3">
+                            <p className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-tertiary)] italic normal-case tracking-normal max-w-md">
+                                Honkingversion loves Goose but is in no way affiliated with The Organization or affiliated enterprises.
+                            </p>
+                            <HealthBadges />
+                        </div>
 
                         <div className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-[0.2em] text-[var(--text-tertiary)] text-right">
                             <p className="mb-2">

@@ -170,6 +170,9 @@ export default function Home() {
           <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
               <span>Trending</span>
+              <Link href="/performances" className="ml-auto text-[11px] font-[family-name:var(--font-ibm-plex-mono)] tracking-[0.2em] text-[var(--text-tertiary)] hover:text-[var(--accent-primary)] transition-colors">
+                View all
+              </Link>
             </h2>
 
             {loading ? (
@@ -222,6 +225,9 @@ export default function Home() {
           <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
               <span>Highest Rated</span>
+              <Link href="/performances?sort=top" className="ml-auto text-[11px] font-[family-name:var(--font-ibm-plex-mono)] tracking-[0.2em] text-[var(--text-tertiary)] hover:text-[var(--accent-primary)] transition-colors">
+                View all
+              </Link>
             </h2>
 
             {loading ? (
