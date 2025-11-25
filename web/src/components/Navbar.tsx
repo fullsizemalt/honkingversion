@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react"
 import { useState } from 'react'
 import ThemeToggle from './ThemeToggle'
 import SearchBar from './SearchBar'
+import { NotificationBadge } from './notifications/Badge'
 
 export default function Navbar() {
     const { data: session } = useSession()
@@ -29,6 +30,7 @@ export default function Navbar() {
                     {/* Auth & Theme */}
                     <div className="hidden md:flex items-center gap-4">
                         <ThemeToggle />
+                        <NotificationBadge />
                         {session ? (
                             <div className="flex items-center gap-4">
                                 <Link href="/profile" className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">
@@ -54,6 +56,11 @@ export default function Navbar() {
                     {/* Mobile Theme Toggle */}
                     <div className="flex md:hidden items-center mr-2">
                         <ThemeToggle />
+                    </div>
+
+                    {/* Mobile notifications */}
+                    <div className="flex md:hidden items-center mr-2">
+                        <NotificationBadge />
                     </div>
 
                     {/* Mobile Auth */}

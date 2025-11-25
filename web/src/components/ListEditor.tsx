@@ -39,6 +39,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
     const [isPublic, setIsPublic] = useState(editList?.is_public ?? true);
     const [showSearch, setShowSearch] = useState('');
     const [showSuggestion, setShowSuggestion] = useState<string | null>(null);
+    const [recentShows, setRecentShows] = useState<ListItem[]>([]);
 
     useEffect(() => {
         if (editList) {
@@ -49,6 +50,29 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
             setIsPublic(editList.is_public ?? true);
         }
     }, [editList]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        const fetchRecentShows = async () => {
+            try {
+                const res = await fetch(getApiEndpoint('/shows/'));
+                if (!res.ok) return;
+                const data = await res.json();
+                const normalized = (Array.isArray(data) ? data : []).map((s: any) => ({
+                    id: s.id,
+                    type: 'show' as const,
+                    label: `${s.date} @ ${s.venue}`,
+                    date: s.date,
+                    venue: s.venue,
+                }));
+                normalized.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+                setRecentShows(normalized.slice(0, 20));
+            } catch {
+                // ignore
+            }
+        };
+        fetchRecentShows();
+    }, [isOpen]);
 
     const addShowByDate = async () => {
         if (!showSearch.trim()) return;
@@ -214,6 +238,24 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             >
                                 Add
                             </button>
+                            {recentShows.length > 0 && (
+                                <select
+                                    onChange={(e) => {
+                                        const selected = recentShows.find((r) => r.id === Number(e.target.value));
+                                        if (selected) {
+                                            setItems((prev) => [...prev, selected]);
+                                        }
+                                    }}
+                                    className="border border-[var(--border)] text-[var(--text-secondary)] px-2 py-2 text-xs bg-[var(--bg-muted)]"
+                                >
+                                    <option value="">Recent shows...</option>
+                                    {recentShows.map((s) => (
+                                        <option key={s.id} value={s.id}>
+                                            {s.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                             <button
                                 type="button"
                                 onClick={() => setItems([])}
