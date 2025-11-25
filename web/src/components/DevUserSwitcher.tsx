@@ -95,7 +95,7 @@ export default function DevUserSwitcher() {
                         {/* Header */}
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)]">
-                                🔧 Dev User Switcher
+                                Dev User Switcher
                             </h2>
                             <button
                                 onClick={() => setIsOpen(false)}
