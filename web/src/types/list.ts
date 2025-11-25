@@ -8,4 +8,6 @@ export interface UserList {
     share_token?: string | null;
     is_public?: boolean;
     created_at: string;
+    follower_count?: number;
+    is_following?: boolean;
 }

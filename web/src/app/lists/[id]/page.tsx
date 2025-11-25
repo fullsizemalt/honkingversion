@@ -9,6 +9,7 @@ import { UserList } from '@/types/list';
 import { Show, Performance } from '@/types';
 import ItemTags from '@/components/ItemTags';
 import ListEditor from '@/components/ListEditor';
+import ListFollowButton from '@/components/ListFollowButton';
 
 export default function ListDetailPage() {
     const params = useParams();
@@ -24,6 +25,8 @@ export default function ListDetailPage() {
     const [shareToken, setShareToken] = useState<string | null>(null);
     const [sharing, setSharing] = useState(false);
     const [itemDetails, setItemDetails] = useState<any[]>([]);
+    const [followerCount, setFollowerCount] = useState(0);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     useEffect(() => {
         const fetchList = async () => {
@@ -40,6 +43,8 @@ export default function ListDetailPage() {
                     if (data.share_token) {
                         setShareToken(data.share_token);
                     }
+                    setFollowerCount(data.follower_count || 0);
+                    setIsFollowing(data.is_following || false);
                 }
             } catch (error) {
                 console.error('Failed to fetch list', error);
@@ -177,19 +182,29 @@ export default function ListDetailPage() {
         <div className="min-h-screen bg-[var(--bg-primary)]">
             <div className="max-w-4xl mx-auto px-4 py-8">
                 <div className="mb-8">
-                    <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl font-bold text-[#f5f5f5] mb-2">
-                                {list.title}
-                            </h1>
-                            {list.description && (
-                                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-[#a0a0a0] mb-4">
-                                    {list.description}
-                                </p>
+                        <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                                <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl font-bold text-[#f5f5f5] mb-2">
+                                    {list.title}
+                                </h1>
+                                {list.description && (
+                                    <p className="font-[family-name:var(--font-ibm-plex-mono)] text-[#a0a0a0] mb-4">
+                                        {list.description}
+                                    </p>
+                                )}
+                            </div>
+                            {!isOwner && (
+                                <div className="ml-4">
+                                    <ListFollowButton
+                                        listId={list.id}
+                                        initialIsFollowing={isFollowing}
+                                        initialFollowerCount={followerCount}
+                                        isOwner={false}
+                                    />
+                                </div>
                             )}
-                        </div>
-                        {isOwner && (
-                            <div className="flex flex-col gap-2 ml-4">
+                            {isOwner && (
+                                <div className="flex flex-col gap-2 ml-4">
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => setShowListEditor(true)}

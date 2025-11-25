@@ -1,11 +1,23 @@
 import Link from 'next/link';
+import { Lock } from 'lucide-react';
 import { UserList } from '@/types/list';
+import ListFollowButton from './ListFollowButton';
 
 interface ListCardProps {
     list: UserList | (Partial<UserList> & { id: number; title: string; created_at?: string });
+    showFollowButton?: boolean;
+    isOwner?: boolean;
+    initialFollowerCount?: number;
+    initialIsFollowing?: boolean;
 }
 
-export default function ListCard({ list }: ListCardProps) {
+export default function ListCard({
+    list,
+    showFollowButton = false,
+    isOwner = false,
+    initialFollowerCount,
+    initialIsFollowing
+}: ListCardProps) {
     const itemCount = (() => {
         if (!list.items) return 0;
         if (Array.isArray(list.items)) return list.items.length;
@@ -17,22 +29,39 @@ export default function ListCard({ list }: ListCardProps) {
     })();
 
     return (
-        <Link
-            href={`/lists/${list.id}`}
-            className="block bg-[#1a1a1a] border border-[#333] p-4 hover:border-[#ff6b35] transition-colors group"
-        >
-            <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] group-hover:text-[#ff6b35] mb-2">
-                {list.title}
-            </h3>
-            {list.description && (
-                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[#a0a0a0] mb-4 line-clamp-2">
-                    {list.description}
-                </p>
+        <div className="group relative bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-[var(--accent-primary)] transition-colors">
+            <Link href={`/lists/${list.id}`} className="block p-4">
+                <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] pr-8">
+                        {list.title}
+                    </h3>
+                    {list.is_public === false && (
+                        <Lock className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0" />
+                    )}
+                </div>
+
+                {list.description && (
+                    <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)] mb-4 line-clamp-2">
+                        {list.description}
+                    </p>
+                )}
+
+                <div className="flex items-center justify-between text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-tertiary)] uppercase tracking-wider">
+                    <span>{itemCount} {list.list_type || 'items'}</span>
+                    <span>{list.created_at ? new Date(list.created_at).toLocaleDateString() : ''}</span>
+                </div>
+            </Link>
+
+            {showFollowButton && (
+                <div className="absolute top-4 right-4 z-10">
+                    <ListFollowButton
+                        listId={list.id}
+                        initialIsFollowing={initialIsFollowing ?? false}
+                        initialFollowerCount={initialFollowerCount ?? 0}
+                        isOwner={isOwner}
+                    />
+                </div>
             )}
-            <div className="flex items-center justify-between text-xs font-[family-name:var(--font-ibm-plex-mono)] text-[#707070] uppercase tracking-wider">
-                <span>{itemCount} {list.list_type || 'items'}</span>
-                <span>{list.created_at ? new Date(list.created_at).toLocaleDateString() : ''}</span>
-            </div>
-        </Link>
+        </div>
     );
 }

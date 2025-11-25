@@ -15,6 +15,8 @@ interface ListsData {
     created_at?: string;
     items?: string | any[];
     list_type?: string;
+    follower_count?: number;
+    is_following?: boolean;
 }
 
 export default function ListsPage() {
@@ -84,6 +86,10 @@ export default function ListsPage() {
                                     list_type: (list.list_type as any) || 'shows',
                                     user_id: 0,
                                 }}
+                                showFollowButton
+                                isOwner={false}
+                                initialFollowerCount={list.follower_count ?? 0}
+                                initialIsFollowing={list.is_following ?? false}
                             />
                         ))}
                     </div>
