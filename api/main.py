@@ -6,12 +6,10 @@ from fastapi.exceptions import RequestValidationError
 app = FastAPI(title="Honkingversion.net API", description="API for Goose Fan Site")
 
 # CORS Configuration
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://honkingversion.runfoo.run",
-    "https://api.honkingversion.runfoo.run",
-]
+import os
+
+# CORS Configuration
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
 
 app.add_middleware(
     CORSMiddleware,
