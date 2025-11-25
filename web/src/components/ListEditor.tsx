@@ -262,7 +262,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                 </div>
 
                 {listType === 'shows' && (
-                            <>
+                    <>
                                 <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
                                     Add Show by Date (YYYY-MM-DD)
                                 </label>
@@ -307,8 +307,8 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                                         Clear
                                     </button>
                                 </div>
-                            </>
-                        )}
+                    </>
+                )}
 
                         {listType === 'songs' && (
                             <>
@@ -350,8 +350,8 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                                         ))}
                                     </div>
                                 )}
-                            </>
-                        )}
+                    </>
+                )}
                         {showSuggestion && (
                             <p className="text-xs text-amber-400">{showSuggestion}</p>
                         )}
