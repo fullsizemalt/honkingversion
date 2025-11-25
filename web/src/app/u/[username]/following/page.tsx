@@ -4,9 +4,9 @@ import UserCard from '@/components/UserCard';
 import PageHeader from '@/components/PageHeader';
 
 interface Props {
-    params: {
+    params: Promise<{
         username: string;
-    };
+    }>;
 }
 
 async function getFollowing(username: string) {
@@ -22,14 +22,14 @@ async function getFollowing(username: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { username } = params;
+    const { username } = await params;
     return {
         title: `People followed by ${username} - Honkingversion`,
     };
 }
 
 export default async function FollowingPage({ params }: Props) {
-    const { username } = params;
+    const { username } = await params;
     const following = await getFollowing(username);
 
     return (
