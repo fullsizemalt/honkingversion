@@ -6,9 +6,10 @@ import { getApiUrl } from '@/lib/api'
 
 interface Props {
     token: string
+    onSuccess?: () => void
 }
 
-export default function MarkAllReadButton({ token }: Props) {
+export default function MarkAllReadButton({ token, onSuccess }: Props) {
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
@@ -21,6 +22,7 @@ export default function MarkAllReadButton({ token }: Props) {
                     Authorization: `Bearer ${token}`,
                 },
             })
+            onSuccess?.()
             router.refresh()
         } finally {
             setLoading(false)
