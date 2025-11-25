@@ -36,7 +36,7 @@ export default function Navbar() {
                             <div className="relative flex items-center gap-4">
                                 <button
                                     onClick={() => setIsProfileMenuOpen((open) => !open)}
-                                    className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[var(--accent-primary)] text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold shadow-sm hover:shadow-md transition-shadow"
+                                    className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[var(--accent-primary)] text-white font-[family-name:var(--font-space-grotesk)] text-sm font-bold shadow-sm hover:shadow-md transition-shadow"
                                     aria-label="Profile menu"
                                 >
                                     {session.user?.name?.charAt(0).toUpperCase() || 'U'}
@@ -107,7 +107,7 @@ export default function Navbar() {
                                 className="flex items-center gap-2"
                                 aria-label="Profile menu"
                             >
-                                <div className="w-9 h-9 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-[var(--text-inverse)] font-[family-name:var(--font-space-grotesk)] text-sm font-bold">
+                                <div className="w-9 h-9 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-white font-[family-name:var(--font-space-grotesk)] text-sm font-bold">
                                     {session.user?.name?.charAt(0).toUpperCase() || 'U'}
                                 </div>
                             </button>
