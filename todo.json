@@ -110,8 +110,8 @@
   {
     "id": "24",
     "description": "Attendance Heatmap",
-    "status": "completed",
-    "agent": "Antigravity"
+    "status": "in-progress",
+    "agent": "Claude Code"
   },
   {
     "id": "19",
@@ -152,8 +152,8 @@
   {
     "id": "24",
     "description": "QUICK WIN: Toast notifications for user actions (vote, follow, add to list)",
-    "status": "pending",
-    "agent": null,
+    "status": "in-progress",
+    "agent": "Claude Code",
     "category": "Mobile UX",
     "effort": "1-2 hours",
     "dependencies": []

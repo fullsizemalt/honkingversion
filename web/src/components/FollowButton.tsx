@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { getApiEndpoint } from '@/lib/api';
+import { useToast } from './ToastContainer';
 
 interface FollowButtonProps {
     username: string;
@@ -11,6 +12,7 @@ interface FollowButtonProps {
 
 export default function FollowButton({ username, initialIsFollowing = false }: FollowButtonProps) {
     const { data: session } = useSession();
+    const { addToast } = useToast();
     const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
     const [loading, setLoading] = useState(false);
 
@@ -54,9 +56,14 @@ export default function FollowButton({ username, initialIsFollowing = false }: F
 
             if (res.ok) {
                 setIsFollowing(!isFollowing);
+                const message = isFollowing ? `Unfollowed ${username}` : `Now following ${username}`;
+                addToast(message, 'success');
+            } else {
+                addToast(`Failed to ${isFollowing ? 'unfollow' : 'follow'} ${username}`, 'error');
             }
         } catch (error) {
             console.error('Failed to toggle follow', error);
+            addToast('Failed to update follow status', 'error');
         } finally {
             setLoading(false);
         }

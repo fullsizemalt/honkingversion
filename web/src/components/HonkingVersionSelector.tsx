@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Star, Crown } from 'lucide-react';
 import { getApiUrl } from '@/lib/api'
+import { useToast } from './ToastContainer'
 import HonkingVersionBadge from './HonkingVersionBadge'
 
 interface HonkingVersionSelectorProps {
@@ -22,18 +23,9 @@ export default function HonkingVersionSelector({
 }: HonkingVersionSelectorProps) {
     const { data: session } = useSession()
     const router = useRouter()
+    const { addToast } = useToast()
     const [loading, setLoading] = useState(false)
     const [isVoted, setIsVoted] = useState(isCurrentHonkingVersion)
-    const [error, setError] = useState<string | null>(null)
-    const [successMessage, setSuccessMessage] = useState<string | null>(null)
-
-    // Clear success message after 3 seconds
-    useEffect(() => {
-        if (successMessage) {
-            const timer = setTimeout(() => setSuccessMessage(null), 3000)
-            return () => clearTimeout(timer)
-        }
-    }, [successMessage])
 
     const handleVote = async () => {
         if (!session) {
@@ -42,8 +34,6 @@ export default function HonkingVersionSelector({
         }
 
         setLoading(true)
-        setError(null)
-        setSuccessMessage(null)
 
         try {
             const apiUrl = getApiUrl()
@@ -64,14 +54,15 @@ export default function HonkingVersionSelector({
             }
 
             setIsVoted(true)
-            setSuccessMessage('This is now your honking version!')
+            addToast('This is now your honking version!', 'success')
 
             // Refresh page after short delay to show updates
             setTimeout(() => {
                 router.refresh()
             }, 1500)
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to set honking version')
+            const message = err instanceof Error ? err.message : 'Failed to set honking version'
+            addToast(message, 'error')
         } finally {
             setLoading(false)
         }
@@ -84,8 +75,6 @@ export default function HonkingVersionSelector({
         }
 
         setLoading(true)
-        setError(null)
-        setSuccessMessage(null)
 
         try {
             const apiUrl = getApiUrl()
@@ -102,14 +91,15 @@ export default function HonkingVersionSelector({
             }
 
             setIsVoted(false)
-            setSuccessMessage('Honking version removed')
+            addToast('Honking version removed', 'info')
 
             // Refresh page
             setTimeout(() => {
                 router.refresh()
             }, 1500)
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to remove honking version')
+            const message = err instanceof Error ? err.message : 'Failed to remove honking version'
+            addToast(message, 'error')
         } finally {
             setLoading(false)
         }
@@ -137,18 +127,6 @@ export default function HonkingVersionSelector({
                 isHonkingVersion={isVoted}
                 honkingVoteCount={honkingVoteCount}
             />
-
-            {error && (
-                <div className="p-3 bg-red-100 border border-red-300 rounded text-red-700 text-sm">
-                    {error}
-                </div>
-            )}
-
-            {successMessage && (
-                <div className="p-3 bg-green-100 border border-green-300 rounded text-green-700 text-sm">
-                    {successMessage}
-                </div>
-            )}
 
             <div className="flex gap-2">
                 {!isVoted ? (
