@@ -20,7 +20,7 @@ interface ProfileData {
         role: string;
         created_at: string;
         social_links?: {
-            twitter?: string;
+            bluesky?: string;
             instagram?: string;
             custom_url?: string;
         };

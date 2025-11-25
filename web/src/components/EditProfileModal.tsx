@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Twitter, Instagram, Link as LinkIcon, Loader2 } from 'lucide-react';
+import { X, Cloud, Instagram, Link as LinkIcon, Loader2 } from 'lucide-react';
 import { getApiEndpoint } from '@/lib/api';
 
 interface EditProfileModalProps {
@@ -10,7 +10,7 @@ interface EditProfileModalProps {
     username: string;
     initialBio?: string;
     initialSocialLinks?: {
-        twitter?: string;
+        bluesky?: string;
         instagram?: string;
         custom_url?: string;
     };
@@ -26,7 +26,7 @@ export default function EditProfileModal({
     onSuccess
 }: EditProfileModalProps) {
     const [bio, setBio] = useState(initialBio);
-    const [twitter, setTwitter] = useState(initialSocialLinks.twitter || '');
+    const [bluesky, setBluesky] = useState(initialSocialLinks.bluesky || '');
     const [instagram, setInstagram] = useState(initialSocialLinks.instagram || '');
     const [customUrl, setCustomUrl] = useState(initialSocialLinks.custom_url || '');
     const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function EditProfileModal({
                 body: JSON.stringify({
                     bio,
                     social_links: {
-                        twitter,
+                        bluesky,
                         instagram,
                         custom_url: customUrl
                     }
@@ -115,13 +115,13 @@ export default function EditProfileModal({
 
                         <div className="relative">
                             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]">
-                                <Twitter className="w-4 h-4" />
+                                <Cloud className="w-4 h-4" />
                             </div>
                             <input
                                 type="text"
-                                value={twitter}
-                                onChange={(e) => setTwitter(e.target.value)}
-                                placeholder="Twitter username"
+                                value={bluesky}
+                                onChange={(e) => setBluesky(e.target.value)}
+                                placeholder="Bluesky handle (e.g. @user.bsky.social)"
                                 className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] pl-10 pr-3 py-2 text-sm focus:border-[var(--accent-primary)] focus:outline-none transition-colors"
                             />
                         </div>
