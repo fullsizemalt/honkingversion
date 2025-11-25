@@ -5,6 +5,7 @@ import TopVersions from '@/components/TopVersions';
 import PerformanceFilter from '@/components/PerformanceFilter';
 import PerformanceStats from '@/components/PerformanceStats';
 import SongTags from '@/components/SongTags';
+import SynopsisSection from '@/components/Synopsis/SynopsisSection';
 
 import { Performance } from '@/types';
 
@@ -77,6 +78,13 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 
                 {/* Content */}
                 <div className="max-w-7xl mx-auto px-4 py-16 space-y-16">
+                    {/* Community Synopsis */}
+                    <SynopsisSection
+                        objectType="song"
+                        objectId={song.id}
+                        title={`About ${song.name}`}
+                    />
+
                     {/* Top Versions Section */}
                     {performances.length > 0 && (
                         <TopVersions performances={performances} maxVersions={5} />

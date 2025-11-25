@@ -46,7 +46,32 @@ export interface Performance {
     };
     vote_count: number;
     avg_rating?: number | null | undefined;
+    honking_vote_count?: number; // Number of users who voted this as "the honking version"
+    is_honking_version?: boolean; // Whether this is the current honking version (most votes)
     tags?: Tag[];
+}
+
+export interface HonkingVersionData {
+    song_id: number;
+    honking_version?: {
+        id: number;
+        performance_id: number;
+        song_id: number;
+        show_id: number;
+        position?: number;
+        set_number?: number;
+        notes?: string;
+        honking_votes: number;
+    };
+    honking_votes: Array<{
+        performance_id: number;
+        vote_count: number;
+    }>;
+    user_honking_vote?: {
+        performance_id: number;
+        created_at: string;
+        updated_at: string;
+    };
 }
 
 export interface User {
