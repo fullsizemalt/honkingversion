@@ -15,7 +15,7 @@ export default function GlossaryPage() {
                 {/* PROFILE SECTION */}
                 <section className="border-l-4 border-[#ff6b35] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#ff6b35] mb-4">
-                        🔤 PROFILE
+                        PROFILE
                     </h2>
                     <p className="text-[#a0a0a0] mb-4">
                         Your account information and basic metadata.
@@ -47,7 +47,7 @@ export default function GlossaryPage() {
                 {/* VOTE SECTION */}
                 <section className="border-l-4 border-[#ff6b35] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#ff6b35] mb-4">
-                        ⭐ VOTE
+                        VOTE
                     </h2>
                     <p className="text-[#a0a0a0] mb-4">
                         Your ratings and votes on shows and individual performances.
@@ -88,7 +88,7 @@ export default function GlossaryPage() {
                 {/* ATTENDED SHOW SECTION */}
                 <section className="border-l-4 border-[#ff6b35] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#ff6b35] mb-4">
-                        🎫 ATTENDED_SHOW
+                        ATTENDED_SHOW
                     </h2>
                     <p className="text-[#a0a0a0] mb-4">
                         Shows you've marked as attended in person.
@@ -123,7 +123,7 @@ export default function GlossaryPage() {
                 {/* FOLLOWING SECTION */}
                 <section className="border-l-4 border-[#ff6b35] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#ff6b35] mb-4">
-                        👥 FOLLOWING
+                        FOLLOWING
                     </h2>
                     <p className="text-[#a0a0a0] mb-4">
                         Users you are following on HonkingVersion.
@@ -150,7 +150,7 @@ export default function GlossaryPage() {
                 {/* FOLLOWER SECTION */}
                 <section className="border-l-4 border-[#ff6b35] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#ff6b35] mb-4">
-                        👤 FOLLOWER
+                        FOLLOWER
                     </h2>
                     <p className="text-[#a0a0a0] mb-4">
                         Users who are following you on HonkingVersion.
@@ -177,7 +177,7 @@ export default function GlossaryPage() {
                 {/* LIST SECTION */}
                 <section className="border-l-4 border-[#ff6b35] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#ff6b35] mb-4">
-                        📋 LIST
+                        LIST
                     </h2>
                     <p className="text-[#a0a0a0] mb-4">
                         Your custom user-created lists of shows and performances.
@@ -214,7 +214,7 @@ export default function GlossaryPage() {
                 {/* DATA TYPES */}
                 <section className="border-l-4 border-[#90ee90] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#90ee90] mb-4">
-                        📊 Data Types Reference
+                        Data Types Reference
                     </h2>
 
                     <div className="space-y-3">
@@ -248,7 +248,7 @@ export default function GlossaryPage() {
                 {/* RATING SCALE */}
                 <section className="border-l-4 border-[#90ee90] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#90ee90] mb-4">
-                        🎯 Rating Scale
+                        Rating Scale
                     </h2>
                     <div className="bg-[#1a1a1a] p-4 space-y-2">
                         <div className="flex justify-between"><span>10</span><span>Perfect / Must Listen</span></div>
@@ -267,7 +267,7 @@ export default function GlossaryPage() {
                 {/* TIPS */}
                 <section className="border-l-4 border-[#90ee90] pl-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#90ee90] mb-4">
-                        💡 Tips
+                        Tips
                     </h2>
                     <ul className="list-disc list-inside space-y-2 text-[#a0a0a0]">
                         <li>Open your CSV in Excel, Google Sheets, or any spreadsheet app for easy viewing</li>

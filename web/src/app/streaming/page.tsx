@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 interface StreamingService {
     name: string;
-    icon: string;
     url: string;
     description: string;
     color: string;
@@ -13,42 +12,36 @@ interface StreamingService {
 const streamingServices: StreamingService[] = [
     {
         name: 'Spotify',
-        icon: '🎵',
         url: 'https://open.spotify.com/search/goose',
         description: 'Stream full shows and songs on Spotify. Search for Goose shows and create playlists.',
         color: '#1DB954',
     },
     {
         name: 'Apple Music',
-        icon: '🍎',
         url: 'https://music.apple.com/search?term=goose',
         description: 'Listen to Goose on Apple Music. Available on all Apple devices with offline download.',
         color: '#FC3C44',
     },
     {
         name: 'YouTube',
-        icon: '📹',
         url: 'https://www.youtube.com/search?q=goose+live',
         description: 'Watch full live performances on YouTube. Many shows have official and fan recordings.',
         color: '#FF0000',
     },
     {
         name: 'Nugs.net',
-        icon: '🎸',
         url: 'https://www.nugs.net/live-music-concerts/goose',
         description: 'Purchase and stream official Goose live recordings. High-quality audio and video.',
         color: '#FF6B35',
     },
     {
         name: 'Bandcamp',
-        icon: '🎧',
         url: 'https://bandcamp.com/search?q=goose',
         description: 'Discover Goose music on Bandcamp. Support artists directly.',
         color: '#4A9CFF',
     },
     {
         name: 'Internet Archive',
-        icon: '📚',
         url: 'https://archive.org/search.php?query=goose&mediatype=audio',
         description: 'Browse archived Goose shows. Community recordings and metadata.',
         color: '#4A90E2',
@@ -77,7 +70,12 @@ export default function StreamingPage() {
                         rel="noopener noreferrer"
                         className="block p-6 bg-[#1a1a1a] border border-[#a0a0a0] hover:border-[#ff6b35] transition group"
                     >
-                        <div className="text-4xl mb-4">{service.icon}</div>
+                        <div
+                            className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] text-sm font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wide"
+                            style={{ color: service.color }}
+                        >
+                            {service.name.slice(0, 2)}
+                        </div>
                         <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[#f5f5f5] mb-2 group-hover:text-[#ff6b35] transition">
                             {service.name}
                         </h3>
@@ -119,7 +117,7 @@ export default function StreamingPage() {
             {/* Recommended For Discovery */}
             <div className="p-6 bg-[#1a1a1a] border border-[#a0a0a0] mb-12">
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#f5f5f5] mb-4">
-                    🎯 Recommendations by Use Case
+                    Recommendations by Use Case
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

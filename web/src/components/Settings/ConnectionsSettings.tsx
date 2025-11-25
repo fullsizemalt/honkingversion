@@ -91,25 +91,21 @@ export default function ConnectionsSettings() {
     const providerInfo = {
         github: {
             name: 'GitHub',
-            icon: '🐙',
             description: 'Sign in with GitHub and import your repositories',
             scopes: ['user:email', 'read:user']
         },
         google: {
             name: 'Google',
-            icon: '🔍',
             description: 'Sign in with Google and sync your calendar',
             scopes: ['email', 'profile']
         },
         spotify: {
             name: 'Spotify',
-            icon: '🎵',
             description: 'Connect your Spotify account and share playlists',
             scopes: ['user-read-private', 'playlist-modify-public']
         },
         apple: {
             name: 'Apple',
-            icon: '🍎',
             description: 'Sign in with Apple and use Apple devices',
             scopes: ['email', 'name']
         }

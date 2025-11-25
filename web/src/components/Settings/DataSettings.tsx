@@ -205,7 +205,7 @@ export default function DataSettings() {
                     ) : (
                         <div className="p-4 bg-red-50 border border-red-200 rounded">
                             <p className="text-sm text-red-700 font-bold mb-3">
-                                ⚠️ This will permanently delete:
+                                Warning: This will permanently delete:
                             </p>
                             <ul className="list-disc list-inside text-sm text-red-700 mb-4 space-y-1">
                                 <li>Your account and profile</li>

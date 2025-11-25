@@ -54,7 +54,7 @@ const getHeatColor = (level: number): string => {
 
 // Get heat indicator visual
 const getHeatIndicator = (level: number): string => {
-  return '🔥'.repeat(Math.max(1, level));
+  return '▮'.repeat(Math.max(1, level));
 };
 
 export default function Home() {
