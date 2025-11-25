@@ -7,20 +7,20 @@ import pytest
 @pytest.fixture(name="client_with_user")
 def client_with_user_fixture(session: Session):
     from main import app
-    from tests.conftest import engine
-    SQLModel.metadata.create_all(engine)
-    user = User(id=1, username="testuser", email="test@example.com", hashed_password="hashedpassword")
+    user = User(username="testuser", email="test@example.com", hashed_password="hashedpassword")
     session.add(user)
     session.commit()
+    session.refresh(user) # Refresh to get the auto-assigned ID
 
     def get_current_user_override():
-        return User(id=1, username="testuser", email="test@example.com", hashed_password="hashedpassword")
+        # Fetch a fresh instance of the user from the database
+        # This ensures the user object is properly managed by the current session for the request
+        return session.exec(select(User).where(User.username == "testuser")).first()
 
     app.dependency_overrides[get_current_user] = get_current_user_override
     client = TestClient(app)
     yield client
     app.dependency_overrides.clear()
-    SQLModel.metadata.drop_all(engine)
 
 
 def test_get_profile_settings(client_with_user: TestClient):

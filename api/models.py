@@ -1,4 +1,5 @@
 from typing import Optional, List
+from enum import Enum
 from datetime import datetime
 from sqlmodel import Field, SQLModel, Relationship
 
@@ -29,6 +30,7 @@ class User(SQLModel, table=True):
     indexable: bool = Field(default=True)
 
     votes: List["Vote"] = Relationship(back_populates="user")
+    honking_versions: List["HonkingVersion"] = Relationship(back_populates="user")
     lists: List["UserList"] = Relationship(back_populates="user")
     attended_shows: List["UserShowAttendance"] = Relationship(back_populates="user")
     notifications: List["Notification"] = Relationship(
@@ -78,8 +80,9 @@ class Song(SQLModel, table=True):
     avg_rating: Optional[float] = None  # Denormalized average
     is_cover: bool = Field(default=False)
     original_artist: Optional[str] = None  # If cover
-    
+
     performances: List["SongPerformance"] = Relationship(back_populates="song")
+    honking_versions: List["HonkingVersion"] = Relationship(back_populates="song")
     tags: List["SongTag"] = Relationship(back_populates="song")
 
 class SongPerformance(SQLModel, table=True):
@@ -89,10 +92,11 @@ class SongPerformance(SQLModel, table=True):
     position: Optional[int] = None
     set_number: Optional[int] = None
     notes: Optional[str] = None
-    
+
     song: Song = Relationship(back_populates="performances")
     show: Show = Relationship(back_populates="performances")
     votes: List["Vote"] = Relationship(back_populates="performance")
+    honking_votes: List["HonkingVersion"] = Relationship(back_populates="performance")
     performance_tags: List["PerformanceTag"] = Relationship(back_populates="performance")
 
 class UserFollow(SQLModel, table=True):
@@ -117,6 +121,25 @@ class Vote(SQLModel, table=True):
     show: Optional["Show"] = Relationship(back_populates="votes")
     performance: Optional[SongPerformance] = Relationship(back_populates="votes")
     comments: List["ReviewComment"] = Relationship(back_populates="vote")
+
+class HonkingVersion(SQLModel, table=True):
+    """
+    User's vote for the definitive/best version of a song.
+    Each user gets exactly ONE honking version vote per song.
+    The performance with the most honking votes is "THE" honking version.
+    Users can change their vote anytime, but only have one vote per song.
+    This is NOT a rating (1-10), just a vote for which performance best exemplifies the song.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    song_id: int = Field(foreign_key="song.id", index=True)
+    performance_id: int = Field(foreign_key="songperformance.id")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    user: User = Relationship(back_populates="honking_versions")
+    song: Song = Relationship(back_populates="honking_versions")
+    performance: SongPerformance = Relationship(back_populates="honking_votes")
 
 class UserList(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -289,3 +312,34 @@ class ChangelogEntry(SQLModel, table=True):
     credited_user_id: Optional[int] = Field(default=None, foreign_key="user.id")
     
     credited_user: Optional[User] = Relationship()
+
+class ObjectType(str, Enum):
+    SONG = "song"
+    SHOW = "show"
+    VENUE = "venue"
+    TOUR = "tour"
+
+class Synopsis(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    object_type: str = Field(index=True) # song, show, venue, tour
+    object_id: int = Field(index=True) # ID of the Song, Show, etc.
+    content: str # Markdown content
+    last_updated_at: datetime = Field(default_factory=datetime.utcnow)
+    last_updated_by_id: int = Field(foreign_key="user.id")
+    
+    # Optimistic locking
+    version: int = Field(default=1)
+
+    last_updated_by: User = Relationship()
+
+class SynopsisHistory(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    synopsis_id: int = Field(foreign_key="synopsis.id", index=True)
+    content: str
+    edited_by_id: int = Field(foreign_key="user.id")
+    edited_at: datetime = Field(default_factory=datetime.utcnow)
+    change_summary: Optional[str] = None # "Fixed typo", "Added context"
+    version: int # Snapshot of the version number at this time
+
+    synopsis: Synopsis = Relationship()
+    edited_by: User = Relationship()

@@ -26,14 +26,14 @@
   {
     "id": "4",
     "description": "Attendance: mark shows attended, show on profiles, basic stats",
-    "status": "pending",
-    "agent": null
+    "status": "completed",
+    "agent": "codex"
   },
   {
     "id": "5",
     "description": "Venue pages: /venues index + /venues/[slug] detail with shows/stats",
-    "status": "pending",
-    "agent": null
+    "status": "completed",
+    "agent": "codex"
   },
   {
     "id": "6",

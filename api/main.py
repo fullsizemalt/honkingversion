@@ -31,6 +31,7 @@ from routes import (
     feedback,
     follows,
     home,
+    honking_versions,
     lists,
     notifications,
     performances,
@@ -45,6 +46,7 @@ from routes import (
     users,
     venues,
     votes,
+    synopsis,
 )
 from database import create_db_and_tables
 
@@ -74,10 +76,12 @@ routers = [
     tags.router,
     users.router,
     votes.router,
+    honking_versions.router,
     performances.router,
     comments.router,
     profile.router,
     feed.router,
+    synopsis.router,
 ]
 
 for router in routers:
@@ -110,11 +114,17 @@ async def not_found_handler(request: Request, exc: Exception):
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Handle validation errors gracefully"""
+    errors = exc.errors()
+    # Ensure all errors are JSON serializable
+    for error_detail in errors:
+        if "ctx" in error_detail and "error" in error_detail["ctx"]:
+            if isinstance(error_detail["ctx"]["error"], ValueError):
+                error_detail["ctx"]["error"] = str(error_detail["ctx"]["error"])
     return JSONResponse(
         status_code=422,
         content={
             "detail": "Validation error",
-            "errors": exc.errors()
+            "errors": errors
         }
     )
 

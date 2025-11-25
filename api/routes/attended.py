@@ -80,6 +80,30 @@ def get_user_attended_shows(
         
     return attended_shows
 
+@router.get("/me", response_model=List[AttendedShowRead])
+def get_my_attended_shows(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    results = session.exec(
+        select(UserShowAttendance, Show)
+        .join(Show)
+        .where(UserShowAttendance.user_id == current_user.id)
+        .order_by(Show.date.desc())
+    ).all()
+
+    attended_shows = []
+    for attendance, show in results:
+        attended_shows.append(AttendedShowRead(
+            show_id=show.id,
+            date=show.date,
+            venue=show.venue,
+            location=show.location,
+            created_at=attendance.created_at
+        ))
+
+    return attended_shows
+
 @router.get("/check/{show_id}")
 def check_attendance(
     show_id: int,
