@@ -57,12 +57,20 @@ const getHeatIndicator = (level: number): string => {
   return '▮'.repeat(Math.max(1, level));
 };
 
+type WidgetKey = 'trending' | 'topRated' | 'leaderboard';
+const DEFAULT_WIDGETS: Record<WidgetKey, boolean> = {
+  trending: true,
+  topRated: true,
+  leaderboard: true,
+};
+
 export default function Home() {
   const { data: session } = useSession();
   const [trendingPerformances, setTrendingPerformances] = useState<TrendingPerformance[]>([]);
   const [topPerformances, setTopPerformances] = useState<TopPerformance[]>([]);
   const [loading, setLoading] = useState(true);
   const [maxTrendingVotes, setMaxTrendingVotes] = useState(1);
+  const [visibleWidgets, setVisibleWidgets] = useState<Record<WidgetKey, boolean>>(DEFAULT_WIDGETS);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,6 +120,28 @@ export default function Home() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const raw = typeof window !== 'undefined' ? localStorage.getItem('hv-dashboard-widgets') : null;
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        setVisibleWidgets({ ...DEFAULT_WIDGETS, ...parsed });
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  const toggleWidget = (key: WidgetKey) => {
+    setVisibleWidgets((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('hv-dashboard-widgets', JSON.stringify(next));
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">

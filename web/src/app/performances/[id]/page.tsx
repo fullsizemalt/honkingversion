@@ -7,6 +7,7 @@ import PageHeader from '@/components/PageHeader';
 import { getApiEndpoint } from '@/lib/api';
 import TagBadge from '@/components/TagBadge';
 import { Sparkline } from '@/components/charts/Sparkline';
+import ExternalLinks from '@/components/ExternalLinks';
 
 interface PerformanceDetail {
   id: number;
@@ -15,6 +16,8 @@ interface PerformanceDetail {
   notes: string | null;
   vote_count: number;
   avg_rating: number | null;
+  bandcamp_url?: string | null;
+  nugs_url?: string | null;
   song: {
     id: number;
     name: string;
@@ -149,6 +152,18 @@ export default function PerformanceDetailPage() {
 
           {performance.notes && (
             <p className="mt-4 text-[var(--text-secondary)] leading-relaxed">{performance.notes}</p>
+          )}
+
+          {(performance.bandcamp_url || performance.nugs_url) && (
+            <div className="mt-6 p-4 bg-[var(--bg-primary)] border border-[var(--border)] rounded">
+              <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] mb-3 uppercase tracking-[0.2em]">
+                📺 Listen
+              </p>
+              <ExternalLinks
+                bandcamp_url={performance.bandcamp_url}
+                nugs_url={performance.nugs_url}
+              />
+            </div>
           )}
 
           <div className="mt-6 flex gap-3 text-sm text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)]">

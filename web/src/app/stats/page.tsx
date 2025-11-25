@@ -5,6 +5,7 @@ import { getApiEndpoint } from '@/lib/api'
 import { StatsResponse } from '@/types'
 import Link from 'next/link'
 import PageHeader from '@/components/PageHeader'
+import { BarChart } from '@/components/charts/BarChart'
 
 async function fetchStats(): Promise<StatsResponse | null> {
     try {
@@ -80,31 +81,32 @@ export default function StatsPage() {
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
                         <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Top Songs</h2>
-                        <div className="space-y-3">
-                            {stats.top_songs.map((s, idx) => (
-                                <div key={s.slug} className="flex items-center justify-between text-sm text-[var(--text-primary)]">
-                                    <div className="flex items-center gap-3">
-                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] font-bold">#{idx + 1}</span>
-                                        <Link href={`/songs/${s.slug}`} className="hover:text-[var(--accent-primary)] transition-colors">{s.name}</Link>
-                                    </div>
-                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">{s.plays} plays</span>
-                                </div>
-                            ))}
+                        <BarChart
+                            data={stats.top_songs.slice(0, 5).map(s => ({
+                                label: s.name,
+                                value: s.plays,
+                                href: `/songs/${s.slug}`,
+                                color: 'var(--accent-primary)'
+                            }))}
+                            valueFormatter={(v) => `${v} plays`}
+                        />
+                        <div className="mt-4 text-right">
+                            <Link href="/songs" className="text-xs font-bold uppercase tracking-wider text-[var(--accent-primary)] hover:underline">View All Songs →</Link>
                         </div>
                     </div>
 
                     <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
                         <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] mb-4 uppercase tracking-tight">Top Venues</h2>
-                        <div className="space-y-3">
-                            {stats.top_venues.map((v, idx) => (
-                                <div key={`${v.venue}-${idx}`} className="flex items-center justify-between text-sm text-[var(--text-primary)]">
-                                    <div className="flex items-center gap-3">
-                                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-secondary)] font-bold">#{idx + 1}</span>
-                                        <span>{v.venue}</span>
-                                    </div>
-                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">{v.show_count} shows</span>
-                                </div>
-                            ))}
+                        <BarChart
+                            data={stats.top_venues.slice(0, 5).map(v => ({
+                                label: v.venue,
+                                value: v.show_count,
+                                color: 'var(--accent-secondary)'
+                            }))}
+                            valueFormatter={(v) => `${v} shows`}
+                        />
+                        <div className="mt-4 text-right">
+                            <Link href="/venues" className="text-xs font-bold uppercase tracking-wider text-[var(--accent-primary)] hover:underline">View All Venues →</Link>
                         </div>
                     </div>
                 </section>

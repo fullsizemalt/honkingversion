@@ -3,6 +3,7 @@ import VoteControl from '@/components/VoteControl';
 import SetlistDisplay from '@/components/SetlistDisplay';
 import AttendedButton from '@/components/AttendedButton';
 import ShowTags from '@/components/ShowTags';
+import ExternalLinks from '@/components/ExternalLinks';
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { notFound } from 'next/navigation';
@@ -11,6 +12,8 @@ import { getApiEndpoint } from '@/lib/api';
 interface ShowResponse extends Partial<Show> {
     setlist?: string;
     id: number; // Ensure ID is present
+    bandcamp_url?: string | null;
+    nugs_url?: string | null;
 }
 
 interface Vote {
@@ -138,6 +141,17 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
                             initialUserVote={userVote}
                         />
                         <AttendedButton showId={show.id} />
+                        {(show.bandcamp_url || show.nugs_url) && (
+                            <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-4">
+                                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] mb-3 uppercase tracking-[0.2em]">
+                                    📺 Listen
+                                </p>
+                                <ExternalLinks
+                                    bandcamp_url={show.bandcamp_url}
+                                    nugs_url={show.nugs_url}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
