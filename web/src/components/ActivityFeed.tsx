@@ -1,8 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageSquare, Star, FileText, ThumbsUp } from 'lucide-react';
+import { MessageSquare, Star, FileText, ThumbsUp, User as UserIcon, Loader2 } from 'lucide-react';
 import FilterTabs from './FilterTabs';
+
+interface ActivityPerformance {
+    song?: { name: string; slug?: string };
+    show?: { date: string; venue: string; location?: string };
+    song_name?: string;
+    song_slug?: string;
+    show_date?: string;
+    venue?: string;
+    location?: string;
+}
+
+interface ActivityShow {
+    date: string;
+    venue: string;
+    location?: string;
+}
 
 interface Activity {
     id: number;
@@ -15,10 +31,8 @@ interface Activity {
     blurb?: string;
     full_review?: string;
     created_at: string;
-    performance?: {
-        song: { name: string };
-        show: { date: string; venue: string };
-    };
+    performance?: ActivityPerformance;
+    show?: ActivityShow;
 }
 
 interface ActivityFeedProps {
@@ -29,6 +43,7 @@ interface ActivityFeedProps {
     onLoadMore?: () => void;
     hasMore?: boolean;
     loadingMore?: boolean;
+    loadingInitial?: boolean;
 }
 
 const getActivityIcon = (activity: Activity) => {
@@ -41,7 +56,7 @@ const getActivityIcon = (activity: Activity) => {
 const getActivityType = (activity: Activity) => {
     if (activity.full_review) return 'Review';
     if (activity.blurb) return 'Blurb';
-    if (activity.rating) return 'Vote';
+    if (activity.rating !== undefined && activity.rating !== null) return 'Vote';
     return 'Activity';
 };
 
@@ -67,7 +82,8 @@ export default function ActivityFeed({
     onFilterChange,
     onLoadMore,
     hasMore = false,
-    loadingMore = false
+    loadingMore = false,
+    loadingInitial = false
 }: ActivityFeedProps) {
     const [expandedId, setExpandedId] = useState<number | null>(null);
     const [internalFilter, setInternalFilter] = useState('all');
@@ -85,9 +101,9 @@ export default function ActivityFeed({
     // Filter activities based on selected filter (only if no external handler)
     const displayActivities = onFilterChange ? activities : activities.filter(activity => {
         if (activeFilter === 'all') return true;
-        if (activeFilter === 'votes') return activity.rating && !activity.blurb && !activity.full_review;
-        if (activeFilter === 'blurbs') return activity.blurb;
-        if (activeFilter === 'reviews') return activity.full_review;
+        if (activeFilter === 'votes') return activity.rating !== undefined && activity.rating !== null && !activity.blurb && !activity.full_review;
+        if (activeFilter === 'blurbs') return Boolean(activity.blurb);
+        if (activeFilter === 'reviews') return Boolean(activity.full_review);
         return true;
     });
 
@@ -111,6 +127,13 @@ export default function ActivityFeed({
             />
 
             <div className="space-y-3">
+                {loadingInitial && (
+                    <div className="flex items-center justify-center py-6 text-[var(--text-secondary)]">
+                        <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                        Loading activity...
+                    </div>
+                )}
+
                 {displayActivities.map((activity, index) => (
                     <div
                         key={activity.id}
@@ -124,34 +147,37 @@ export default function ActivityFeed({
                     >
                         {/* Header */}
                         <div className="flex items-start gap-3">
-                            <div className="p-2 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] group-hover:bg-[var(--accent-primary)]/20 transition-colors">
+                            <div className="p-2 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] group-hover:bg-[var(--accent-primary)]/20 transition-colors rounded">
                                 {getActivityIcon(activity)}
                             </div>
 
                             <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider text-[var(--accent-primary)]">
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                    <span className="px-2 py-0.5 rounded-full bg-[var(--bg-muted)] text-[var(--accent-primary)] text-[11px] font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wide">
                                         {getActivityType(activity)}
                                     </span>
-                                    {activity.rating && (
-                                        <div className="flex items-center gap-1">
-                                            <Star className="w-3 h-3 fill-[var(--accent-secondary)] text-[var(--accent-secondary)]" />
-                                            <span className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-[var(--accent-secondary)]">
-                                                {activity.rating}/10
-                                            </span>
-                                        </div>
+                                    {activity.rating !== undefined && activity.rating !== null && (
+                                        <span className="px-2 py-0.5 rounded-full bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)] text-[11px] font-[family-name:var(--font-ibm-plex-mono)]">
+                                            {activity.rating}/10
+                                        </span>
+                                    )}
+                                    {activity.user && (
+                                        <span className="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)]">
+                                            <UserIcon className="w-3 h-3" />
+                                            @{activity.user.username}
+                                        </span>
                                     )}
                                 </div>
 
                                 {activity.performance && (
                                     <p className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold text-[var(--text-primary)] mb-1 truncate">
-                                        {activity.performance.song.name}
+                                        {activity.performance.song?.name || activity.performance.song_name || 'Performance'}
                                     </p>
                                 )}
 
-                                {activity.performance && (
+                                {(activity.performance?.show || activity.performance?.show_date || activity.show) && (
                                     <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] uppercase tracking-wide">
-                                        {activity.performance.show.venue} • {activity.performance.show.date}
+                                        {activity.performance?.show?.venue || activity.performance?.venue || activity.show?.venue} • {activity.performance?.show?.date || activity.performance?.show_date || activity.show?.date}
                                     </p>
                                 )}
 
@@ -170,7 +196,7 @@ export default function ActivityFeed({
                     </div>
                 ))}
 
-                {displayActivities.length === 0 && (
+                {!loadingInitial && displayActivities.length === 0 && (
                     <div className="p-12 border border-[var(--border-subtle)] border-dashed text-center">
                         <p className="text-[var(--text-tertiary)] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
                             No {activeFilter !== 'all' ? activeFilter : 'activity'} yet.
@@ -190,7 +216,6 @@ export default function ActivityFeed({
                     </button>
                 </div>
             )}
-            </div>
 
             <style jsx>{`
                 @keyframes fadeIn {

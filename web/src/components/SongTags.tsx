@@ -9,10 +9,10 @@ import TagBadge from './TagBadge';
 import { Tag } from '@/types/tag';
 
 interface Props {
-    showId: number;
+    songId: number;
 }
 
-export default function ShowTags({ showId }: Props) {
+export default function SongTags({ songId }: Props) {
     const { data: session } = useSession();
     const router = useRouter();
     const [tags, setTags] = useState<Tag[]>([]);
@@ -26,7 +26,7 @@ export default function ShowTags({ showId }: Props) {
                 if (accessToken) {
                     headers['Authorization'] = `Bearer ${accessToken}`;
                 }
-                const res = await fetch(getApiEndpoint(`/tags/show/${showId}`), {
+                const res = await fetch(getApiEndpoint(`/tags/song/${songId}`), {
                     cache: 'no-store',
                     headers
                 });
@@ -38,7 +38,7 @@ export default function ShowTags({ showId }: Props) {
             }
         };
         fetchTags();
-    }, [showId]);
+    }, [songId, accessToken]);
 
     const ensureAuth = () => {
         if (!accessToken) {
@@ -50,7 +50,7 @@ export default function ShowTags({ showId }: Props) {
 
     const handleAddTag = async (tag: Tag) => {
         if (!ensureAuth()) return;
-        const res = await fetch(getApiEndpoint(`/tags/show/${showId}?tag_id=${tag.id}`), {
+        const res = await fetch(getApiEndpoint(`/tags/song/${songId}?tag_id=${tag.id}`), {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -63,7 +63,7 @@ export default function ShowTags({ showId }: Props) {
 
     const handleRemoveTag = async (tagId: number) => {
         if (!ensureAuth()) return;
-        const res = await fetch(getApiEndpoint(`/tags/show/${showId}/${tagId}`), {
+        const res = await fetch(getApiEndpoint(`/tags/song/${songId}/${tagId}`), {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${accessToken}`,

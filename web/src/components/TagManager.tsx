@@ -19,6 +19,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, onTagUpdated
     const [color, setColor] = useState(editTag?.color || '#ff6b35');
     const [description, setDescription] = useState(editTag?.description || '');
     const [category, setCategory] = useState(editTag?.category || '');
+    const [isPrivate, setIsPrivate] = useState(editTag?.is_private || false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -29,6 +30,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, onTagUpdated
             setColor(editTag?.color || '#ff6b35');
             setDescription(editTag?.description || '');
             setCategory(editTag?.category || '');
+            setIsPrivate(editTag?.is_private || false);
             setError('');
         }
     }, [editTag, isOpen]);
@@ -45,7 +47,7 @@ export default function TagManager({ isOpen, onClose, onTagCreated, onTagUpdated
         setError('');
 
         try {
-            const tagData = { name, color, description, category };
+            const tagData = { name, color, description, category, is_private: isPrivate };
             const isEditing = Boolean(editTag);
             const res = await fetch(getApiEndpoint(isEditing ? `/tags/${editTag?.id}` : '/tags/'), {
                 method: isEditing ? 'PUT' : 'POST',
@@ -137,6 +139,22 @@ export default function TagManager({ isOpen, onClose, onTagCreated, onTagUpdated
                             className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
                             placeholder="e.g., Jam Type"
                         />
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                        <input
+                            id="isPrivateTag"
+                            type="checkbox"
+                            checked={isPrivate}
+                            onChange={(e) => setIsPrivate(e.target.checked)}
+                            className="mt-1 h-4 w-4 border-[var(--border)] bg-[var(--bg-muted)]"
+                        />
+                        <label htmlFor="isPrivateTag" className="text-sm text-[var(--text-primary)]">
+                            Private tag
+                            <span className="block text-xs text-[var(--text-secondary)]">
+                                Only you can see and use this tag.
+                            </span>
+                        </label>
                     </div>
 
                     <div>

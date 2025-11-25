@@ -5,3 +5,4 @@ sqlmodel
 python-multipart
 python-jose[cryptography]
 passlib[argon2]
+pydantic[email]

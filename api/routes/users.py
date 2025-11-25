@@ -166,6 +166,8 @@ def get_following(username: str, session: Session = Depends(get_session)):
 
 @router.get("/me/feed", response_model=List[Vote])
 def get_feed(
+    limit: int = 20,
+    offset: int = 0,
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user)
 ):
@@ -190,9 +192,9 @@ def get_feed(
             selectinload(Vote.user)
         )
         .order_by(Vote.created_at.desc())
-        .limit(20)
+        .limit(limit)
+        .offset(offset)
     ).all()
     
     return feed
-
 

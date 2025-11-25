@@ -8,14 +8,14 @@
   {
     "id": "1",
     "description": "Activity Feed Pagination & Badge Polish",
-    "status": "pending",
-    "agent": null
+    "status": "in-progress",
+    "agent": "codex"
   },
   {
     "id": "2",
     "description": "Phase 2: Follow system UI + lists CRUD (claim/unfollow buttons, followers/following pages, create/edit lists)",
-    "status": "pending",
-    "agent": null
+    "status": "in-progress",
+    "agent": "Antigravity"
   },
   {
     "id": "3",
@@ -52,5 +52,23 @@
     "description": "Performance comparisons: UI scaffold for side-by-side comparison",
     "status": "pending",
     "agent": null
+  },
+  {
+    "id": "9",
+    "description": "Community Synopsis (Wiki)",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "10",
+    "description": "Help needed with failing tests in api/tests/test_settings.py",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "11",
+    "description": "Fix dummy seed data not persisting in testing",
+    "status": "in-progress",
+    "agent": "Gemini"
   }
 ]

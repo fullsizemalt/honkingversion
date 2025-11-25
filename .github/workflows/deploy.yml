@@ -122,3 +122,14 @@ jobs:
             docker compose pull
             docker compose up -d
             echo "Deployment complete!"
+
+      - name: Seed database
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd ~/ANTIGRAVITY/honkingversion
+            docker compose exec api python seed_data.py
+            echo "Database seeding complete!"

@@ -22,7 +22,14 @@ export default function PerformanceTags({ performanceId }: Props) {
     useEffect(() => {
         const fetchTags = async () => {
             try {
-                const res = await fetch(getApiEndpoint(`/tags/performance/${performanceId}`), { cache: 'no-store' });
+                const headers: HeadersInit = {};
+                if (accessToken) {
+                    headers['Authorization'] = `Bearer ${accessToken}`;
+                }
+                const res = await fetch(getApiEndpoint(`/tags/performance/${performanceId}`), {
+                    cache: 'no-store',
+                    headers
+                });
                 if (res.ok) {
                     setTags(await res.json());
                 }

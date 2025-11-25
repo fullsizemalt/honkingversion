@@ -27,6 +27,7 @@ from routes import (
     changelog,
     comments,
     export,
+    feed,
     feedback,
     follows,
     home,
@@ -76,6 +77,7 @@ routers = [
     performances.router,
     comments.router,
     profile.router,
+    feed.router,
 ]
 
 for router in routers:

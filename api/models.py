@@ -19,6 +19,15 @@ class User(SQLModel, table=True):
     # Social links (stored as JSON string)
     social_links: Optional[str] = None  # JSON: {"twitter": "...", "instagram": "...", "custom_url": "..."}
     
+    # Privacy settings
+    profile_visibility: str = Field(default="public")
+    activity_visibility: str = Field(default="everyone")
+    show_attendance_public: bool = Field(default=True)
+    allow_follows: bool = Field(default=True)
+    allow_messages: str = Field(default="everyone")
+    show_stats: bool = Field(default=True)
+    indexable: bool = Field(default=True)
+
     votes: List["Vote"] = Relationship(back_populates="user")
     lists: List["UserList"] = Relationship(back_populates="user")
     attended_shows: List["UserShowAttendance"] = Relationship(back_populates="user")
@@ -71,6 +80,7 @@ class Song(SQLModel, table=True):
     original_artist: Optional[str] = None  # If cover
     
     performances: List["SongPerformance"] = Relationship(back_populates="song")
+    tags: List["SongTag"] = Relationship(back_populates="song")
 
 class SongPerformance(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -162,13 +172,16 @@ class UserBadge(SQLModel, table=True):
 class Tag(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True, unique=True)
-    category: str  # "jam_type", "venue_type", "special"
+    category: str = Field(default="general")  # "jam_type", "venue_type", "special", "general"
     color: Optional[str] = None  # Hex color for UI display
     description: Optional[str] = None
+    is_private: bool = Field(default=False)
+    owner_user_id: Optional[int] = Field(default=None, foreign_key="user.id")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     performance_tags: List["PerformanceTag"] = Relationship(back_populates="tag")
     show_tags: List["ShowTag"] = Relationship(back_populates="tag")
+    song_tags: List["SongTag"] = Relationship(back_populates="tag")
 
 class PerformanceTag(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -187,6 +200,15 @@ class ShowTag(SQLModel, table=True):
     
     show: Show = Relationship(back_populates="show_tags")
     tag: Tag = Relationship(back_populates="show_tags")
+
+class SongTag(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    song_id: int = Field(foreign_key="song.id", index=True)
+    tag_id: int = Field(foreign_key="tag.id", index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    song: Song = Relationship(back_populates="tags")
+    tag: Tag = Relationship(back_populates="song_tags")
 
 class UserStats(SQLModel):
     shows_attended: int = 0

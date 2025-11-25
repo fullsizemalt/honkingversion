@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Tag } from '@/types/tag';
 import { getApiEndpoint } from '@/lib/api';
 import TagBadge from './TagBadge';
@@ -13,6 +14,7 @@ interface TagSelectorProps {
 }
 
 export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: TagSelectorProps) {
+    const { data: session } = useSession();
     const [availableTags, setAvailableTags] = useState<Tag[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
@@ -21,7 +23,11 @@ export default function TagSelector({ selectedTags, onAddTag, onRemoveTag }: Tag
     useEffect(() => {
         const fetchTags = async () => {
             try {
-                const res = await fetch(getApiEndpoint('/tags'));
+                const headers: HeadersInit = {};
+                if (session?.user?.accessToken) {
+                    headers['Authorization'] = `Bearer ${session.user.accessToken}`;
+                }
+                const res = await fetch(getApiEndpoint('/tags'), { headers });
                 if (res.ok) {
                     const data = await res.json();
                     setAvailableTags(data);

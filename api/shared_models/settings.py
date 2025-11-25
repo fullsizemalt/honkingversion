@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 from enum import Enum
 import re
@@ -22,13 +22,13 @@ class ProfileUpdate(BaseModel):
     display_name: Optional[str] = None
     bio: Optional[str] = None
 
-    @validator('display_name')
+    @field_validator('display_name')
     def display_name_length(cls, v):
         if v and len(v) > 50:
             raise ValueError('Display name must be 50 characters or less')
         return v
 
-    @validator('bio')
+    @field_validator('bio')
     def bio_length(cls, v):
         if v and len(v) > 500:
             raise ValueError('Bio must be 500 characters or less')
@@ -42,7 +42,7 @@ class PasswordChangeRequest(BaseModel):
     current_password: str
     new_password: str
 
-    @validator('new_password')
+    @field_validator('new_password')
     def password_strength(cls, v):
         if len(v) < 8:
             raise ValueError('Password must be at least 8 characters long')

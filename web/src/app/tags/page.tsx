@@ -42,7 +42,11 @@ export default function TagsPage() {
 
     const fetchTags = async () => {
         try {
-            const res = await fetch(getApiEndpoint('/tags'));
+            const headers: HeadersInit = {};
+            if (session?.user?.accessToken) {
+                headers['Authorization'] = `Bearer ${session.user.accessToken}`;
+            }
+            const res = await fetch(getApiEndpoint('/tags'), { headers });
             if (res.ok) {
                 const data = await res.json();
                 setTags(data);
@@ -87,9 +91,13 @@ export default function TagsPage() {
         setFilterLoading(true);
         setFilterError(null);
         try {
+            const headers: HeadersInit = {};
+            if (session?.user?.accessToken) {
+                headers['Authorization'] = `Bearer ${session.user.accessToken}`;
+            }
             const [showsRes, performancesRes] = await Promise.all([
-                fetch(getApiEndpoint(`/tags/${tagId}/shows`)),
-                fetch(getApiEndpoint(`/tags/${tagId}/performances`)),
+                fetch(getApiEndpoint(`/tags/${tagId}/shows`), { headers }),
+                fetch(getApiEndpoint(`/tags/${tagId}/performances`), { headers }),
             ]);
 
             if (!showsRes.ok || !performancesRes.ok) {

@@ -14,6 +14,7 @@ export default function TagBadge({ tag, onRemove }: TagBadgeProps) {
             style={{ backgroundColor: bgColor }}
         >
             {tag.name}
+            {tag.is_private && <span className="ml-1 text-[10px] opacity-80">🔒</span>}
             {onRemove && (
                 <button
                     onClick={(e) => {

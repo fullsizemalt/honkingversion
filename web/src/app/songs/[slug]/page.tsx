@@ -1,8 +1,10 @@
 import React from 'react';
 import { getApiEndpoint } from '@/lib/api';
 import SongHeader from '@/components/SongHeader';
-import TopVersion from '@/components/TopVersion';
+import TopVersions from '@/components/TopVersions';
 import PerformanceFilter from '@/components/PerformanceFilter';
+import PerformanceStats from '@/components/PerformanceStats';
+import SongTags from '@/components/SongTags';
 
 import { Performance } from '@/types';
 
@@ -59,54 +61,40 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 
         return (
             <>
-                {/* Header */}
-                <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] py-10">
+                {/* Header Section */}
+                <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)] py-12">
                     <div className="max-w-7xl mx-auto px-4">
-                        <div className="mb-6">
-                            <SongHeader song={song} />
-                        </div>
+                        <SongHeader song={song} />
 
-                        {/* Stats */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                            <div className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded p-4">
-                                <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Total Performances</p>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{performances.length}</p>
+                        {/* Tags */}
+                        {song.id && (
+                            <div className="mt-8">
+                                <SongTags songId={song.id} />
                             </div>
-                            <div className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded p-4">
-                                <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Avg Rating</p>
-                                <p className="text-2xl font-bold text-[var(--accent-tertiary)]">
-                                    {avgOfAverages?.toFixed(1) ?? 'N/A'}
-                                </p>
-                            </div>
-                            <div className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded p-4">
-                                <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Rated Performances</p>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{ratingsCount}</p>
-                            </div>
-                            <div className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded p-4">
-                                <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">First Played</p>
-                                <p className="text-sm font-bold text-[var(--text-primary)]">
-                                    {sortedPerformances[sortedPerformances.length - 1]?.show?.date || 'N/A'}
-                                </p>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className="max-w-7xl mx-auto px-4 py-12">
-                    {topVersion && (
-                        <div className="mb-12">
-                            <TopVersion performance={topVersion} />
-                        </div>
+                <div className="max-w-7xl mx-auto px-4 py-16 space-y-16">
+                    {/* Top Versions Section */}
+                    {performances.length > 0 && (
+                        <TopVersions performances={performances} maxVersions={5} />
                     )}
 
-                    <div>
-                        <div className="mb-6 pb-3 border-b border-[var(--border)]">
+                    {/* Performance Statistics */}
+                    {performances.length > 0 && (
+                        <PerformanceStats performances={performances} />
+                    )}
+
+                    {/* All Performances Section */}
+                    <div className="space-y-6">
+                        <div className="pb-3 border-b border-[var(--border)]">
                             <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] uppercase tracking-tight inline-block">
                                 All Performances
                             </h2>
                             <span className="ml-4 font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] uppercase tracking-wider">
-                                {sortedPerformances.length} performances
+                                {sortedPerformances.length} total
                             </span>
                         </div>
 

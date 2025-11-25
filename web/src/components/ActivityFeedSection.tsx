@@ -6,57 +6,60 @@ import { getApiEndpoint } from '@/lib/api';
 import ActivityFeed from '@/components/ActivityFeed';
 import { Review } from '@/types';
 
-// Mock data for homepage activity (fallback/initial)
-const recentActivity: Review[] = [
-  {
-    id: 101,
-    user: { id: 3, username: "GooseFan1", created_at: "2023-01-01" },
-    rating: 10,
-    blurb: "Incredible energy!",
-    created_at: new Date().toISOString(),
-    show: { id: 201, date: "2023-10-06", venue: "Red Rocks", location: "Morrison, CO" }
-  },
-  {
-    id: 102,
-    user: { id: 4, username: "HonkHonk", created_at: "2023-02-01" },
-    rating: 9,
-    blurb: "Solid first set, second set was fire.",
-    created_at: new Date().toISOString(),
-    show: { id: 202, date: "2023-10-05", venue: "Red Rocks", location: "Morrison, CO" }
-  }
-];
+const PAGE_SIZE = 10;
 
 export default function ActivityFeedSection() {
   const { data: session } = useSession();
   const [feedType, setFeedType] = useState<'community' | 'following'>('community');
-  const [feedActivities, setFeedActivities] = useState<Review[]>(recentActivity);
+  const [feedActivities, setFeedActivities] = useState<Review[]>([]);
   const [loadingFeed, setLoadingFeed] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    if (feedType === 'following' && session) {
-      const fetchFollowingFeed = async () => {
-        setLoadingFeed(true);
-        try {
-          const res = await fetch(getApiEndpoint('/users/me/feed'), {
-            headers: {
-              'Authorization': `Bearer ${session?.user?.accessToken ?? ''}`
-            }
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setFeedActivities(data);
-          }
-        } catch (error) {
-          console.error('Failed to fetch following feed', error);
-        } finally {
-          setLoadingFeed(false);
-        }
-      };
-      fetchFollowingFeed();
-    } else {
-      setFeedActivities(recentActivity);
+    setPage(0);
+    setHasMore(true);
+    setFeedActivities([]);
+    fetchFeed(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedType, session?.user?.accessToken]);
+
+  const fetchFeed = async (reset = false) => {
+    if (feedType === 'following' && !session) return;
+    const offset = reset ? 0 : page * PAGE_SIZE;
+    if (reset) setLoadingInitial(true);
+    setLoadingFeed(true);
+    try {
+      const headers: HeadersInit = {};
+      if (feedType === 'following' && session?.user?.accessToken) {
+        headers['Authorization'] = `Bearer ${session.user.accessToken}`;
+      }
+      const endpoint =
+        feedType === 'following'
+          ? `/users/me/feed?limit=${PAGE_SIZE}&offset=${offset}`
+          : `/feed/community?limit=${PAGE_SIZE}&offset=${offset}`;
+
+      const res = await fetch(getApiEndpoint(endpoint), { headers });
+      if (res.ok) {
+        const data = await res.json();
+        const newItems = reset ? data : [...feedActivities, ...data];
+        setFeedActivities(newItems);
+        setHasMore(data.length === PAGE_SIZE);
+      }
+    } catch (error) {
+      console.error('Failed to fetch feed', error);
+    } finally {
+      setLoadingFeed(false);
+      setLoadingInitial(false);
     }
-  }, [feedType, session]);
+  };
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchFeed();
+  };
 
   return (
     <div className="lg:col-span-1">
@@ -80,7 +83,14 @@ export default function ActivityFeedSection() {
       {loadingFeed ? (
         <div className="text-[var(--text-secondary)]">Loading feed...</div>
       ) : (
-        <ActivityFeed activities={feedActivities} title="" />
+        <ActivityFeed
+          activities={feedActivities}
+          title=""
+          onLoadMore={hasMore ? handleLoadMore : undefined}
+          hasMore={hasMore}
+          loadingMore={loadingFeed && !loadingInitial}
+          loadingInitial={loadingInitial}
+        />
       )}
     </div>
   );
