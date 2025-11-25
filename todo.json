@@ -14,19 +14,19 @@
   {
     "id": "2",
     "description": "Phase 2: Follow system UI + lists CRUD (claim/unfollow buttons, followers/following pages, create/edit lists)",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Gemini"
   },
   {
     "id": "3",
     "description": "Tags UI: create/edit tags, display badges, filter shows/performances by tag",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Antigravity"
   },
   {
     "id": "4",
     "description": "Attendance: mark shows attended, show on profiles, basic stats",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Antigravity"
   },
   {
@@ -44,13 +44,13 @@
   {
     "id": "7",
     "description": "Settings polish: adopt shared typings, clean duplication, add tests around security/OAuth/data flows",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Gemini"
   },
   {
     "id": "8",
     "description": "Performance comparisons: UI scaffold for side-by-side comparison",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "codex"
   },
   {
@@ -62,20 +62,20 @@
   {
     "id": "10",
     "description": "Help needed with failing tests in api/tests/test_settings.py",
-    "status": "in-progress",
-    "agent": "Gemini"
+    "status": "completed",
+    "agent": "Claude Code"
   },
   {
     "id": "11",
     "description": "Fix dummy seed data not persisting in testing",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Gemini"
   },
   {
     "id": "12",
     "description": "Ignore caches/db in git and add scripts to regenerate",
-    "status": "pending",
-    "agent": null
+    "status": "completed",
+    "agent": "Claude Code"
   },
   {
     "id": "13",
@@ -104,61 +104,13 @@
   {
     "id": "17",
     "description": "List Following & Privacy",
-    "status": "pending",
-    "agent": null
-  },
-  {
-    "id": "18",
-    "description": "Explain to the user why the testing environment is empty and how the fix works",
-    "status": "in-progress",
-    "agent": "Gemini"
-  },
-  {
-    "id": "19",
-    "description": "Investigate why frontend widgets are still empty after seeding fix",
-    "status": "in-progress",
-    "agent": "Gemini"
-  },
-  {
-    "id": "20",
-    "description": "Explain to the user the new plan to debug the seeding issue",
-    "status": "in-progress",
-    "agent": "Gemini"
-  },
-  {
-    "id": "21",
-    "description": "Apologize to the user and explain the new debugging plan",
-    "status": "in-progress",
-    "agent": "Gemini"
-  },
-  {
-    "id": "22",
-    "description": "Instruct user to commit and push to trigger deployment",
-    "status": "in-progress",
-    "agent": "Gemini"
-  },
-  {
-    "id": "23",
-    "description": "Explain to user that I cannot perform git operations",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Gemini"
   },
   {
     "id": "24",
     "description": "Attendance Heatmap",
-    "status": "pending",
-    "agent": null
-  },
-  {
-    "id": "25",
-    "description": "Apologize and explain the new debugging plan for the data loss issue",
-    "status": "in-progress",
-    "agent": "Gemini"
-  },
-  {
-    "id": "26",
-    "description": "Propose analytics ideas to the user",
-    "status": "pending",
-    "agent": null
+    "status": "completed",
+    "agent": "Antigravity"
   }
 ]
