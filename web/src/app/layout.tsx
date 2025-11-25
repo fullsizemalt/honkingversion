@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from '@/components/Footer';
 import DevUserSwitcher from '@/components/DevUserSwitcher';
 import AnalyticsListener from '@/components/AnalyticsListener';
+import CookieConsent from '@/components/CookieConsent';
 
 export const metadata: Metadata = {
   title: "Honkingversion.net - Vote on the best Goose performances",
@@ -25,6 +26,7 @@ export default function RootLayout({
           <Footer />
           <DevUserSwitcher />
           <AnalyticsListener />
+          <CookieConsent />
         </Providers>
       </body>
     </html>
