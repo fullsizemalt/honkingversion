@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, Calendar, MapPin, Music, Star, Tv } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -158,7 +159,7 @@ export default function PerformanceDetailPage() {
           {(performance.bandcamp_url || performance.nugs_url) && (
             <div className="mt-6 p-4 bg-[var(--bg-primary)] border border-[var(--border)] rounded">
               <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] mb-3 uppercase tracking-[0.2em]">
-                📺 Listen
+                <span className="flex items-center gap-2"><Tv className="w-4 h-4" /> Listen</span>
               </p>
               <ExternalLinks
                 bandcamp_url={performance.bandcamp_url}

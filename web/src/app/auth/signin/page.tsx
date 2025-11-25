@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { Github, Mail, Tent } from 'lucide-react'
 
 export default function SignIn() {
     const router = useRouter()
@@ -124,7 +125,7 @@ export default function SignIn() {
                 {/* Demo Account Quick Login */}
                 <div className="mt-6 p-4 bg-slate-800/50 border border-slate-700">
                     <p className="text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider text-slate-400 mb-3 text-center">
-                        🎪 Quick Demo Login
+                        <span className="flex items-center gap-2"><Tent className="w-4 h-4" /> Quick Demo Login</span>
                     </p>
                     <div className="grid grid-cols-3 gap-2">
                         <button

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import FeedbackModal from './FeedbackModal';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Wrench, Check } from 'lucide-react';
 
 export default function Footer() {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function Footer() {
             localStorage.setItem('devMode', String(newDevMode));
 
             // Show toast notification
-            const message = newDevMode ? '🔧 Dev mode activated!' : '✅ Dev mode deactivated';
+            const message = newDevMode ? <span className="flex items-center gap-2"><Wrench className="w-4 h-4" /> Dev mode activated!</span> : <span className="flex items-center gap-2"><Check className="w-4 h-4" /> Dev mode deactivated</span>;
             alert(message);
 
             setTapCount(0);

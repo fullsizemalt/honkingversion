@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { Download, AlertTriangle, CheckCircle, Book, Library } from 'lucide-react';
 import { getApiEndpoint } from '@/lib/api';
 import Link from 'next/link';
 
@@ -80,16 +81,16 @@ export default function ExportPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <Link href="/export/instructions" className="block p-4 bg-[#1a1a1a] border border-[#a0a0a0] hover:border-[#ff6b35] transition">
                     <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] mb-2">
-                        📖 Instructions
+                        <span className="flex items-center gap-2"><Book className="w-5 h-5" /> Instructions</span>
                     </h3>
-                    <p className="text-[#a0a0a0] text-sm">
-                        Learn what's included in your export and how to use it.
+                    <p className="text-[var(--text-secondary)] mb-4">
+                        To export your data, simply click the button above. You will receive a JSON file containing all your votes, lists, and reviews.
                     </p>
                 </Link>
 
-                <Link href="/export/glossary" className="block p-4 bg-[#1a1a1a] border border-[#a0a0a0] hover:border-[#ff6b35] transition">
-                    <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] mb-2">
-                        📚 Glossary
+                <Link href="/export/glossary" className="bg-[var(--bg-secondary)] border border-[var(--border)] p-6 rounded-lg">
+                    <h3 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                        <span className="flex items-center gap-2"><Library className="w-5 h-5" /> Glossary</span>
                     </h3>
                     <p className="text-[#a0a0a0] text-sm">
                         Reference guide for all fields in your CSV export.

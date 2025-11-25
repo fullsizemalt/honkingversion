@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { Crown } from 'lucide-react';
 
 interface HonkingVersionBadgeProps {
     honkingVoteCount?: number
@@ -20,7 +21,7 @@ export default function HonkingVersionBadge({
     if (compact) {
         return (
             <div className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] rounded text-xs font-bold">
-                {isHonkingVersion && '🦆 HONK'}
+                {isHonkingVersion && <span className="flex items-center gap-1"><Crown className="w-3 h-3" /> HONK</span>}
                 {honkingVoteCount !== undefined && honkingVoteCount > 0 && (
                     <span>({honkingVoteCount})</span>
                 )}
@@ -30,7 +31,7 @@ export default function HonkingVersionBadge({
 
     return (
         <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-primary)] bg-opacity-10 border-l-4 border-[var(--accent-primary)] rounded">
-            <div className="text-2xl">🦆</div>
+            <div className="text-2xl"><Crown className="w-8 h-8" /></div>
             <div className="flex-1">
                 {isHonkingVersion && (
                     <div>

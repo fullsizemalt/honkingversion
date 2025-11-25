@@ -1,4 +1,5 @@
 import React from 'react'
+import { Play, Crown } from 'lucide-react';
 import { Performance } from '@/types'
 import PerformanceVoteControl from './PerformanceVoteControl'
 import HonkingVersionBadge from './HonkingVersionBadge'
@@ -54,7 +55,7 @@ export default function TopVersions({ performances, maxVersions = 5 }: TopVersio
                                 <div className="flex-shrink-0">
                                     {index === 0 ? (
                                         <div className="w-10 h-10 rounded-full bg-[var(--accent-tertiary)] flex items-center justify-center">
-                                            <span className="font-bold text-[var(--text-inverse)]">👑</span>
+                                            <span className="font-bold text-[var(--text-inverse)]"><Crown className="w-4 h-4" /></span>
                                         </div>
                                     ) : (
                                         <div className="w-10 h-10 rounded-full bg-[var(--border-subtle)] flex items-center justify-center">
@@ -112,7 +113,7 @@ export default function TopVersions({ performances, maxVersions = 5 }: TopVersio
                             {perf.is_honking_version && (
                                 <div className="p-3 bg-[var(--accent-primary)] bg-opacity-10 border border-[var(--accent-primary)] border-opacity-30 rounded text-center">
                                     <p className="text-xs font-bold text-[var(--accent-primary)] uppercase tracking-wider">
-                                        🦆 THE HONKING VERSION
+                                        <span className="flex items-center gap-2"><Crown className="w-4 h-4" /> THE HONKING VERSION</span>
                                     </p>
                                     <p className="text-xs text-[var(--text-secondary)] mt-1">
                                         {perf.honking_vote_count ?? 0} {perf.honking_vote_count === 1 ? 'person' : 'people'} voted this as "the one"

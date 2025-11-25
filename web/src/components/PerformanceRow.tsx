@@ -1,4 +1,4 @@
-import React from 'react';
+import { Play, Crown } from 'lucide-react';
 import PerformanceVoteControl from '@/components/PerformanceVoteControl';
 import HonkingVersionBadge from '@/components/HonkingVersionBadge';
 import PerformanceTags from './PerformanceTags';
@@ -42,7 +42,7 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
                 <div className="flex-1 space-y-2">
                     {/* Show Link */}
                     <p className="text-sm text-[var(--text-secondary)] font-semibold">
-                        <a href={`/shows/${show.date}`} className="hover:text-[var(--accent-tertiary)] transition-colors">
+                        <a href={`/ shows / ${show.date} `} className="hover:text-[var(--accent-tertiary)] transition-colors">
                             {show.date}
                         </a>
                     </p>
@@ -74,7 +74,7 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
                 <div className="text-right flex-shrink-0 space-y-2">
                     <div className="flex justify-end">
                         <Link
-                            href={`/performance-comparisons?ids=${id}`}
+                            href={`/ performance - comparisons ? ids = ${id} `}
                             className="text-[var(--accent-primary)] text-xs font-[family-name:var(--font-ibm-plex-mono)] hover:underline"
                         >
                             Compare
@@ -94,7 +94,7 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
 
                     {/* Quality Badge */}
                     {qualityBadge && (
-                        <div className={`inline-block px-2 py-1 rounded text-xs font-bold ${qualityBadge.color}`}>
+                        <div className={`inline - block px - 2 py - 1 rounded text - xs font - bold ${qualityBadge.color} `}>
                             {qualityBadge.label}
                         </div>
                     )}
@@ -115,7 +115,7 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
                 {is_honking_version && (
                     <div className="p-3 bg-[var(--accent-primary)] bg-opacity-10 border border-[var(--accent-primary)] border-opacity-30 rounded text-center">
                         <p className="text-xs font-bold text-[var(--accent-primary)] uppercase tracking-wider">
-                            🦆 THE HONKING VERSION
+                            <span className="flex items-center gap-2"><Crown className="w-4 h-4" /> THE HONKING VERSION</span>
                         </p>
                         <p className="text-xs text-[var(--text-secondary)] mt-1">
                             {honking_vote_count ?? 0} {honking_vote_count === 1 ? 'person' : 'people'} voted this as "the one"

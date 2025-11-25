@@ -1,4 +1,5 @@
 import { Tag } from '@/types/tag';
+import { Lock } from 'lucide-react';
 
 interface TagBadgeProps {
     tag: Tag;
@@ -14,7 +15,7 @@ export default function TagBadge({ tag, onRemove }: TagBadgeProps) {
             style={{ backgroundColor: bgColor }}
         >
             {tag.name}
-            {tag.is_private && <span className="ml-1 text-[10px] opacity-80">🔒</span>}
+            {tag.is_private && <span className="ml-1 text-[10px] opacity-80"><Lock className="w-3 h-3" /></span>}
             {onRemove && (
                 <button
                     onClick={(e) => {

@@ -7,6 +7,7 @@ import ExternalLinks from '@/components/ExternalLinks';
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { notFound } from 'next/navigation';
+import { ArrowLeft, Calendar, MapPin, Music, Star, Tv } from 'lucide-react';
 import { getApiEndpoint } from '@/lib/api';
 
 interface ShowResponse extends Partial<Show> {
@@ -144,7 +145,7 @@ export default async function ShowPage({ params }: { params: Promise<{ date: str
                         {(show.bandcamp_url || show.nugs_url) && (
                             <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-4">
                                 <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] mb-3 uppercase tracking-[0.2em]">
-                                    📺 Listen
+                                    <span className="flex items-center gap-2"><Tv className="w-4 h-4" /> Listen</span>
                                 </p>
                                 <ExternalLinks
                                     bandcamp_url={show.bandcamp_url}

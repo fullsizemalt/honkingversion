@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { Crown } from 'lucide-react';
 import Link from 'next/link'
 import { HonkingVersionData, Performance } from '@/types'
 import HonkingVersionBadge from './HonkingVersionBadge'
@@ -23,7 +24,7 @@ export default function HonkingVersionDisplay({
         return (
             <div className="bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-primary)] bg-opacity-5 border-l-4 border-[var(--accent-primary)] rounded p-8 text-center space-y-4">
                 <h3 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--accent-primary)]">
-                    🦆 The Honking Version
+                    <span className="flex items-center gap-2"><Crown className="w-5 h-5" /> The Honking Version</span>
                 </h3>
                 <p className="text-[var(--text-secondary)]">
                     This song hasn't been voted on yet. Be the first to crown the definitive version!
@@ -51,7 +52,7 @@ export default function HonkingVersionDisplay({
                 {/* Header */}
                 <div className="bg-[var(--accent-primary)] text-[var(--text-inverse)] px-6 py-4">
                     <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold uppercase tracking-tight">
-                        🦆 The Honking Version
+                        <span className="flex items-center gap-2"><Crown className="w-4 h-4" /> The Honking Version</span>
                     </h2>
                     <p className="text-sm opacity-90 mt-1">
                         {honkingPerf.honking_votes} {honkingPerf.honking_votes === 1 ? 'person' : 'people'} voted this as the definitive version
@@ -132,7 +133,7 @@ export default function HonkingVersionDisplay({
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
                         <h3 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[var(--text-primary)] mb-4">
-                            🦆 Vote for The Honking Version
+                            <span className="flex items-center gap-2"><Crown className="w-4 h-4" /> Vote for The Honking Version</span>
                         </h3>
                         <p className="text-sm text-[var(--text-secondary)] mb-6">
                             Which performance best exemplifies this song? Choose the one that captures its true essence.
@@ -147,8 +148,8 @@ export default function HonkingVersionDisplay({
                                         setShowVotingDialog(false)
                                     }}
                                     className={`w-full p-3 rounded border transition-all text-left ${perf.is_honking_version
-                                            ? 'border-[var(--accent-primary)] bg-[var(--accent-primary)] bg-opacity-10'
-                                            : 'border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
+                                        ? 'border-[var(--accent-primary)] bg-[var(--accent-primary)] bg-opacity-10'
+                                        : 'border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
                                         }`}
                                 >
                                     <div className="flex justify-between items-start gap-2">

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { Star, Crown } from 'lucide-react';
 import { getApiUrl } from '@/lib/api'
 import HonkingVersionBadge from './HonkingVersionBadge'
 
@@ -156,7 +157,7 @@ export default function HonkingVersionSelector({
                         disabled={loading}
                         className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] font-bold uppercase tracking-wider rounded hover:opacity-90 disabled:opacity-50 transition-opacity text-sm"
                     >
-                        {loading ? 'Setting...' : '🦆 This is The One'}
+                        {loading ? 'Setting...' : <span className="flex items-center gap-2"><Crown className="w-4 h-4" /> This is The One</span>}
                     </button>
                 ) : (
                     <>
