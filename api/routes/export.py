@@ -27,39 +27,75 @@ def generate_user_csv(user_id: int, session: Session) -> io.BytesIO:
     writer.writerow(["profile", "email", user.email])
     writer.writerow(["profile", "created_at", user.created_at.isoformat()])
 
-    # Votes
+    # Voting History - detailed
+    writer.writerow([""])
+    writer.writerow(["VOTING HISTORY"])
+    writer.writerow(["song_name", "artist", "performance_link", "rating", "voted_at"])
+
     votes = session.exec(select(Vote).where(Vote.user_id == user_id)).all()
     for v in votes:
-        target = "show" if v.show_id else "performance"
-        target_id = v.show_id if v.show_id else v.performance_id
-        writer.writerow(["vote", target, f"{target_id}:{v.rating}"])
+        if v.performance_id:
+            perf = session.get(SongPerformance, v.performance_id)
+            song = None
+            if perf:
+                song = session.get(Song, perf.song_id)
+            if song and perf:
+                writer.writerow([
+                    song.name,
+                    song.artist,
+                    perf.link or "",
+                    v.rating,
+                    v.created_at.isoformat() if v.created_at else ""
+                ])
 
     # Attended shows
+    writer.writerow([""])
+    writer.writerow(["ATTENDED SHOWS"])
+    writer.writerow(["date", "venue", "location"])
+
     attended = session.exec(select(UserShowAttendance).where(UserShowAttendance.user_id == user_id)).all()
     for attendance in attended:
-        writer.writerow(["attended_show", "show_id", attendance.show_id])
-        writer.writerow(["attended_show", "attended_at", attendance.created_at.isoformat()])
-
-    # Follows (users following this user)
-    followers = session.exec(select(UserFollow).where(UserFollow.followed_id == user_id)).all()
-    for follow in followers:
-        follower = session.get(User, follow.follower_id)
-        if follower:
-            writer.writerow(["follower", "username", follower.username])
+        show = session.get(Show, attendance.show_id)
+        if show:
+            writer.writerow([
+                show.date,
+                show.venue,
+                show.location
+            ])
 
     # Follows (users this user is following)
+    writer.writerow([""])
+    writer.writerow(["FOLLOWING"])
+    writer.writerow(["username", "followed_at"])
+
     following = session.exec(select(UserFollow).where(UserFollow.follower_id == user_id)).all()
     for follow in following:
         followed = session.get(User, follow.followed_id)
         if followed:
-            writer.writerow(["following", "username", followed.username])
+            writer.writerow([
+                followed.username,
+                follow.created_at.isoformat() if follow.created_at else ""
+            ])
 
     # Lists
+    writer.writerow([""])
+    writer.writerow(["LISTS"])
+    writer.writerow(["title", "description", "type", "item_count"])
+
     lists = session.exec(select(UserList).where(UserList.user_id == user_id)).all()
     for user_list in lists:
-        writer.writerow(["list", "title", user_list.title])
-        writer.writerow(["list", "description", user_list.description or ""])
-        writer.writerow(["list", "items", user_list.items or "[]"])
+        try:
+            items = json.loads(user_list.items or "[]")
+            item_count = len(items)
+        except json.JSONDecodeError:
+            item_count = 0
+
+        writer.writerow([
+            user_list.title,
+            user_list.description or "",
+            user_list.list_type or "",
+            item_count
+        ])
 
     return io.BytesIO(output.getvalue().encode("utf-8"))
 

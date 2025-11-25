@@ -4,17 +4,21 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { Download, AlertTriangle, CheckCircle, Book, Library } from 'lucide-react';
 import { getApiEndpoint } from '@/lib/api';
+import { useToast } from '@/components/ToastContainer';
 import Link from 'next/link';
 
 export default function ExportPage() {
     const { data: session } = useSession();
+    const { addToast } = useToast();
     const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string>('');
 
     const handleDownload = async () => {
         setError('');
         if (!session?.user?.accessToken) {
-            setError('Please sign in to download your export.');
+            const msg = 'Please sign in to download your export.';
+            setError(msg);
+            addToast(msg, 'error');
             return;
         }
         setDownloading(true);
@@ -37,8 +41,11 @@ export default function ExportPage() {
             a.click();
             a.remove();
             window.URL.revokeObjectURL(url);
+            addToast('Export downloaded successfully!', 'success');
         } catch (e: any) {
-            setError(e.message || 'Failed to download export');
+            const msg = e.message || 'Failed to download export';
+            setError(msg);
+            addToast(msg, 'error');
         } finally {
             setDownloading(false);
         }
@@ -72,9 +79,10 @@ export default function ExportPage() {
                 <button
                     onClick={handleDownload}
                     disabled={downloading}
-                    className="inline-block bg-[#ff6b35] text-[#0a0a0a] px-6 py-3 font-[family-name:var(--font-ibm-plex-mono)] hover:bg-[#ff8c5a] font-bold disabled:opacity-60"
+                    className="inline-flex items-center gap-2 bg-[#ff6b35] text-[#0a0a0a] px-6 py-3 font-[family-name:var(--font-ibm-plex-mono)] hover:bg-[#ff8c5a] font-bold disabled:opacity-60"
                 >
-                    {downloading ? 'Preparing…' : '⬇ Download CSV'}
+                    <Download className="w-4 h-4" />
+                    {downloading ? 'Preparing…' : 'Download CSV'}
                 </button>
             </div>
 
