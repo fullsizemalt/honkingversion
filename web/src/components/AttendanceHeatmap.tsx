@@ -6,6 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-calendar-heatmap/dist/styles.css';
 import { getApiEndpoint } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { LineChart } from '@/components/charts/LineChart';
 
 interface HeatmapData {
     date: string;
@@ -57,6 +58,16 @@ export default function AttendanceHeatmap({ username }: AttendanceHeatmapProps) 
     const startDate = new Date(today);
     startDate.setFullYear(today.getFullYear() - 1);
 
+    // Aggregate weekly cadence for a simple trend line
+    const weekBuckets: Record<string, number> = {};
+    data.forEach((d) => {
+        const key = getWeekKey(d.date);
+        weekBuckets[key] = (weekBuckets[key] || 0) + d.count;
+    });
+    const weeklySeries = Object.entries(weekBuckets)
+        .sort(([a], [b]) => (a > b ? 1 : -1))
+        .map(([, count]) => count);
+
     return (
         <div className="attendance-heatmap-container">
             <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)] mb-4">
@@ -91,6 +102,17 @@ export default function AttendanceHeatmap({ username }: AttendanceHeatmapProps) 
                     />
                 </div>
             </div>
+
+            {weeklySeries.length > 0 && (
+                <div className="mt-4">
+                    <LineChart
+                        series={[{ label: 'Weekly Attendance', values: weeklySeries, color: 'var(--accent-primary)' }]}
+                        height={96}
+                        width={320}
+                        showDots
+                    />
+                </div>
+            )}
             <Tooltip id="heatmap-tooltip" />
 
             <style jsx global>{`
@@ -102,16 +124,26 @@ export default function AttendanceHeatmap({ username }: AttendanceHeatmapProps) 
                 .attendance-heatmap-container .react-calendar-heatmap .color-empty {
                     fill: var(--bg-muted);
                 }
-                .attendance-heatmap-container .react-calendar-heatmap .color-scale-1 { fill: var(--accent-primary); opacity: 0.4; }
-                .attendance-heatmap-container .react-calendar-heatmap .color-scale-2 { fill: var(--accent-primary); opacity: 0.6; }
-                .attendance-heatmap-container .react-calendar-heatmap .color-scale-3 { fill: var(--accent-primary); opacity: 0.8; }
-                .attendance-heatmap-container .react-calendar-heatmap .color-scale-4 { fill: var(--accent-primary); opacity: 1; }
+                .attendance-heatmap-container .react-calendar-heatmap .color-scale-1 { fill: #7cc0ff; }
+                .attendance-heatmap-container .react-calendar-heatmap .color-scale-2 { fill: #4f9cf8; }
+                .attendance-heatmap-container .react-calendar-heatmap .color-scale-3 { fill: #2f7ae5; }
+                .attendance-heatmap-container .react-calendar-heatmap .color-scale-4 { fill: #1d4fd7; }
                 
                 .attendance-heatmap-container .react-calendar-heatmap rect:hover {
-                    stroke: var(--text-primary);
+                    stroke: var(--accent-primary);
                     stroke-width: 1px;
                 }
             `}</style>
         </div>
     );
+}
+
+// Simple ISO-like week key (year-weeknumber) to bin attendance by week
+function getWeekKey(dateStr: string): string {
+    const d = new Date(dateStr + 'T00:00:00Z');
+    const year = d.getUTCFullYear();
+    const startOfYear = Date.UTC(year, 0, 1);
+    const dayOfYear = Math.floor((d.getTime() - startOfYear) / 86400000);
+    const week = Math.floor(dayOfYear / 7);
+    return `${year}-W${week.toString().padStart(2, '0')}`;
 }
