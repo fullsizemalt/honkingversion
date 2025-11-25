@@ -5,9 +5,9 @@ const SESSION_KEY = 'hv_analytics_session_id';
 export const getSessionId = (): string => {
     if (typeof window === 'undefined') return '';
 
-    let sessionId = localStorage.getItem(SESSION_KEY);
-    if (!sessionId) {
-        sessionId = uuidv4();
+    const existing = localStorage.getItem(SESSION_KEY);
+    const sessionId = existing ?? uuidv4();
+    if (!existing) {
         localStorage.setItem(SESSION_KEY, sessionId);
     }
     return sessionId;
