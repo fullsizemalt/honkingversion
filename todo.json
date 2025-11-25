@@ -14,8 +14,8 @@
   {
     "id": "2",
     "description": "Phase 2: Follow system UI + lists CRUD (claim/unfollow buttons, followers/following pages, create/edit lists)",
-    "status": "completed",
-    "agent": "codex"
+    "status": "in-progress",
+    "agent": "Gemini"
   },
   {
     "id": "3",
@@ -56,19 +56,19 @@
   {
     "id": "9",
     "description": "Community Synopsis (Wiki)",
-    "status": "pending",
-    "agent": null
+    "status": "in-progress",
+    "agent": "codex"
   },
   {
     "id": "10",
     "description": "Help needed with failing tests in api/tests/test_settings.py",
-    "status": "completed",
-    "agent": "codex"
+    "status": "in-progress",
+    "agent": "Gemini"
   },
   {
     "id": "11",
     "description": "Fix dummy seed data not persisting in testing",
-    "status": "completed",
-    "agent": "codex"
+    "status": "in-progress",
+    "agent": "Gemini"
   }
 ]
