@@ -134,8 +134,8 @@
   {
     "id": "22",
     "description": "QUICK WIN: Add search box to header with song/artist autocomplete",
-    "status": "pending",
-    "agent": null,
+    "status": "in-progress",
+    "agent": "Claude Code",
     "category": "Search & Discovery",
     "effort": "1-2 hours",
     "dependencies": []
@@ -228,7 +228,9 @@
     "agent": null,
     "category": "Search & Discovery",
     "effort": "4-8 hours",
-    "dependencies": ["22"]
+    "dependencies": [
+      "22"
+    ]
   },
   {
     "id": "33",
@@ -237,7 +239,9 @@
     "agent": null,
     "category": "Search & Discovery",
     "effort": "4-8 hours",
-    "dependencies": ["32"]
+    "dependencies": [
+      "32"
+    ]
   },
   {
     "id": "34",
@@ -273,7 +277,9 @@
     "agent": null,
     "category": "Social Features",
     "effort": "6-10 hours",
-    "dependencies": ["34"]
+    "dependencies": [
+      "34"
+    ]
   },
   {
     "id": "38",
@@ -300,7 +306,9 @@
     "agent": null,
     "category": "Export/Integration",
     "effort": "2-4 hours",
-    "dependencies": ["23"]
+    "dependencies": [
+      "23"
+    ]
   },
   {
     "id": "41",
@@ -309,7 +317,9 @@
     "agent": null,
     "category": "Mobile UX",
     "effort": "4-6 hours",
-    "dependencies": ["30"]
+    "dependencies": [
+      "30"
+    ]
   },
   {
     "id": "42",
@@ -399,7 +409,9 @@
     "agent": null,
     "category": "Mobile UX",
     "effort": "40-60 hours",
-    "dependencies": ["50"]
+    "dependencies": [
+      "50"
+    ]
   },
   {
     "id": "52",
@@ -408,7 +420,9 @@
     "agent": null,
     "category": "Social Features",
     "effort": "40-60 hours",
-    "dependencies": ["48"]
+    "dependencies": [
+      "48"
+    ]
   },
   {
     "id": "53",
@@ -417,7 +431,9 @@
     "agent": null,
     "category": "Community Features",
     "effort": "20-30 hours",
-    "dependencies": ["39"]
+    "dependencies": [
+      "39"
+    ]
   },
   {
     "id": "54",
@@ -435,7 +451,9 @@
     "agent": null,
     "category": "Analytics & Insights",
     "effort": "40-60 hours",
-    "dependencies": ["37"]
+    "dependencies": [
+      "37"
+    ]
   },
   {
     "id": "56",
@@ -453,7 +471,9 @@
     "agent": null,
     "category": "Mobile UX",
     "effort": "20-30 hours",
-    "dependencies": ["51"]
+    "dependencies": [
+      "51"
+    ]
   },
   {
     "id": "58",
@@ -462,7 +482,9 @@
     "agent": null,
     "category": "Analytics & Insights",
     "effort": "30-40 hours",
-    "dependencies": ["45"]
+    "dependencies": [
+      "45"
+    ]
   },
   {
     "id": "59",
@@ -471,7 +493,9 @@
     "agent": null,
     "category": "Content Moderation",
     "effort": "30-40 hours",
-    "dependencies": ["43"]
+    "dependencies": [
+      "43"
+    ]
   },
   {
     "id": "60",
@@ -480,6 +504,8 @@
     "agent": null,
     "category": "Community Features",
     "effort": "40-60 hours",
-    "dependencies": ["52"]
+    "dependencies": [
+      "52"
+    ]
   }
 ]
