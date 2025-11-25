@@ -10,6 +10,8 @@ import ActivityFeed from '@/components/ActivityFeed';
 import ListsSection from '@/components/ListsSection';
 import BadgeShowcase from '@/components/BadgeShowcase';
 
+import AttendanceHeatmap from '@/components/AttendanceHeatmap';
+
 interface ProfileData {
     user: {
         id: number;
@@ -173,6 +175,7 @@ export default function ProfilePage() {
                     {/* Left Sidebar - Stats */}
                     <div className="lg:col-span-3 space-y-6">
                         <StatsCard stats={profileData.stats} />
+                        <AttendanceHeatmap username={profileData.user.username} />
                         <BadgeShowcase
                             badges={profileData.badges || []}
                             username={profileData.user.username}

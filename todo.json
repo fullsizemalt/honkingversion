@@ -26,8 +26,8 @@
   {
     "id": "4",
     "description": "Attendance: mark shows attended, show on profiles, basic stats",
-    "status": "completed",
-    "agent": "codex"
+    "status": "in-progress",
+    "agent": "Antigravity"
   },
   {
     "id": "5",
@@ -134,13 +134,31 @@
   {
     "id": "22",
     "description": "Instruct user to commit and push to trigger deployment",
-    "status": "pending",
-    "agent": null
+    "status": "in-progress",
+    "agent": "Gemini"
   },
   {
     "id": "23",
     "description": "Explain to user that I cannot perform git operations",
     "status": "in-progress",
     "agent": "Gemini"
+  },
+  {
+    "id": "24",
+    "description": "Attendance Heatmap",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "25",
+    "description": "Apologize and explain the new debugging plan for the data loss issue",
+    "status": "in-progress",
+    "agent": "Gemini"
+  },
+  {
+    "id": "26",
+    "description": "Propose analytics ideas to the user",
+    "status": "pending",
+    "agent": null
   }
 ]

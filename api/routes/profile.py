@@ -255,3 +255,36 @@ def update_selected_title(
     session.refresh(current_user)
     
     return {"success": True, "selected_title_id": title_id}
+
+@router.get("/{username}/attendance/heatmap")
+def get_attendance_heatmap(
+    username: str,
+    session: Session = Depends(get_session)
+):
+    """Get attendance data for heatmap visualization"""
+    statement = select(User).where(User.username == username)
+    user = session.exec(statement).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    # Get all attended shows with date
+    # We need to join with Show table to get dates
+    # Assuming UserShowAttendance has show_id and Show has id, date
+    from api.models import Show
+    
+    statement = select(Show.date, Show.venue, Show.id).join(UserShowAttendance, UserShowAttendance.show_id == Show.id)\
+        .where(UserShowAttendance.user_id == user.id)
+        
+    results = session.exec(statement).all()
+    
+    heatmap_data = []
+    for date, venue, show_id in results:
+        heatmap_data.append({
+            "date": date,
+            "count": 1,
+            "venue": venue,
+            "show_id": show_id
+        })
+        
+    return heatmap_data
