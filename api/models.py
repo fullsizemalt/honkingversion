@@ -369,4 +369,15 @@ class SynopsisHistory(SQLModel, table=True):
     synopsis: Synopsis = Relationship()
     edited_by: User = Relationship()
 
+class AnalyticsEvent(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    event_type: str = Field(index=True) # page_view, click, vote, etc.
+    path: str = Field(index=True)
+    metadata_json: Optional[str] = None # JSON string for extra data
+    session_id: str = Field(index=True) # Anonymous session ID
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id", index=True)
+    timestamp: datetime = Field(default_factory=datetime.utcnow, index=True)
+
+    user: Optional[User] = Relationship()
+
 SQLModel.update_forward_refs()

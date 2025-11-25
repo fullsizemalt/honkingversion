@@ -47,6 +47,7 @@ from api.routes import (
     venues,
     votes,
     synopsis,
+    analytics,
 )
 from api.database import create_db_and_tables
 
@@ -82,6 +83,7 @@ routers = [
     profile.router,
     feed.router,
     synopsis.router,
+    analytics.router,
 ]
 
 for router in routers:

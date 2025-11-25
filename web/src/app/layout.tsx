@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
 import Footer from '@/components/Footer';
 import DevUserSwitcher from '@/components/DevUserSwitcher';
+import AnalyticsListener from '@/components/AnalyticsListener';
 
 export const metadata: Metadata = {
   title: "Honkingversion.net - Vote on the best Goose performances",
@@ -23,6 +24,7 @@ export default function RootLayout({
           {children}
           <Footer />
           <DevUserSwitcher />
+          <AnalyticsListener />
         </Providers>
       </body>
     </html>

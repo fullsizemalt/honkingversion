@@ -1,58 +1,68 @@
-import Link from "next/link";
+import { Metadata } from 'next';
 import { getApiEndpoint } from '@/lib/api';
+import UserCard from '@/components/UserCard';
+import PageHeader from '@/components/PageHeader';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-interface UserSummary {
-    id: number;
-    username: string;
-    created_at: string;
+interface Props {
+    params: {
+        username: string;
+    };
 }
 
-async function getFollowers(username: string): Promise<UserSummary[]> {
-    try {
-        const res = await fetch(getApiEndpoint(`/follows/${username}/followers`), { cache: 'no-store' });
-        if (!res.ok) return [];
-        return res.json();
-    } catch (error) {
-        console.error("Failed to fetch followers", error);
-        return [];
+async function getFollowers(username: string) {
+    const res = await fetch(getApiEndpoint(`/follows/${username}/followers`), {
+        cache: 'no-store',
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch followers');
     }
+
+    return res.json();
 }
 
-interface PageProps {
-    params: Promise<{ username: string }>;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { username } = await params;
+    return {
+        title: `Followers of ${username} - Honkingversion`,
+    };
 }
 
-export default async function FollowersPage({ params }: PageProps) {
+export default async function FollowersPage({ params }: Props) {
     const { username } = await params;
     const followers = await getFollowers(username);
+    const session = await getServerSession(authOptions);
 
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)]">
-            <div className="max-w-4xl mx-auto px-4 py-8">
-                <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold text-[#f5f5f5] mb-8">
-                    {username}'s Followers
-                </h1>
+        <div className="min-h-screen bg-[var(--bg-primary)] pb-20">
+            <PageHeader
+                title={`Followers of ${username}`}
+                breadcrumbs={[
+                    { label: 'Home', href: '/' },
+                    { label: username, href: `/u/${username}` },
+                    { label: 'Followers', href: `/u/${username}/followers` },
+                ]}
+            />
 
-                {followers.length > 0 ? (
-                    <div className="space-y-2">
-                        {followers.map((user) => (
-                            <Link
-                                key={user.id}
-                                href={`/u/${user.username}`}
-                                className="block bg-[#1a1a1a] border border-[#333] p-4 hover:border-[#ff6b35] transition-colors group"
-                            >
-                                <div className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] group-hover:text-[#ff6b35]">
-                                    {user.username}
-                                </div>
-                                <div className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[#a0a0a0]">
-                                    Member since {new Date(user.created_at).toLocaleDateString()}
-                                </div>
-                            </Link>
-                        ))}
+            <div className="max-w-7xl mx-auto px-4 py-8">
+                {followers.length === 0 ? (
+                    <div className="text-center py-12 border border-dashed border-[var(--border)] bg-[var(--bg-secondary)]/50">
+                        <p className="text-[var(--text-secondary)]">No followers yet.</p>
                     </div>
                 ) : (
-                    <div className="text-[#a0a0a0] font-[family-name:var(--font-ibm-plex-mono)] text-sm">
-                        No followers yet.
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {followers.map((user: any) => (
+                            <UserCard
+                                key={user.id}
+                                user={{
+                                    ...user,
+                                    // We might need to fetch "is_following" status for each user if the API doesn't return it
+                                    // For now, the FollowButton handles its own state check
+                                }}
+                            />
+                        ))}
                     </div>
                 )}
             </div>

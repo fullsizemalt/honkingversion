@@ -101,72 +101,81 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                                     )}
                                 </div>
 
-                                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-tertiary)] tracking-wide">
-                                    @{user.username}
-                                </p>
+                                @{user.username}
+                            </p>
 
-                                {/* Selected Title */}
-                                {selectedTitle && (
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[var(--accent-primary)]/10 to-[var(--accent-secondary)]/10 border border-[var(--accent-primary)]/20 transition-all duration-300 hover:border-[var(--accent-primary)]/40">
-                                        {selectedTitle.icon && <span>{selectedTitle.icon}</span>}
-                                        <span
-                                            className="font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase tracking-widest"
-                                            style={{ color: selectedTitle.color }}
-                                        >
-                                            {selectedTitle.title_name}
-                                        </span>
-                                    </div>
-                                )}
+                            {/* Followers/Following Links */}
+                            <div className="flex items-center gap-4 text-sm font-[family-name:var(--font-ibm-plex-mono)]">
+                                <Link href={`/u/${user.username}/followers`} className="hover:text-[var(--accent-primary)] transition-colors">
+                                    <span className="font-bold text-[var(--text-primary)]">Followers</span>
+                                </Link>
+                                <Link href={`/u/${user.username}/following`} className="hover:text-[var(--accent-primary)] transition-colors">
+                                    <span className="font-bold text-[var(--text-primary)]">Following</span>
+                                </Link>
                             </div>
 
-                            {/* Bio */}
-                            {user.bio && (
-                                <p className="text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-                                    {user.bio}
-                                </p>
-                            )}
-
-                            {/* Social Links */}
-                            {user.social_links && Object.keys(user.social_links).length > 0 && (
-                                <div className="flex items-center gap-3">
-                                    {user.social_links.bluesky && (
-                                        <a
-                                            href={`https://bsky.app/profile/${user.social_links.bluesky.replace(/^@/, '')}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
-                                        >
-                                            <Cloud className="w-4 h-4 text-[var(--text-secondary)]" />
-                                        </a>
-                                    )}
-                                    {user.social_links.instagram && (
-                                        <a
-                                            href={`https://instagram.com/${user.social_links.instagram}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
-                                        >
-                                            <Instagram className="w-4 h-4 text-[var(--text-secondary)]" />
-                                        </a>
-                                    )}
-                                    {user.social_links.custom_url && (
-                                        <a
-                                            href={user.social_links.custom_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
-                                        >
-                                            <LinkIcon className="w-4 h-4 text-[var(--text-secondary)]" />
-                                        </a>
-                                    )}
+                            {/* Selected Title */}
+                            {selectedTitle && (
+                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[var(--accent-primary)]/10 to-[var(--accent-secondary)]/10 border border-[var(--accent-primary)]/20 transition-all duration-300 hover:border-[var(--accent-primary)]/40">
+                                    {selectedTitle.icon && <span>{selectedTitle.icon}</span>}
+                                    <span
+                                        className="font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase tracking-widest"
+                                        style={{ color: selectedTitle.color }}
+                                    >
+                                        {selectedTitle.title_name}
+                                    </span>
                                 </div>
                             )}
                         </div>
 
+                        {/* Bio */}
+                        {user.bio && (
+                            <p className="text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+                                {user.bio}
+                            </p>
+                        )}
 
+                        {/* Social Links */}
+                        {user.social_links && Object.keys(user.social_links).length > 0 && (
+                            <div className="flex items-center gap-3">
+                                {user.social_links.bluesky && (
+                                    <a
+                                        href={`https://bsky.app/profile/${user.social_links.bluesky.replace(/^@/, '')}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
+                                    >
+                                        <Cloud className="w-4 h-4 text-[var(--text-secondary)]" />
+                                    </a>
+                                )}
+                                {user.social_links.instagram && (
+                                    <a
+                                        href={`https://instagram.com/${user.social_links.instagram}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
+                                    >
+                                        <Instagram className="w-4 h-4 text-[var(--text-secondary)]" />
+                                    </a>
+                                )}
+                                {user.social_links.custom_url && (
+                                    <a
+                                        href={user.social_links.custom_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
+                                    >
+                                        <LinkIcon className="w-4 h-4 text-[var(--text-secondary)]" />
+                                    </a>
+                                )}
+                            </div>
+                        )}
                     </div>
+
+
                 </div>
             </div>
+        </div >
 
             <EditProfileModal
                 isOpen={isEditModalOpen}

@@ -1,8 +1,11 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import PerformanceTimeline from './PerformanceTimeline'
 import { Performance } from '@/types'
+import { Tag } from '@/types/tag'
+import { getApiEndpoint } from '@/lib/api'
+import { useSession } from 'next-auth/react'
 
 interface PerformanceFilterProps {
     performances: Performance[]
@@ -13,6 +16,27 @@ type SortOption = 'recent' | 'oldest' | 'highest-rated' | 'lowest-rated' | 'most
 export default function PerformanceFilter({ performances }: PerformanceFilterProps) {
     const [sortBy, setSortBy] = useState<SortOption>('recent')
     const [showRatedOnly, setShowRatedOnly] = useState(false)
+    const [selectedTagId, setSelectedTagId] = useState<number | null>(null)
+    const [availableTags, setAvailableTags] = useState<Tag[]>([])
+    const { data: session } = useSession()
+
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const headers: HeadersInit = {}
+                if (session?.user?.accessToken) {
+                    headers['Authorization'] = `Bearer ${session.user.accessToken}`
+                }
+                const res = await fetch(getApiEndpoint('/tags/'), { headers })
+                if (res.ok) {
+                    setAvailableTags(await res.json())
+                }
+            } catch (error) {
+                console.error('Failed to fetch tags', error)
+            }
+        }
+        fetchTags()
+    }, [session])
 
     const filteredAndSorted = useMemo(() => {
         let filtered = performances
@@ -20,6 +44,11 @@ export default function PerformanceFilter({ performances }: PerformanceFilterPro
         // Filter by rating status
         if (showRatedOnly) {
             filtered = filtered.filter(p => p.avg_rating !== null && p.avg_rating !== undefined)
+        }
+
+        // Filter by tag
+        if (selectedTagId) {
+            filtered = filtered.filter(p => p.tags?.some(t => t.id === Number(selectedTagId)))
         }
 
         // Sort
@@ -41,7 +70,7 @@ export default function PerformanceFilter({ performances }: PerformanceFilterPro
         })
 
         return sorted
-    }, [performances, sortBy, showRatedOnly])
+    }, [performances, sortBy, showRatedOnly, selectedTagId])
 
     return (
         <div className="space-y-6">
@@ -78,6 +107,25 @@ export default function PerformanceFilter({ performances }: PerformanceFilterPro
                             </span>
                         </label>
                     </div>
+                </div>
+
+                {/* Tag Filter */}
+                <div>
+                    <label className="block text-sm font-semibold text-[var(--text-primary)] mb-2">
+                        Filter by Tag
+                    </label>
+                    <select
+                        value={selectedTagId || ''}
+                        onChange={(e) => setSelectedTagId(e.target.value ? Number(e.target.value) : null)}
+                        className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-tertiary)] transition-colors"
+                    >
+                        <option value="">All Tags</option>
+                        {availableTags.map(tag => (
+                            <option key={tag.id} value={tag.id}>
+                                {tag.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 {filteredAndSorted.length !== performances.length && (

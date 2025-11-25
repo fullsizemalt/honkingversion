@@ -10,6 +10,10 @@ type ListItem = {
     label: string;
     date?: string;
     venue?: string;
+    // Song specific
+    name?: string;
+    artist?: string;
+    slug?: string;
 };
 
 interface UserList {
@@ -39,7 +43,10 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
     const [isPublic, setIsPublic] = useState(editList?.is_public ?? true);
     const [showSearch, setShowSearch] = useState('');
     const [showSuggestion, setShowSuggestion] = useState<string | null>(null);
+    const [showSuggestion, setShowSuggestion] = useState<string | null>(null);
     const [recentShows, setRecentShows] = useState<ListItem[]>([]);
+    const [allSongs, setAllSongs] = useState<ListItem[]>([]);
+    const [filteredSongs, setFilteredSongs] = useState<ListItem[]>([]);
 
     useEffect(() => {
         if (editList) {
@@ -53,6 +60,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
 
     useEffect(() => {
         if (!isOpen) return;
+
         const fetchRecentShows = async () => {
             try {
                 const res = await fetch(getApiEndpoint('/shows/'));
@@ -71,8 +79,39 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                 // ignore
             }
         };
+
+        const fetchSongs = async () => {
+            try {
+                const res = await fetch(getApiEndpoint('/songs/'));
+                if (!res.ok) return;
+                const data = await res.json();
+                const normalized = (Array.isArray(data) ? data : []).map((s: any) => ({
+                    id: s.id,
+                    type: 'song' as const,
+                    label: s.name,
+                    name: s.name,
+                    artist: s.artist,
+                    slug: s.slug,
+                }));
+                normalized.sort((a, b) => a.label.localeCompare(b.label));
+                setAllSongs(normalized);
+            } catch {
+                // ignore
+            }
+        };
+
         fetchRecentShows();
+        fetchSongs();
     }, [isOpen]);
+
+    useEffect(() => {
+        if (listType === 'songs' && showSearch.trim()) {
+            const term = showSearch.toLowerCase();
+            setFilteredSongs(allSongs.filter(s => s.label.toLowerCase().includes(term)).slice(0, 10));
+        } else {
+            setFilteredSongs([]);
+        }
+    }, [showSearch, listType, allSongs]);
     const addShowByDate = async () => {
         if (!showSearch.trim()) return;
         try {
@@ -115,6 +154,9 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                 label: item.label,
                 date: item.date,
                 venue: item.venue,
+                name: item.name,
+                artist: item.artist,
+                slug: item.slug,
             }));
 
             const listData = {
@@ -218,51 +260,99 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                         />
                     </div>
 
-                    <div>
-                        <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
-                            Add Show by Date (YYYY-MM-DD)
-                        </label>
-                        <div className="flex gap-2 mb-2">
-                            <input
-                                type="text"
-                                value={showSearch}
-                                onChange={(e) => setShowSearch(e.target.value)}
-                                placeholder="2025-07-20"
-                                className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
-                            />
-                            <button
-                                type="button"
-                                onClick={addShowByDate}
-                                className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
-                            >
-                                Add
-                            </button>
-                            {recentShows.length > 0 && (
-                                <select
-                                    onChange={(e) => {
-                                        const selected = recentShows.find((r) => r.id === Number(e.target.value));
-                                        if (selected) {
-                                            setItems((prev) => [...prev, selected]);
-                                        }
-                                    }}
-                                    className="border border-[var(--border)] text-[var(--text-secondary)] px-2 py-2 text-xs bg-[var(--bg-muted)]"
-                                >
-                                    <option value="">Recent shows...</option>
-                                    {recentShows.map((s) => (
-                                        <option key={s.id} value={s.id}>
-                                            {s.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            )}
-                            <button
-                                type="button"
-                                onClick={() => setItems([])}
-                                className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
-                            >
-                                Clear
-                            </button>
                         </div>
+                        
+                        {listType === 'shows' && (
+                            <>
+                                <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
+                                    Add Show by Date (YYYY-MM-DD)
+                                </label>
+                                <div className="flex gap-2 mb-2">
+                                    <input
+                                        type="text"
+                                        value={showSearch}
+                                        onChange={(e) => setShowSearch(e.target.value)}
+                                        placeholder="2025-07-20"
+                                        className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={addShowByDate}
+                                        className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                    >
+                                        Add
+                                    </button>
+                                    {recentShows.length > 0 && (
+                                        <select
+                                            onChange={(e) => {
+                                                const selected = recentShows.find((r) => r.id === Number(e.target.value));
+                                                if (selected) {
+                                                    setItems((prev) => [...prev, selected]);
+                                                }
+                                            }}
+                                            className="border border-[var(--border)] text-[var(--text-secondary)] px-2 py-2 text-xs bg-[var(--bg-muted)]"
+                                        >
+                                            <option value="">Recent shows...</option>
+                                            {recentShows.map((s) => (
+                                                <option key={s.id} value={s.id}>
+                                                    {s.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => setItems([])}
+                                        className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                            </>
+                        )}
+
+                        {listType === 'songs' && (
+                            <>
+                                <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
+                                    Search Songs
+                                </label>
+                                <div className="flex gap-2 mb-2">
+                                    <input
+                                        type="text"
+                                        value={showSearch}
+                                        onChange={(e) => setShowSearch(e.target.value)}
+                                        placeholder="Type song name..."
+                                        className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setItems([])}
+                                        className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                                {filteredSongs.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-4 p-2 border border-[var(--border)] bg-[var(--bg-secondary)] max-h-40 overflow-y-auto">
+                                        {filteredSongs.map(song => (
+                                            <button
+                                                key={song.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    if (!items.some(i => i.id === song.id)) {
+                                                        setItems(prev => [...prev, song]);
+                                                    }
+                                                    setShowSearch('');
+                                                }}
+                                                className="px-2 py-1 bg-[var(--bg-muted)] hover:bg-[var(--accent-primary)] hover:text-white text-xs rounded transition-colors"
+                                            >
+                                                {song.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
                         {showSuggestion && (
                             <p className="text-xs text-amber-400">{showSuggestion}</p>
                         )}
@@ -297,35 +387,37 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             className="w-full bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none"
                         >
                             <option value="shows">Shows</option>
+                            <option value="songs">Songs</option>
                             <option value="performances" disabled>Performances (coming soon)</option>
-                            <option value="songs" disabled>Songs (coming soon)</option>
                         </select>
                     </div>
 
-                    {error && (
-                        <div className="text-red-500 font-[family-name:var(--font-ibm-plex-mono)] text-xs">
-                            {error}
-                        </div>
-                    )}
-
-                    <div className="flex gap-3 pt-2">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[var(--accent-secondary)] disabled:opacity-50"
-                        >
-                            {loading ? 'Saving...' : editList ? 'Update List' : 'Create List'}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </form>
+                    {
+        error && (
+            <div className="text-red-500 font-[family-name:var(--font-ibm-plex-mono)] text-xs">
+                {error}
             </div>
-        </div>
+        )
+    }
+
+    <div className="flex gap-3 pt-2">
+        <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[var(--accent-secondary)] disabled:opacity-50"
+        >
+            {loading ? 'Saving...' : editList ? 'Update List' : 'Create List'}
+        </button>
+        <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+        >
+            Cancel
+        </button>
+    </div>
+                </form >
+            </div >
+        </div >
     );
 }

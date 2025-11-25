@@ -3,7 +3,10 @@ from sqlmodel import Session, select, func
 from typing import List, Optional
 
 from api.database import get_session
-from api.models import Song, SongPerformance, Show, Vote
+from api.database import get_session
+from api.models import Song, SongPerformance, Show, Vote, Tag, PerformanceTag
+from api.routes.auth import get_current_user_optional
+from api.routes.tags import _visibility_filter
 
 router = APIRouter(prefix="/songs", tags=["songs"])
 
@@ -75,7 +78,11 @@ def get_song_by_id(song_id: int, session: Session = Depends(get_session)):
     return song
 
 @router.get("/{slug}/performances")
-def get_song_performances(slug: str, session: Session = Depends(get_session)):
+def get_song_performances(
+    slug: str, 
+    session: Session = Depends(get_session),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
     """Return performances for a song with rating stats, sorted by avg rating descending"""
     # Find song
     song = session.exec(select(Song).where(Song.slug == slug)).first()
@@ -112,6 +119,16 @@ def get_song_performances(slug: str, session: Session = Depends(get_session)):
             "avg_rating": avg,
             "vote_count": len(votes),
         })
+
+        # Fetch tags for this performance
+        tags = session.exec(
+            select(Tag)
+            .join(PerformanceTag, PerformanceTag.tag_id == Tag.id)
+            .where(PerformanceTag.performance_id == perf.id)
+            .where(_visibility_filter(current_user))
+        ).all()
+        
+        results[-1]["tags"] = tags
 
     # Sort by avg rating (None values go last)
     results.sort(key=lambda x: (x["avg_rating"] is None, -(x["avg_rating"] or 0)))
