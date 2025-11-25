@@ -8,8 +8,11 @@ import AccountSettings from '@/components/Settings/AccountSettings';
 import PrivacySettings from '@/components/Settings/PrivacySettings';
 import PreferencesSettings from '@/components/Settings/PreferencesSettings';
 import SessionsSettings from '@/components/Settings/SessionsSettings';
+import SecuritySettings from '@/components/Settings/SecuritySettings';
+import ConnectionsSettings from '@/components/Settings/ConnectionsSettings';
+import DataSettings from '@/components/Settings/DataSettings';
 
-type SettingsSection = 'profile' | 'account' | 'privacy' | 'preferences' | 'sessions';
+type SettingsSection = 'profile' | 'account' | 'privacy' | 'preferences' | 'sessions' | 'security' | 'connections' | 'data';
 
 export default function SettingsPage() {
     const [activeSection, setActiveSection] = useState<SettingsSection>('profile');
@@ -55,6 +58,9 @@ export default function SettingsPage() {
                         {activeSection === 'privacy' && <PrivacySettings />}
                         {activeSection === 'preferences' && <PreferencesSettings />}
                         {activeSection === 'sessions' && <SessionsSettings />}
+                        {activeSection === 'security' && <SecuritySettings />}
+                        {activeSection === 'connections' && <ConnectionsSettings />}
+                        {activeSection === 'data' && <DataSettings />}
                     </div>
                 </div>
             </div>
