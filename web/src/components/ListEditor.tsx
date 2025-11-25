@@ -1,16 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { getApiEndpoint } from '@/lib/api';
 
 type ListItem = {
     id: number;
-    type: 'show';
+    type: 'show' | 'song';
     label: string;
     date?: string;
     venue?: string;
-    // Song specific
     name?: string;
     artist?: string;
     slug?: string;
@@ -42,7 +41,6 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
     const [error, setError] = useState('');
     const [isPublic, setIsPublic] = useState(editList?.is_public ?? true);
     const [showSearch, setShowSearch] = useState('');
-    const [showSuggestion, setShowSuggestion] = useState<string | null>(null);
     const [showSuggestion, setShowSuggestion] = useState<string | null>(null);
     const [recentShows, setRecentShows] = useState<ListItem[]>([]);
     const [allSongs, setAllSongs] = useState<ListItem[]>([]);
@@ -107,11 +105,12 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
     useEffect(() => {
         if (listType === 'songs' && showSearch.trim()) {
             const term = showSearch.toLowerCase();
-            setFilteredSongs(allSongs.filter(s => s.label.toLowerCase().includes(term)).slice(0, 10));
+            setFilteredSongs(allSongs.filter((s) => s.label.toLowerCase().includes(term)).slice(0, 10));
         } else {
             setFilteredSongs([]);
         }
     }, [showSearch, listType, allSongs]);
+
     const addShowByDate = async () => {
         if (!showSearch.trim()) return;
         try {
@@ -131,7 +130,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
             setItems((prev) => [...prev, newItem]);
             setShowSuggestion(null);
             setShowSearch('');
-        } catch (e) {
+        } catch {
             setShowSuggestion('Error fetching show');
         }
     };
@@ -167,10 +166,7 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                 is_public: isPublic,
             };
 
-            const url = editList
-                ? getApiEndpoint(`/lists/${editList.id}`)
-                : getApiEndpoint('/lists/');
-
+            const url = editList ? getApiEndpoint(`/lists/${editList.id}`) : getApiEndpoint('/lists/');
             const method = editList ? 'PUT' : 'POST';
 
             const res = await fetch(url, {
@@ -259,122 +255,122 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             placeholder="Optional description..."
                         />
                     </div>
-                </div>
 
-                {listType === 'shows' && (
-                    <>
-                                <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
-                                    Add Show by Date (YYYY-MM-DD)
-                                </label>
-                                <div className="flex gap-2 mb-2">
-                                    <input
-                                        type="text"
-                                        value={showSearch}
-                                        onChange={(e) => setShowSearch(e.target.value)}
-                                        placeholder="2025-07-20"
-                                        className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={addShowByDate}
-                                        className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                    {listType === 'shows' && (
+                        <>
+                            <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
+                                Add Show by Date (YYYY-MM-DD)
+                            </label>
+                            <div className="flex gap-2 mb-2">
+                                <input
+                                    type="text"
+                                    value={showSearch}
+                                    onChange={(e) => setShowSearch(e.target.value)}
+                                    placeholder="2025-07-20"
+                                    className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={addShowByDate}
+                                    className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                >
+                                    Add
+                                </button>
+                                {recentShows.length > 0 && (
+                                    <select
+                                        onChange={(e) => {
+                                            const selected = recentShows.find((r) => r.id === Number(e.target.value));
+                                            if (selected) {
+                                                setItems((prev) => [...prev, selected]);
+                                            }
+                                        }}
+                                        className="border border-[var(--border)] text-[var(--text-secondary)] px-2 py-2 text-xs bg-[var(--bg-muted)]"
                                     >
-                                        Add
-                                    </button>
-                                    {recentShows.length > 0 && (
-                                        <select
-                                            onChange={(e) => {
-                                                const selected = recentShows.find((r) => r.id === Number(e.target.value));
-                                                if (selected) {
-                                                    setItems((prev) => [...prev, selected]);
-                                                }
-                                            }}
-                                            className="border border-[var(--border)] text-[var(--text-secondary)] px-2 py-2 text-xs bg-[var(--bg-muted)]"
-                                        >
-                                            <option value="">Recent shows...</option>
-                                            {recentShows.map((s) => (
-                                                <option key={s.id} value={s.id}>
-                                                    {s.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => setItems([])}
-                                        className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
-                                    >
-                                        Clear
-                                    </button>
-                                </div>
-                    </>
-                )}
-
-                        {listType === 'songs' && (
-                            <>
-                                <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
-                                    Search Songs
-                                </label>
-                                <div className="flex gap-2 mb-2">
-                                    <input
-                                        type="text"
-                                        value={showSearch}
-                                        onChange={(e) => setShowSearch(e.target.value)}
-                                        placeholder="Type song name..."
-                                        className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setItems([])}
-                                        className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
-                                    >
-                                        Clear
-                                    </button>
-                                </div>
-                                {filteredSongs.length > 0 && (
-                                    <div className="flex flex-wrap gap-2 mb-4 p-2 border border-[var(--border)] bg-[var(--bg-secondary)] max-h-40 overflow-y-auto">
-                                        {filteredSongs.map(song => (
-                                            <button
-                                                key={song.id}
-                                                type="button"
-                                                onClick={() => {
-                                                    if (!items.some(i => i.id === song.id)) {
-                                                        setItems(prev => [...prev, song]);
-                                                    }
-                                                    setShowSearch('');
-                                                }}
-                                                className="px-2 py-1 bg-[var(--bg-muted)] hover:bg-[var(--accent-primary)] hover:text-white text-xs rounded transition-colors"
-                                            >
-                                                {song.label}
-                                            </button>
+                                        <option value="">Recent shows...</option>
+                                        {recentShows.map((s) => (
+                                            <option key={s.id} value={s.id}>
+                                                {s.label}
+                                            </option>
                                         ))}
-                                    </div>
+                                    </select>
                                 )}
-                    </>
-                )}
-                        {showSuggestion && (
-                            <p className="text-xs text-amber-400">{showSuggestion}</p>
-                        )}
-                        {items.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                                {items.map((item, idx) => (
-                                    <span
-                                        key={`${item.id}-${idx}`}
-                                        className="flex items-center gap-2 px-3 py-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
-                                    >
-                                        {item.label}
-                                        <button
-                                            type="button"
-                                            className="text-[var(--accent-primary)] hover:text-[var(--accent-secondary)]"
-                                            onClick={() => setItems(items.filter((_, i) => i !== idx))}
-                                        >
-                                            ✕
-                                        </button>
-                                    </span>
-                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setItems([])}
+                                    className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                >
+                                    Clear
+                                </button>
                             </div>
-                        )}
-                    </div>
+                        </>
+                    )}
+
+                    {listType === 'songs' && (
+                        <>
+                            <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
+                                Search Songs
+                            </label>
+                            <div className="flex gap-2 mb-2">
+                                <input
+                                    type="text"
+                                    value={showSearch}
+                                    onChange={(e) => setShowSearch(e.target.value)}
+                                    placeholder="Type song name..."
+                                    className="flex-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] px-3 py-2 focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-tertiary)]"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setItems([])}
+                                    className="border border-[var(--border)] text-[var(--text-secondary)] px-3 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                >
+                                    Clear
+                                </button>
+                            </div>
+                            {filteredSongs.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mb-4 p-2 border border-[var(--border)] bg-[var(--bg-secondary)] max-h-40 overflow-y-auto">
+                                    {filteredSongs.map((song) => (
+                                        <button
+                                            key={song.id}
+                                            type="button"
+                                            onClick={() => {
+                                                if (!items.some((i) => i.id === song.id)) {
+                                                    setItems((prev) => [...prev, song]);
+                                                }
+                                                setShowSearch('');
+                                            }}
+                                            className="px-2 py-1 bg-[var(--bg-muted)] hover:bg-[var(--accent-primary)] hover:text-white text-xs rounded transition-colors"
+                                        >
+                                            {song.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </>
+                    )}
+
+                    {showSuggestion && (
+                        <p className="text-xs text-amber-400">{showSuggestion}</p>
+                    )}
+
+                    {items.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {items.map((item, idx) => (
+                                <span
+                                    key={`${item.id}-${idx}`}
+                                    className="flex items-center gap-2 px-3 py-1 bg-[var(--bg-muted)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
+                                >
+                                    {item.label}
+                                    <button
+                                        type="button"
+                                        className="text-[var(--accent-primary)] hover:text-[var(--accent-secondary)]"
+                                        onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                                    >
+                                        ✕
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    )}
 
                     <div>
                         <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
@@ -391,32 +387,30 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                         </select>
                     </div>
 
-                    {
-        error && (
-            <div className="text-red-500 font-[family-name:var(--font-ibm-plex-mono)] text-xs">
-                {error}
-            </div>
-        )
-    }
+                    {error && (
+                        <div className="text-red-500 font-[family-name:var(--font-ibm-plex-mono)] text-xs">
+                            {error}
+                        </div>
+                    )}
 
-    <div className="flex gap-3 pt-2">
-        <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[var(--accent-secondary)] disabled:opacity-50"
-        >
-            {loading ? 'Saving...' : editList ? 'Update List' : 'Create List'}
-        </button>
-        <button
-            type="button"
-            onClick={onClose}
-            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
-        >
-            Cancel
-        </button>
-    </div>
-                </form >
-            </div >
-        </div >
+                    <div className="flex gap-3 pt-2">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="flex-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:bg-[var(--accent-secondary)] disabled:opacity-50"
+                        >
+                            {loading ? 'Saving...' : editList ? 'Update List' : 'Create List'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="flex-1 border border-[var(--border)] text-[var(--text-secondary)] px-4 py-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-bold uppercase hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     );
 }
