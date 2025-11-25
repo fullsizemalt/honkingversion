@@ -3,6 +3,7 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from pydantic import BaseModel
 from sqlalchemy import func, Integer
+from datetime import datetime
 
 from api.database import get_session
 from api.models import User, Vote, Show, UserRead, UserFollow
@@ -101,7 +102,6 @@ def get_show_votes(
     
     return votes_read
 
-from models import SongPerformance, PerformanceTag, ShowTag, Tag, Song
 from sqlalchemy.orm import selectinload
 
 class ShowSummary(BaseModel):
