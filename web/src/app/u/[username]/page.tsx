@@ -85,7 +85,7 @@ async function getUserBadges(username: string): Promise<Badge[]> {
 }
 
 type PageParams = { username: string };
-type PageProps = { params: PageParams | Promise<PageParams> };
+type PageProps = { params?: Promise<PageParams> };
 
 export default function PublicProfilePage({ params }: PageProps) {
     const { data: session } = useSession();
@@ -98,9 +98,7 @@ export default function PublicProfilePage({ params }: PageProps) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const resolvedParams = (params as Promise<PageParams>).then
-                ? await (params as Promise<PageParams>)
-                : (params as PageParams);
+            const resolvedParams = params ? await Promise.resolve(params) : { username: '' };
             const usernameValue = resolvedParams.username;
             setUsername(usernameValue);
 
