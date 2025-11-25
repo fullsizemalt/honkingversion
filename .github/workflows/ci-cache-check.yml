@@ -1,0 +1,126 @@
+name: CI - Cache & Database Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.db'
+      - '**/*.sqlite'
+      - '**/*.sqlite3'
+      - '**/__pycache__/**'
+      - '**/.pytest_cache/**'
+      - '**/node_modules/**'
+      - '**/.next/**'
+
+jobs:
+  check-cache-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for forbidden cache files
+        run: |
+          set +e
+
+          # Check git diff for any forbidden files
+          FORBIDDEN_PATTERNS=(
+            "\.db$"
+            "\.sqlite$"
+            "\.sqlite3$"
+            "__pycache__"
+            "\.pytest_cache"
+            "\.egg-info"
+            "dist/"
+            "build/"
+            "\.coverage$"
+            "htmlcov/"
+            "node_modules/"
+            "\.next/"
+          )
+
+          FOUND_FORBIDDEN=0
+
+          for file in $(git diff --name-only origin/master...HEAD); do
+            for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
+              if [[ "$file" =~ $pattern ]]; then
+                echo "❌ Found forbidden file: $file"
+                FOUND_FORBIDDEN=1
+              fi
+            done
+          done
+
+          if [ $FOUND_FORBIDDEN -eq 1 ]; then
+            echo ""
+            echo "❌ ERROR: Cache/database files found in commit!"
+            echo ""
+            echo "These files should be in .gitignore:"
+            echo "  - Database files (*.db, *.sqlite, *.sqlite3)"
+            echo "  - Python cache (__pycache__, .pytest_cache, .egg-info)"
+            echo "  - Node cache (.next, node_modules)"
+            echo ""
+            echo "To fix:"
+            echo "  1. Run: bash scripts/clean-cache.sh"
+            echo "  2. Run: git reset HEAD"
+            echo "  3. Add only source files and re-commit"
+            echo ""
+            exit 1
+          fi
+
+          echo "✅ No cache files found"
+
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('api/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          cd api
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          export DATABASE_URL="sqlite:///./test.db"
+          cd api
+          pytest tests/ -v --tb=short
+
+  lint-python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install flake8 black isort
+
+      - name: Check Python formatting
+        run: |
+          echo "Checking Python files..."
+          black --check api/ || true
+          isort --check api/ || true
+          echo "Note: Formatting issues found (non-blocking)"

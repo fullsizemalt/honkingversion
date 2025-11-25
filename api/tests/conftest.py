@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from pathlib import Path
 import sys
+import os
 
 # Ensure repository root is on sys.path
 # This ensures that 'api' can be imported as a top-level package
@@ -10,13 +11,18 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+# Ensure .cache directory exists for test databases
+CACHE_DIR = REPO_ROOT / ".cache"
+CACHE_DIR.mkdir(exist_ok=True)
+
 @pytest.fixture(name="engine")
-def engine_fixture(tmp_path):
+def engine_fixture():
     # Import database and models here to ensure fresh state for each engine fixture
     import api.database as database
     import api.models as models # This import registers models with SQLModel.metadata
 
-    temp_db_path = tmp_path / "test.db"
+    # Use .cache directory for test databases (not tracked in git)
+    temp_db_path = CACHE_DIR / "test.db"
     db_url = f"sqlite:///{temp_db_path}"
     engine = create_engine(db_url, connect_args={"check_same_thread": False})
     
