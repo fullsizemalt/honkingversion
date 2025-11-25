@@ -26,6 +26,9 @@ interface ActivityFeedProps {
     title?: string;
     currentFilter?: string;
     onFilterChange?: (filter: string) => void;
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+    loadingMore?: boolean;
 }
 
 const getActivityIcon = (activity: Activity) => {
@@ -57,7 +60,15 @@ const getRelativeTime = (dateString: string) => {
     return date.toLocaleDateString();
 };
 
-export default function ActivityFeed({ activities, title = "Recent Activity", currentFilter, onFilterChange }: ActivityFeedProps) {
+export default function ActivityFeed({
+    activities,
+    title = "Recent Activity",
+    currentFilter,
+    onFilterChange,
+    onLoadMore,
+    hasMore = false,
+    loadingMore = false
+}: ActivityFeedProps) {
     const [expandedId, setExpandedId] = useState<number | null>(null);
     const [internalFilter, setInternalFilter] = useState('all');
 
@@ -168,6 +179,19 @@ export default function ActivityFeed({ activities, title = "Recent Activity", cu
                 )}
             </div>
 
+            {hasMore && onLoadMore && (
+                <div className="mt-6 text-center">
+                    <button
+                        onClick={onLoadMore}
+                        disabled={loadingMore}
+                        className="px-6 py-2 border border-[var(--border)] text-[var(--text-secondary)] font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {loadingMore ? 'Loading...' : 'Load More'}
+                    </button>
+                </div>
+            )}
+            </div>
+
             <style jsx>{`
                 @keyframes fadeIn {
                     from {
@@ -180,6 +204,6 @@ export default function ActivityFeed({ activities, title = "Recent Activity", cu
                     }
                 }
             `}</style>
-        </div>
+        </div >
     );
 }

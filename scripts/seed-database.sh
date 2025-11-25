@@ -28,6 +28,12 @@ echo "2️⃣  Creating user personas and reviews..."
 docker compose exec -T api python seed_comprehensive.py
 
 echo ""
+echo "3️⃣  Seeding changelog entries for /updates..."
+python scripts/seed-changelog.py || {
+    echo "❌ Failed to seed changelog via host python, skipping."
+}
+
+echo ""
 echo "📊 Database Statistics:"
 docker compose exec -T api python << 'EOF'
 from database import get_session

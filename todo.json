@@ -1,0 +1,56 @@
+[
+  {
+    "id": "0",
+    "description": "Phase 1: Song pages & performance voting UI (frontend for /songs/[slug] and show pages wired to vote endpoints)",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "1",
+    "description": "Activity Feed Pagination & Badge Polish",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "2",
+    "description": "Phase 2: Follow system UI + lists CRUD (claim/unfollow buttons, followers/following pages, create/edit lists)",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "3",
+    "description": "Tags UI: create/edit tags, display badges, filter shows/performances by tag",
+    "status": "in-progress",
+    "agent": "codex"
+  },
+  {
+    "id": "4",
+    "description": "Attendance: mark shows attended, show on profiles, basic stats",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "5",
+    "description": "Venue pages: /venues index + /venues/[slug] detail with shows/stats",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "6",
+    "description": "Updates flow: admin changelog form, ensure seed in CI/local bootstrap",
+    "status": "completed",
+    "agent": "codex"
+  },
+  {
+    "id": "7",
+    "description": "Settings polish: adopt shared typings, clean duplication, add tests around security/OAuth/data flows",
+    "status": "in-progress",
+    "agent": "Gemini"
+  },
+  {
+    "id": "8",
+    "description": "Performance comparisons: UI scaffold for side-by-side comparison",
+    "status": "pending",
+    "agent": null
+  }
+]

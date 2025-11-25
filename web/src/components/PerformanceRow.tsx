@@ -18,20 +18,30 @@ interface PerformanceRowProps {
 export default function PerformanceRow({ performance }: PerformanceRowProps) {
     const { id, avg_rating, vote_count, song, show, position, set_number, notes } = performance;
     return (
-        <div className="bg-[#111] text-[#ddd] p-4 border border-[#333] mb-3">
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded p-4 space-y-3">
             <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
-                    <p className="text-sm text-[#aaa]">Show: {show.date} – {show.venue}, {show.location}</p>
-                    <p className="text-xs text-[#777]">Set {set_number}, Position {position}</p>
-                    {notes && <p className="text-xs text-[#555] mt-1">{notes}</p>}
-                    <PerformanceTags performanceId={id} />
+                    <p className="text-sm text-[var(--text-secondary)]">
+                        <a href={`/shows/${show.date}`} className="hover:text-[var(--accent-tertiary)] transition-colors">
+                            {show.date} – {show.venue}, {show.location}
+                        </a>
+                    </p>
+                    <p className="text-xs text-[var(--text-tertiary)]">Set {set_number}, Position {position}</p>
+                    {notes && <p className="text-xs text-[var(--text-tertiary)] mt-2 italic">{notes}</p>}
+                    <div className="mt-3">
+                        <PerformanceTags performanceId={id} />
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{avg_rating ?? '—'}</span>
-                    <span className="text-xs text-[#aaa]">({vote_count ?? 0})</span>
-                </div>
+                {avg_rating !== null && (
+                    <div className="text-right">
+                        <div className="text-2xl font-bold text-[var(--accent-tertiary)]">{avg_rating.toFixed(1)}</div>
+                        <p className="text-xs text-[var(--text-tertiary)]">{vote_count ?? 0} votes</p>
+                    </div>
+                )}
             </div>
-            <PerformanceVoteControl performanceId={id} songName={song?.name || 'Performance'} />
+            <div className="pt-3 border-t border-[var(--border-subtle)]">
+                <PerformanceVoteControl performanceId={id} songName={song?.name || 'Performance'} />
+            </div>
         </div>
     );
 }

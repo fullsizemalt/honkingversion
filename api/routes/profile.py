@@ -4,6 +4,7 @@ from sqlmodel import Session, select, func
 from database import get_session
 from models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance
 from routes.auth import get_current_user_optional, get_current_user
+from services.badges import get_all_system_badges
 import json
 
 router = APIRouter(prefix="/profile", tags=["profile"])
@@ -150,11 +151,17 @@ def get_user_badges(
     badges = session.exec(badges_statement).all()
     return badges
 
+@router.get("/badges/system")
+def get_system_badges():
+    """Get all available system badges"""
+    return get_all_system_badges()
+
 @router.get("/{username}/activity")
 def get_user_activity(
     username: str,
     filter: Optional[str] = None,  # votes, blurbs, reviews, comments
     limit: int = 20,
+    offset: int = 0,
     session: Session = Depends(get_session)
 ):
     """Get user activity with optional filtering"""
@@ -173,7 +180,7 @@ def get_user_activity(
     elif filter == "reviews":
         activity_statement = activity_statement.where(Vote.full_review != None)
     
-    activity_statement = activity_statement.order_by(Vote.created_at.desc()).limit(limit)
+    activity_statement = activity_statement.order_by(Vote.created_at.desc()).offset(offset).limit(limit)
     
     activity = session.exec(activity_statement).all()
     return activity

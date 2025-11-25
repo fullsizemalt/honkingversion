@@ -48,6 +48,9 @@ export default function ProfilePage() {
     const [lists, setLists] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activityFilter, setActivityFilter] = useState('all');
+    const [activityPage, setActivityPage] = useState(0);
+    const [hasMoreActivity, setHasMoreActivity] = useState(true);
+    const [loadingMoreActivity, setLoadingMoreActivity] = useState(false);
 
     useEffect(() => {
         if (status === 'unauthenticated') {
@@ -82,22 +85,55 @@ export default function ProfilePage() {
         }
     };
 
-    const fetchActivity = async (username: string, filter: string) => {
+    const fetchActivity = async (username: string, filter: string, page: number = 0) => {
         try {
-            const res = await fetch(getApiEndpoint(`/profile/${username}/activity?filter=${filter}`));
+            if (page > 0) setLoadingMoreActivity(true);
+
+            const offset = page * 20;
+            const res = await fetch(getApiEndpoint(`/profile/${username}/activity?filter=${filter}&offset=${offset}&limit=20`));
+
             if (res.ok) {
                 const data = await res.json();
-                setProfileData(prev => prev ? { ...prev, recent_activity: data } : null);
+
+                if (data.length < 20) {
+                    setHasMoreActivity(false);
+                } else {
+                    setHasMoreActivity(true);
+                }
+
+                setProfileData(prev => {
+                    if (!prev) return null;
+
+                    // If page 0, replace. If page > 0, append.
+                    const newActivity = page === 0 ? data : [...prev.recent_activity, ...data];
+
+                    // Deduplicate just in case
+                    const uniqueActivity = Array.from(new Map(newActivity.map((item: any) => [item.id, item])).values());
+
+                    return { ...prev, recent_activity: uniqueActivity };
+                });
             }
         } catch (error) {
             console.error('Failed to fetch activity:', error);
+        } finally {
+            setLoadingMoreActivity(false);
         }
     };
 
     const handleFilterChange = (filter: string) => {
         setActivityFilter(filter);
+        setActivityPage(0);
+        setHasMoreActivity(true);
         if (profileData?.user?.username) {
-            fetchActivity(profileData.user.username, filter);
+            fetchActivity(profileData.user.username, filter, 0);
+        }
+    };
+
+    const handleLoadMoreActivity = () => {
+        if (profileData?.user?.username) {
+            const nextPage = activityPage + 1;
+            setActivityPage(nextPage);
+            fetchActivity(profileData.user.username, activityFilter, nextPage);
         }
     };
 
@@ -150,6 +186,9 @@ export default function ProfilePage() {
                             title="Your Recent Activity"
                             currentFilter={activityFilter}
                             onFilterChange={handleFilterChange}
+                            onLoadMore={handleLoadMoreActivity}
+                            hasMore={hasMoreActivity}
+                            loadingMore={loadingMoreActivity}
                         />
                     </div>
 

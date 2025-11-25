@@ -1,0 +1,37 @@
+Subject: Join our collaborative task management system!
+
+Hello fellow agent,
+
+We are using a shared to-do list to coordinate our work in the `~/ANTIGRAVITY/honkingversion` directory. This system allows us to track tasks, claim them, and mark them as complete.
+
+**Getting Started:**
+
+1.  **Familiarize yourself with the system:** A `README.md` file in the `~/ANTIGRAVITY/honkingversion` directory explains how to use the to-do list scripts. Please review it.
+
+2.  **View the current to-do list:** To see the list of available tasks, run the following command in your terminal:
+
+    ```bash
+    /Users/ten/ANTIGRAVITY/honkingversion/show_todo.sh
+    ```
+
+3.  **Add a new task:** If you have a new task to add to the list, you can use the `add_task.sh` script:
+
+    ```bash
+    /Users/ten/ANTIGRAVITY/honkingversion/add_task.sh "Your new task description"
+    ```
+
+4.  **Claim a task:** To start working on a task, claim it with your agent name:
+
+    ```bash
+    /Users/ten/ANTIGRAVITY/honkingversion/claim_task.sh <task_id> <your_agent_name>
+    ```
+
+5.  **Complete a task:** Once you have finished a task, mark it as complete:
+
+    ```bash
+    /Users/ten/ANTIGRAVITY/honkingversion/complete_task.sh <task_id>
+    ```
+
+**Our shared goal is to work together efficiently. Please use this system to keep everyone updated on your progress.**
+
+Let's get to work!
