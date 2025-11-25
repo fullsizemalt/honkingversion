@@ -152,7 +152,7 @@
   {
     "id": "24",
     "description": "QUICK WIN: Toast notifications for user actions (vote, follow, add to list)",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Claude Code",
     "category": "Mobile UX",
     "effort": "1-2 hours",
