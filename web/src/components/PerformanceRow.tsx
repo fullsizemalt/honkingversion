@@ -2,6 +2,7 @@ import React from 'react';
 import PerformanceVoteControl from '@/components/PerformanceVoteControl';
 import HonkingVersionBadge from '@/components/HonkingVersionBadge';
 import PerformanceTags from './PerformanceTags';
+import Link from 'next/link';
 
 interface PerformanceRowProps {
     performance: {
@@ -71,6 +72,14 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
 
                 {/* Right Side: Rating and Badge */}
                 <div className="text-right flex-shrink-0 space-y-2">
+                    <div className="flex justify-end">
+                        <Link
+                            href={`/performance-comparisons?ids=${id}`}
+                            className="text-[var(--accent-primary)] text-xs font-[family-name:var(--font-ibm-plex-mono)] hover:underline"
+                        >
+                            Compare
+                        </Link>
+                    </div>
                     {/* Rating */}
                     {avg_rating !== null && avg_rating !== undefined && (
                         <div>

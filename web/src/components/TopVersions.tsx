@@ -2,6 +2,7 @@ import React from 'react'
 import { Performance } from '@/types'
 import PerformanceVoteControl from './PerformanceVoteControl'
 import HonkingVersionBadge from './HonkingVersionBadge'
+import Link from 'next/link'
 
 interface TopVersionsProps {
     performances: Performance[]
@@ -72,6 +73,14 @@ export default function TopVersions({ performances, maxVersions = 5 }: TopVersio
 
                             {/* Rating Display and Honking Badge */}
                             <div className="text-right flex-shrink-0 space-y-2">
+                                <div className="flex justify-end">
+                                    <Link
+                                        href={`/performance-comparisons?ids=${perf.id}`}
+                                        className="text-[var(--accent-primary)] text-xs font-[family-name:var(--font-ibm-plex-mono)] hover:underline"
+                                    >
+                                        Compare
+                                    </Link>
+                                </div>
                                 <div className="text-4xl font-bold text-[var(--accent-tertiary)]">
                                     {perf.avg_rating?.toFixed(1)}
                                 </div>

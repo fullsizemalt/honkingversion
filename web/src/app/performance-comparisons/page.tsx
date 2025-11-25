@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getApiEndpoint } from '@/lib/api';
 
 interface Performance {
@@ -26,13 +27,23 @@ interface Performance {
 }
 
 export default function PerformanceComparisonsPage() {
-    const [perfIds, setPerfIds] = useState<string>('');
+    const searchParams = useSearchParams();
+    const initialIds = searchParams.get('ids') || '';
+    const [perfIds, setPerfIds] = useState<string>(initialIds);
     const [performances, setPerformances] = useState<Performance[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleFetch = async () => {
-        if (!perfIds.trim()) {
+    useEffect(() => {
+        if (initialIds) {
+            handleFetch(initialIds);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleFetch = async (idsInput?: string) => {
+        const raw = idsInput ?? perfIds;
+        if (!raw.trim()) {
             setError('Enter at least one performance ID');
             return;
         }
@@ -41,7 +52,7 @@ export default function PerformanceComparisonsPage() {
         setError(null);
         setPerformances([]);
 
-        const ids = perfIds.split(',').map(id => id.trim());
+        const ids = raw.split(',').map(id => id.trim()).filter(Boolean);
         const fetched: Performance[] = [];
 
         for (const id of ids) {
@@ -87,13 +98,16 @@ export default function PerformanceComparisonsPage() {
                         className="flex-1 bg-[#2a2a2a] text-[#f5f5f5] p-3 border border-[#a0a0a0] focus:border-[#ff6b35] outline-none"
                     />
                     <button
-                        onClick={handleFetch}
+                        onClick={() => handleFetch()}
                         disabled={loading}
                         className="bg-[#ff6b35] text-[#0a0a0a] px-6 py-3 font-bold hover:bg-[#ff8c5a] disabled:opacity-50"
                     >
                         {loading ? 'Loading...' : 'Compare'}
                     </button>
                 </div>
+                <p className="text-xs text-[#a0a0a0]">
+                    Tip: add `?ids=123,456` to the URL to deep link a comparison.
+                </p>
 
                 {error && <p className="text-red-500 text-sm">{error}</p>}
             </div>
