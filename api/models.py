@@ -1,7 +1,7 @@
 from typing import Optional, List
 from enum import Enum
 from datetime import datetime
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, SQLModel, Relationship, UniqueConstraint
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -165,6 +165,10 @@ class HonkingVersion(SQLModel, table=True):
     user: User = Relationship(back_populates="honking_versions")
     song: Song = Relationship(back_populates="honking_versions")
     performance: SongPerformance = Relationship(back_populates="honking_votes")
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "song_id", name="unique_user_song_honk"),
+    )
 
 class UserList(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

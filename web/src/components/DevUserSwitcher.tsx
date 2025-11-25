@@ -44,8 +44,8 @@ export default function DevUserSwitcher() {
         return () => window.removeEventListener('storage', checkDevMode);
     }, []);
 
-    // Only show when dev mode is active
-    if (!devMode) {
+    // Only show when dev mode is active AND we are in development environment
+    if (!devMode || process.env.NODE_ENV !== 'development') {
         return null;
     }
 
