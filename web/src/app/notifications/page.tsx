@@ -25,6 +25,7 @@ export default function NotificationsPage() {
     const router = useRouter()
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [loading, setLoading] = useState(true)
+    const [banner, setBanner] = useState<string | null>(null)
     const grouped = notifications.reduce<Record<string, { first: Notification; count: number }>>((acc, n) => {
         const key = `${n.type}-${n.object_type}-${n.object_id}`
         if (!acc[key]) {
@@ -43,12 +44,19 @@ export default function NotificationsPage() {
             return
         }
 
+        let active = true
         const loadNotifications = async () => {
             const data = await fetchNotifications(session.user.accessToken || '')
+            if (!active) return
             setNotifications(data)
             setLoading(false)
         }
         loadNotifications()
+        const id = setInterval(loadNotifications, 30000)
+        return () => {
+            active = false
+            clearInterval(id)
+        }
     }, [session, router])
 
     if (!session) {
@@ -81,9 +89,22 @@ export default function NotificationsPage() {
                             Preferences
                         </Link>
                         {unreadCount > 0 && session?.user?.accessToken && (
-                            <MarkAllReadButton token={session.user.accessToken} />
+                            <MarkAllReadButton
+                                token={session.user.accessToken}
+                                onSuccess={() => {
+                                    setNotifications((prev) => prev.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() })))
+                                    setBanner('All notifications marked as read.')
+                                    setTimeout(() => setBanner(null), 2000)
+                                }}
+                            />
                         )}
+                </div>
+
+                {banner && (
+                    <div className="mb-4 p-3 border border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5 rounded font-[family-name:var(--font-ibm-plex-mono)] text-sm">
+                        {banner}
                     </div>
+                )}
                 </div>
 
                 {/* Notifications List */}

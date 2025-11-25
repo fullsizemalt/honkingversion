@@ -30,7 +30,7 @@ export function NotificationBadge() {
       }
     };
     fetchCount();
-    const interval = setInterval(fetchCount, 60 * 1000);
+    const interval = setInterval(fetchCount, 30 * 1000);
     return () => {
       active = false;
       clearInterval(interval);
