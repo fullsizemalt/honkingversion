@@ -2,8 +2,6 @@ import { Metadata } from 'next';
 import { getApiEndpoint } from '@/lib/api';
 import UserCard from '@/components/UserCard';
 import PageHeader from '@/components/PageHeader';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 interface Props {
     params: {
@@ -24,16 +22,15 @@ async function getFollowing(username: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { username } = await params;
+    const { username } = params;
     return {
         title: `People followed by ${username} - Honkingversion`,
     };
 }
 
 export default async function FollowingPage({ params }: Props) {
-    const { username } = await params;
+    const { username } = params;
     const following = await getFollowing(username);
-    const session = await getServerSession(authOptions);
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)] pb-20">
