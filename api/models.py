@@ -81,9 +81,20 @@ class Song(SQLModel, table=True):
     is_cover: bool = Field(default=False)
     original_artist: Optional[str] = None  # If cover
 
+    # Honking version denormalized cache
+    current_honking_performance_id: Optional[int] = Field(default=None, foreign_key="songperformance.id")
+    current_honking_vote_count: int = Field(default=0)
+    honking_version_updated_at: Optional[datetime] = None
+
     performances: List["SongPerformance"] = Relationship(back_populates="song")
     honking_versions: List["HonkingVersion"] = Relationship(back_populates="song")
     tags: List["SongTag"] = Relationship(back_populates="song")
+    current_honking_performance: Optional["SongPerformance"] = Relationship(
+        sa_relationship_kwargs={
+            "foreign_keys": "Song.current_honking_performance_id",
+            "viewonly": True
+        }
+    )
 
 class SongPerformance(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -92,6 +103,10 @@ class SongPerformance(SQLModel, table=True):
     position: Optional[int] = None
     set_number: Optional[int] = None
     notes: Optional[str] = None
+
+    # Honking vote count denormalized cache
+    honking_vote_count: int = Field(default=0, index=True)
+    honking_votes_updated_at: Optional[datetime] = None
 
     song: Song = Relationship(back_populates="performances")
     show: Show = Relationship(back_populates="performances")

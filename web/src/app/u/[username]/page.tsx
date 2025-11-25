@@ -128,11 +128,11 @@ export default async function PublicProfilePage({ params }: PageProps) {
                                 </div>
                                 <div className="flex justify-between">
                                     <a href={`/u/${user.username}/followers`} className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Followers</a>
-                                    <span className="text-[var(--text-primary)] font-bold">{user.stats?.followers_count}</span>
+                                    <span className="text-[var(--text-primary)] font-bold">{user.stats?.followers_count ?? 0}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <a href={`/u/${user.username}/following`} className="text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors">Following</a>
-                                    <span className="text-[var(--text-primary)] font-bold">{user.stats?.following_count}</span>
+                                    <span className="text-[var(--text-primary)] font-bold">{user.stats?.following_count ?? 0}</span>
                                 </div>
                                 <div className="border-t border-[var(--border)] pt-4 mt-4">
                                     <div className="flex justify-between">

@@ -4,9 +4,9 @@ from sqlmodel import Session, select
 from typing import List, Optional
 from datetime import datetime
 
-from database import get_session
-from models import User, UserList, UserRead, Vote
-from routes.auth import get_current_user, get_current_user_optional
+from api.database import get_session
+from api.models import User, UserList, UserRead, Vote
+from api.routes.auth import get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/lists", tags=["lists"])
 

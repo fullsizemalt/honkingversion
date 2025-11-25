@@ -3,6 +3,10 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select, SQLModel
+from sqlmodel import create_engine
+from api.database import get_session
+from api.routes import settings as settings_router
+from api.tests.utils.test_app import create_test_app
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -12,22 +16,28 @@ from api.models import User
 from api.routes.auth import get_current_user
 
 @pytest.fixture(name="client_with_user")
-def client_with_user_fixture(session: Session, client: TestClient):
-    user = User(username="testuser", email="test@example.com", hashed_password="hashedpassword")
-    session.add(user)
-    session.commit()
-    session.refresh(user) # Refresh to get the auto-assigned ID
+def client_with_user_fixture(tmp_path):
+    temp_db_path = tmp_path / "test.db"
+    engine = create_engine(f"sqlite:///{temp_db_path}", connect_args={"check_same_thread": False})
+
+    app_client = create_test_app(
+        engine=engine,
+        routers=[settings_router.router],
+        get_session_dep=get_session,
+    )
+
+    with Session(engine) as session:
+        user = User(username="testuser", email="test@example.com", hashed_password="hashedpassword")
+        session.add(user)
+        session.commit()
 
     def get_current_user_override():
-        # Fetch a fresh instance of the user from the database
-        user_from_db = session.exec(select(User).where(User.username == "testuser")).first()
-        if user_from_db:
-            session.expunge(user_from_db) # Detach the user from the session
-        return user_from_db
+        with Session(engine) as session:
+            return session.exec(select(User).where(User.username == "testuser")).first()
 
-    client.app.dependency_overrides[get_current_user] = get_current_user_override
-    yield client
-    client.app.dependency_overrides.clear()
+    app_client.app.dependency_overrides[get_current_user] = get_current_user_override
+    yield app_client
+    app_client.app.dependency_overrides.clear()
 
 
 def test_get_profile_settings(client_with_user: TestClient):

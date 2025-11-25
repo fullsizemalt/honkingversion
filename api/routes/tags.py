@@ -4,9 +4,9 @@ from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-from database import get_session
-from models import Tag, PerformanceTag, ShowTag, SongPerformance, Show, User, Song, SongTag
-from routes.auth import get_current_user, get_current_user_optional
+from api.database import get_session
+from api.models import Tag, PerformanceTag, ShowTag, SongPerformance, Show, User, Song, SongTag
+from api.routes.auth import get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 

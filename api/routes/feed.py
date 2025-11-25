@@ -5,9 +5,9 @@ from datetime import datetime
 from pydantic import BaseModel
 from sqlalchemy.orm import selectinload
 
-from database import get_session
-from models import Vote, SongPerformance, PerformanceTag, ShowTag, Tag, Show, User
-from routes.auth import get_current_user_optional
+from api.database import get_session
+from api.models import Vote, SongPerformance, PerformanceTag, ShowTag, Tag, Show, User
+from api.routes.auth import get_current_user_optional
 
 router = APIRouter(prefix="/feed", tags=["feed"])
 

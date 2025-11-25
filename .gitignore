@@ -1,19 +1,17 @@
-# Python
-__pycache__/
-*.pyc
-venv/
-.env
-
-# Database
+# Cache and local DB
+api/data/cache/
+.cache/
 database.db
 
 # Node
-node_modules/
-.env.local
-.next/
-out/
-build/
+web/.next/
+web/node_modules/
 
-# IDEs
-.vscode/
-.idea/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Env
+.env
+.venv

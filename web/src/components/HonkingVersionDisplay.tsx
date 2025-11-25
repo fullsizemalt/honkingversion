@@ -87,7 +87,7 @@ export default function HonkingVersionDisplay({
 
                     {/* Stats Row */}
                     <div className="pt-3 border-t border-[var(--border-subtle)] grid grid-cols-3 gap-4">
-                        {honkingPerformance.avg_rating !== null && (
+                        {honkingPerformance.avg_rating !== null && honkingPerformance.avg_rating !== undefined && (
                             <div>
                                 <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">
                                     Rating
@@ -146,11 +146,10 @@ export default function HonkingVersionDisplay({
                                         // Selector handles the actual voting
                                         setShowVotingDialog(false)
                                     }}
-                                    className={`w-full p-3 rounded border transition-all text-left ${
-                                        perf.is_honking_version
+                                    className={`w-full p-3 rounded border transition-all text-left ${perf.is_honking_version
                                             ? 'border-[var(--accent-primary)] bg-[var(--accent-primary)] bg-opacity-10'
                                             : 'border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
-                                    }`}
+                                        }`}
                                 >
                                     <div className="flex justify-between items-start gap-2">
                                         <div className="flex-1">

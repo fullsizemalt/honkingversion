@@ -21,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from routes import (
+from api.routes import (
     attended,
     auth,
     changelog,
@@ -48,7 +48,7 @@ from routes import (
     votes,
     synopsis,
 )
-from .database import create_db_and_tables
+from api.database import create_db_and_tables
 
 # ... (previous code)
 

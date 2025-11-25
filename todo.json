@@ -56,7 +56,7 @@
   {
     "id": "9",
     "description": "Community Synopsis (Wiki)",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "codex"
   },
   {
@@ -70,5 +70,35 @@
     "description": "Fix dummy seed data not persisting in testing",
     "status": "in-progress",
     "agent": "Gemini"
+  },
+  {
+    "id": "12",
+    "description": "Ignore caches/db in git and add scripts to regenerate",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "13",
+    "description": "Add test app factory to avoid global FastAPI metadata collisions",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "14",
+    "description": "Pre-commit/CI check to block cached data/db files and run focused tests",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "15",
+    "description": "Follow/task logging hygiene: note touched files and use todo locks for big tasks",
+    "status": "pending",
+    "agent": null
+  },
+  {
+    "id": "16",
+    "description": "Cache/seed isolation: generate caches to .cache/ and keep git clean",
+    "status": "pending",
+    "agent": null
   }
 ]

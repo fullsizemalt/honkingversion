@@ -5,9 +5,10 @@ import TopVersions from '@/components/TopVersions';
 import PerformanceFilter from '@/components/PerformanceFilter';
 import PerformanceStats from '@/components/PerformanceStats';
 import SongTags from '@/components/SongTags';
+import HonkingVersionDisplay from '@/components/HonkingVersionDisplay';
 import SynopsisSection from '@/components/Synopsis/SynopsisSection';
 
-import { Performance } from '@/types';
+import { Performance, HonkingVersionData } from '@/types';
 
 export default async function SongPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -60,6 +61,34 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 .reduce((sum, p) => sum + (p.avg_rating || 0), 0) / ratingsCount
             : null;
 
+        // Fetch honking version data
+        let honkingVersionData: HonkingVersionData | null = null;
+        try {
+            const honkingRes = await fetch(getApiEndpoint(`/honking-versions/song/${song.id}`), {
+                cache: 'no-store'
+            });
+            if (honkingRes.ok) {
+                honkingVersionData = await honkingRes.json();
+
+                // Enrich performances with honking vote data
+                if (honkingVersionData?.honking_votes) {
+                    const voteMap = new Map(
+                        honkingVersionData.honking_votes.map(v => [v.performance_id, v.vote_count])
+                    );
+                    performances.forEach(p => {
+                        p.honking_vote_count = voteMap.get(p.id) || 0;
+                        p.is_honking_version = honkingVersionData?.honking_version?.performance_id === p.id;
+                    });
+                    sortedPerformances.forEach(p => {
+                        p.honking_vote_count = voteMap.get(p.id) || 0;
+                        p.is_honking_version = honkingVersionData?.honking_version?.performance_id === p.id;
+                    });
+                }
+            }
+        } catch (err) {
+            console.error('Failed to fetch honking version data:', err);
+        }
+
         return (
             <>
                 {/* Header Section */}
@@ -84,6 +113,15 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                         objectId={song.id}
                         title={`About ${song.name}`}
                     />
+
+                    {/* The Honking Version */}
+                    {performances.length > 0 && (
+                        <HonkingVersionDisplay
+                            honkingVersionData={honkingVersionData}
+                            songId={song.id}
+                            performances={performances}
+                        />
+                    )}
 
                     {/* Top Versions Section */}
                     {performances.length > 0 && (

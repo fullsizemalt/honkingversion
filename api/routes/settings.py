@@ -4,7 +4,6 @@ from sqlmodel import Session, select
 from api.database import get_session
 from api.models import User, UserRead
 from api.routes.auth import get_current_user
-from datetime import datetime
 from api.shared_models.settings import ProfileUpdate, EmailChangeRequest, PasswordChangeRequest, PrivacyPreferences
 
 router = APIRouter(prefix="/settings", tags=["settings"])

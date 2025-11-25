@@ -3,9 +3,13 @@ from sqlmodel import Session, select, func
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
-from ..database import get_session
-from ..models import HonkingVersion, Song, SongPerformance, User
-from ..routes.auth import get_current_user
+from api.database import get_session
+from api.models import HonkingVersion, Song, SongPerformance, User
+from api.routes.auth import get_current_user
+from api.services.honking_cache import HonkingCacheService
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/honking-versions", tags=["honking-versions"])
 
@@ -28,36 +32,29 @@ def get_honking_version_for_song(
 ):
     """
     Get the honking version for a song.
-    Returns:
-    - The performance with the most honking votes (the definitive version)
+
+    Uses denormalized cache for efficient lookups. Returns:
+    - The performance with the most honking votes (from cache, O(1) lookup)
     - User's own honking vote for the song (if authenticated)
-    - Vote counts for top performances
+    - Vote counts for all performances
     """
     # Verify song exists
     song = session.get(Song, song_id)
     if not song:
         raise HTTPException(status_code=404, detail="Song not found")
 
-    # Get all honking votes for this song with vote counts
-    statement = select(
-        HonkingVersion.performance_id,
-        func.count(HonkingVersion.id).label("vote_count")
-    ).where(HonkingVersion.song_id == song_id).group_by(HonkingVersion.performance_id).order_by(func.count(HonkingVersion.id).desc())
-
-    results = session.exec(statement).all()
-
-    # Build response
+    # Build response using cached data
     response = {
         "song_id": song_id,
         "honking_version": None,
         "honking_votes": [],
-        "user_honking_vote": None
+        "user_honking_vote": None,
+        "cache_timestamp": song.honking_version_updated_at.isoformat() if song.honking_version_updated_at else None
     }
 
-    # If there are votes, the top one is the honking version
-    if results:
-        top_performance_id, top_vote_count = results[0]
-        top_perf = session.get(SongPerformance, top_performance_id)
+    # Use cached current honking version (O(1) lookup)
+    if song.current_honking_performance_id:
+        top_perf = session.get(SongPerformance, song.current_honking_performance_id)
 
         if top_perf:
             response["honking_version"] = {
@@ -68,15 +65,29 @@ def get_honking_version_for_song(
                 "position": top_perf.position,
                 "set_number": top_perf.set_number,
                 "notes": top_perf.notes,
-                "honking_votes": int(top_vote_count)
+                "honking_votes": song.current_honking_vote_count
             }
 
-        # Return all performances with honking votes
-        for perf_id, vote_count in results:
-            response["honking_votes"].append({
-                "performance_id": perf_id,
-                "vote_count": int(vote_count)
-            })
+    # Get all performances with honking votes for complete breakdown
+    statement = select(
+        HonkingVersion.performance_id,
+        func.count(HonkingVersion.id).label("vote_count")
+    ).where(
+        HonkingVersion.song_id == song_id
+    ).group_by(
+        HonkingVersion.performance_id
+    ).order_by(
+        func.count(HonkingVersion.id).desc()
+    )
+
+    results = session.exec(statement).all()
+
+    # Return all performances with honking votes
+    for perf_id, vote_count in results:
+        response["honking_votes"].append({
+            "performance_id": perf_id,
+            "vote_count": int(vote_count)
+        })
 
     # Get current user's honking vote if authenticated
     if current_user:
@@ -107,6 +118,8 @@ def set_honking_version(
     Set/update user's honking version vote for a song.
     User can only have ONE honking version per song.
     This endpoint creates or updates their vote.
+
+    Cache is updated transactionally to maintain consistency.
     """
     # Verify song exists
     song = session.get(Song, song_id)
@@ -128,8 +141,10 @@ def set_honking_version(
         )
     ).first()
 
+    old_performance_id = None
     if existing_honking:
         # Update existing honking version
+        old_performance_id = existing_honking.performance_id
         existing_honking.performance_id = data.performance_id
         existing_honking.updated_at = datetime.utcnow()
         session.add(existing_honking)
@@ -143,20 +158,36 @@ def set_honking_version(
             updated_at=datetime.utcnow()
         )
         session.add(honking)
+        existing_honking = honking
 
     session.commit()
+    session.refresh(existing_honking)
 
-    # Refresh to get updated data
-    session.refresh(existing_honking if existing_honking else honking)
-    honking_version = existing_honking if existing_honking else honking
+    # Update cache transactionally
+    try:
+        if old_performance_id and old_performance_id != data.performance_id:
+            # Vote was changed - update both old and new performances
+            HonkingCacheService.on_honking_vote_changed(
+                session, old_performance_id, existing_honking
+            )
+        else:
+            # Vote was created
+            HonkingCacheService.on_honking_vote_created(session, existing_honking)
+
+        session.commit()
+        logger.info(f"Cache updated for honking vote: user={current_user.id}, song={song_id}")
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Failed to update cache: {e}")
+        raise HTTPException(status_code=500, detail="Cache update failed")
 
     return {
-        "id": honking_version.id,
-        "user_id": honking_version.user_id,
-        "song_id": honking_version.song_id,
-        "performance_id": honking_version.performance_id,
-        "created_at": honking_version.created_at.isoformat(),
-        "updated_at": honking_version.updated_at.isoformat(),
+        "id": existing_honking.id,
+        "user_id": existing_honking.user_id,
+        "song_id": existing_honking.song_id,
+        "performance_id": existing_honking.performance_id,
+        "created_at": existing_honking.created_at.isoformat(),
+        "updated_at": existing_honking.updated_at.isoformat(),
         "message": "Honking version set successfully"
     }
 
@@ -168,6 +199,7 @@ def delete_honking_version(
 ):
     """
     Remove user's honking version vote for a song.
+    Cache is updated transactionally to maintain consistency.
     """
     # Verify song exists
     song = session.get(Song, song_id)
@@ -185,8 +217,24 @@ def delete_honking_version(
     if not honking:
         raise HTTPException(status_code=404, detail="No honking version found for this song")
 
+    # Capture data before deletion for cache update
+    performance_id = honking.performance_id
+    song_id_val = honking.song_id
+
     session.delete(honking)
     session.commit()
+
+    # Update cache transactionally
+    try:
+        HonkingCacheService.on_honking_vote_deleted(
+            session, song_id_val, performance_id
+        )
+        session.commit()
+        logger.info(f"Cache updated after honking vote deleted: user={current_user.id}, song={song_id_val}")
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Failed to update cache: {e}")
+        raise HTTPException(status_code=500, detail="Cache update failed")
 
     return {"message": "Honking version removed successfully"}
 
@@ -197,6 +245,8 @@ def get_honking_votes_for_performance(
 ):
     """
     Get honking vote count for a specific performance.
+    Uses denormalized cache for O(1) lookup.
+
     Returns the number of users who voted this as their honking version.
     """
     # Verify performance exists
@@ -204,17 +254,12 @@ def get_honking_votes_for_performance(
     if not performance:
         raise HTTPException(status_code=404, detail="Performance not found")
 
-    # Count honking votes
-    vote_count = session.exec(
-        select(func.count(HonkingVersion.id)).where(
-            HonkingVersion.performance_id == performance_id
-        )
-    ).first() or 0
-
+    # Use cached vote count (O(1) lookup)
     return {
         "performance_id": performance_id,
         "song_id": performance.song_id,
-        "honking_vote_count": int(vote_count)
+        "honking_vote_count": performance.honking_vote_count,
+        "cache_timestamp": performance.honking_votes_updated_at.isoformat() if performance.honking_votes_updated_at else None
     }
 
 @router.get("/user/{user_id}/songs")

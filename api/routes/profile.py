@@ -1,10 +1,10 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func, SQLModel
-from database import get_session
-from models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance, UserFollow
-from routes.auth import get_current_user_optional, get_current_user
-from services.badges import get_all_system_badges
+from api.database import get_session
+from api.models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance, UserFollow
+from api.routes.auth import get_current_user_optional, get_current_user
+from api.services.badges import get_all_system_badges
 import json
 
 router = APIRouter(prefix="/profile", tags=["profile"])
