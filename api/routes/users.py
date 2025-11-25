@@ -7,6 +7,8 @@ from api.models import User, UserList, UserRead, UserStats, Vote, UserFollow, Us
 from api.routes.auth import get_current_user, get_current_user_optional
 from api.models import SongPerformance, PerformanceTag, ShowTag, Tag
 
+router = APIRouter(prefix="/users", tags=["users"])
+
 @router.get("/me", response_model=UserRead)
 def read_users_me(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     # Compute stats
@@ -194,4 +196,3 @@ def get_feed(
     ).all()
     
     return feed
-
