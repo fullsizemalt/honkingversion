@@ -25,6 +25,17 @@ export default function NotificationsPage() {
     const router = useRouter()
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [loading, setLoading] = useState(true)
+    const grouped = notifications.reduce<Record<string, { first: Notification; count: number }>>((acc, n) => {
+        const key = `${n.type}-${n.object_type}-${n.object_id}`
+        if (!acc[key]) {
+            acc[key] = { first: n, count: 1 }
+        } else {
+            acc[key].count += 1
+        }
+        return acc
+    }, {})
+    const groupedList = Object.values(grouped)
+        .sort((a, b) => new Date(b.first.created_at).getTime() - new Date(a.first.created_at).getTime())
 
     useEffect(() => {
         if (!session?.user?.accessToken) {
@@ -93,26 +104,31 @@ export default function NotificationsPage() {
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {notifications.map((n) => (
+                        {groupedList.map(({ first, count }) => (
                             <div
-                                key={n.id}
-                                className={`p-4 border transition-colors ${n.read_at
-                                        ? 'border-[var(--border-subtle)] bg-[var(--bg-secondary)]'
-                                        : 'border-[var(--accent-primary)] bg-[var(--bg-secondary)]'
-                                    }`}
+                                key={`${first.type}-${first.object_type}-${first.object_id}`}
+                                className={`p-4 border transition-colors ${first.read_at
+                                    ? 'border-[var(--border-subtle)] bg-[var(--bg-secondary)]'
+                                    : 'border-[var(--accent-primary)] bg-[var(--bg-secondary)]'
+                                }`}
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="text-sm text-[var(--text-primary)] font-[family-name:var(--font-ibm-plex-mono)]">
-                                        <span className={`${n.read_at ? 'text-[var(--text-tertiary)]' : 'text-[var(--accent-primary)]'} mr-2 uppercase text-xs font-bold`}>
-                                            {n.type}
+                                        <span className={`${first.read_at ? 'text-[var(--text-tertiary)]' : 'text-[var(--accent-primary)]'} mr-2 uppercase text-xs font-bold`}>
+                                            {first.type}
                                         </span>
-                                        {n.actor_username ? `${n.actor_username} ` : ''}on {n.object_type} #{n.object_id}
+                                        {first.actor_username ? `${first.actor_username} ` : ''}on {first.object_type} #{first.object_id}
+                                        {count > 1 && (
+                                            <span className="ml-2 text-[var(--text-tertiary)] text-xs">
+                                                +{count - 1} similar
+                                            </span>
+                                        )}
                                     </div>
                                     <div className="text-[10px] text-[var(--text-tertiary)]">
-                                        {new Date(n.created_at).toLocaleString()}
+                                        {new Date(first.created_at).toLocaleString()}
                                     </div>
                                 </div>
-                                {!n.read_at && (
+                                {!first.read_at && (
                                     <div className="text-[10px] text-[var(--accent-primary)] mt-2 font-bold uppercase">
                                         Unread
                                     </div>
