@@ -84,13 +84,12 @@ async function getUserBadges(username: string): Promise<Badge[]> {
     }
 }
 
-interface PageProps {
-    params: { username: string };
-}
+type PageParams = { username: string };
+type PageProps = { params: PageParams | Promise<PageParams> };
 
 export default function PublicProfilePage({ params }: PageProps) {
-    const { username } = params;
     const { data: session } = useSession();
+    const [username, setUsername] = useState<string | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [lists, setLists] = useState<UserList[]>([]);
@@ -99,25 +98,31 @@ export default function PublicProfilePage({ params }: PageProps) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const userData = await getUser(username);
+            const resolvedParams = (params as Promise<PageParams>).then
+                ? await (params as Promise<PageParams>)
+                : (params as PageParams);
+            const usernameValue = resolvedParams.username;
+            setUsername(usernameValue);
+
+            const userData = await getUser(usernameValue);
             if (!userData) {
                 notFound();
                 return;
             }
             setUser(userData);
-            setReviews(await getUserReviews(username));
-            setLists(await getUserLists(username));
-            setAttendedShows(await getUserAttendedShows(username));
-            setBadges(await getUserBadges(username));
+            setReviews(await getUserReviews(usernameValue));
+            setLists(await getUserLists(usernameValue));
+            setAttendedShows(await getUserAttendedShows(usernameValue));
+            setBadges(await getUserBadges(usernameValue));
         };
         fetchData();
-    }, [username]);
+    }, [params]);
 
-    if (!user) {
+    if (!user || !username) {
         return <div>Loading...</div>; // Or a proper loading skeleton
     }
 
-    const isCurrentUser = session?.user?.name === user.username;
+    const isCurrentUser = session?.user?.name === username;
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
