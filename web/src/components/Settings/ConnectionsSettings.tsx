@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 
 interface OAuthConnection {
     id: string;
@@ -88,26 +88,30 @@ export default function ConnectionsSettings() {
         );
     }
 
-    const providerInfo = {
+    const providerInfo: Record<OAuthConnection['provider'], { name: string; description: string; scopes: string[]; icon: ReactNode }> = {
         github: {
             name: 'GitHub',
             description: 'Sign in with GitHub and import your repositories',
-            scopes: ['user:email', 'read:user']
+            scopes: ['user:email', 'read:user'],
+            icon: <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs px-2 py-1 border border-[var(--border-subtle)] rounded">GH</span>
         },
         google: {
             name: 'Google',
             description: 'Sign in with Google and sync your calendar',
-            scopes: ['email', 'profile']
+            scopes: ['email', 'profile'],
+            icon: <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs px-2 py-1 border border-[var(--border-subtle)] rounded">G</span>
         },
         spotify: {
             name: 'Spotify',
             description: 'Connect your Spotify account and share playlists',
-            scopes: ['user-read-private', 'playlist-modify-public']
+            scopes: ['user-read-private', 'playlist-modify-public'],
+            icon: <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs px-2 py-1 border border-[var(--border-subtle)] rounded">SP</span>
         },
         apple: {
             name: 'Apple',
             description: 'Sign in with Apple and use Apple devices',
-            scopes: ['email', 'name']
+            scopes: ['email', 'name'],
+            icon: <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs px-2 py-1 border border-[var(--border-subtle)] rounded">AP</span>
         }
     };
 
