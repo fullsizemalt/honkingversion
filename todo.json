@@ -197,7 +197,7 @@
   {
     "id": "29",
     "description": "QUICK WIN: Add quick filters to show list (by year, decade, venue type)",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Claude Code",
     "category": "Search & Discovery",
     "effort": "1-2 hours",
