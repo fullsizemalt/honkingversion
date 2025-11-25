@@ -32,7 +32,6 @@ export function BarChart({
         <div className="w-full" style={{ height: totalHeight }}>
             {data.map((item, index) => {
                 const widthPercentage = maxValue > 0 ? (item.value / maxValue) * 100 : 0;
-                const top = index * (barHeight + gap);
 
                 return (
                     <div
