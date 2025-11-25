@@ -28,6 +28,13 @@ interface TopPerformance {
   vote_count: number;
 }
 
+type WidgetKey = 'trending' | 'topRated' | 'leaderboard';
+const DEFAULT_WIDGETS: Record<WidgetKey, boolean> = {
+  trending: true,
+  topRated: true,
+  leaderboard: true,
+};
+
 // Calculate heat level (0-3) based on vote velocity
 const getHeatLevel = (votes: number, maxVotes: number): number => {
   if (maxVotes === 0) return 0;
@@ -57,13 +64,6 @@ const getHeatIndicator = (level: number): string => {
   return '▮'.repeat(Math.max(1, level));
 };
 
-type WidgetKey = 'trending' | 'topRated' | 'leaderboard';
-const DEFAULT_WIDGETS: Record<WidgetKey, boolean> = {
-  trending: true,
-  topRated: true,
-  leaderboard: true,
-};
-
 export default function Home() {
   const { data: session } = useSession();
   const [trendingPerformances, setTrendingPerformances] = useState<TrendingPerformance[]>([]);
@@ -79,7 +79,6 @@ export default function Home() {
         const statsRes = await fetch(getApiEndpoint('/stats/'));
         if (statsRes.ok) {
           const stats: StatsResponse = await statsRes.json();
-          console.log("Stats data:", stats);
           const trending = stats.trending_performances || [];
           setTrendingPerformances(trending);
           if (trending.length > 0) {
@@ -91,15 +90,9 @@ export default function Home() {
         const perfRes = await fetch(getApiEndpoint('/performances/top-rated?limit=12&min_votes=3'));
         if (perfRes.ok) {
           const perfs = await perfRes.json();
-          console.log("Top performances data:", perfs);
-          // Filter and sort by rating
           const topRated = perfs
             .filter((p: any) => p.avg_rating && p.vote_count && p.vote_count > 0)
-            .sort((a: any, b: any) => {
-              const aRating = a.avg_rating || 0;
-              const bRating = b.avg_rating || 0;
-              return bRating - aRating;
-            })
+            .sort((a: any, b: any) => (b.avg_rating || 0) - (a.avg_rating || 0))
             .slice(0, 10)
             .map((p: any) => ({
               id: p.id,
@@ -151,10 +144,29 @@ export default function Home() {
         loggedInMessage="Welcome back! Browse trending and top-rated performances below."
       />
 
-      {/* 3-Column Dashboard */}
       <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Widget toggles */}
+        <div className="mb-6 flex flex-wrap gap-3 text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-[0.2em] text-[var(--text-secondary)]">
+          <span className="text-[var(--text-tertiary)]">Dashboard widgets:</span>
+          {(['trending', 'topRated', 'leaderboard'] as WidgetKey[]).map((key) => (
+            <button
+              key={key}
+              onClick={() => toggleWidget(key)}
+              className={`px-3 py-2 border text-[10px] tracking-[0.2em] ${
+                visibleWidgets[key]
+                  ? 'border-[var(--accent-primary)] text-[var(--accent-primary)]'
+                  : 'border-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
+              }`}
+              aria-pressed={visibleWidgets[key]}
+            >
+              {visibleWidgets[key] ? 'Hide' : 'Show'} {key === 'topRated' ? 'Top Rated' : key === 'leaderboard' ? 'Leaderboard' : 'Trending'}
+            </button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Column 1: Trending Performances */}
+          {visibleWidgets.trending && (
           <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
               <span>Trending</span>
@@ -170,7 +182,11 @@ export default function Home() {
                   const heatIndicator = getHeatIndicator(heatLevel);
 
                   return (
-                    <div key={perf.performance_id} className="border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60">
+                    <Link
+                      key={perf.performance_id}
+                      href={`/performances/${perf.performance_id}`}
+                      className="border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60 block"
+                    >
                       <div className="flex items-start gap-3">
                         <div className={`px-3 py-1 text-[11px] font-semibold tracking-widest min-w-max ${heatColor}`}>
                           {heatIndicator}
@@ -188,7 +204,7 @@ export default function Home() {
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -196,8 +212,10 @@ export default function Home() {
               <p className="text-[#707070] text-sm">No trending performances yet</p>
             )}
           </div>
+          )}
 
           {/* Column 2: Top Rated Performances */}
+          {visibleWidgets.topRated && (
           <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_25px_45px_rgba(20,20,20,0.08)]">
             <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.35em] mb-6 flex items-center gap-2">
               <span>Highest Rated</span>
@@ -208,7 +226,11 @@ export default function Home() {
             ) : topPerformances.length > 0 ? (
               <div className="space-y-4">
                 {topPerformances.slice(0, 8).map((perf) => (
-                  <div key={perf.id} className="border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60">
+                  <Link
+                    key={perf.id}
+                    href={`/performances/${perf.id}`}
+                    className="border border-[var(--border-subtle)] p-4 hover:border-[var(--accent-primary)] hover:shadow-[0_20px_35px_rgba(17,17,26,0.08)] transition-all cursor-pointer group bg-[var(--bg-muted)]/60 block"
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <p className="font-[family-name:var(--font-space-grotesk)] text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors truncate">
@@ -227,15 +249,17 @@ export default function Home() {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : (
               <p className="text-[var(--text-tertiary)] text-sm">No rated performances yet</p>
             )}
           </div>
+          )}
 
           {/* Column 3: Community Leaderboard */}
+          {visibleWidgets.leaderboard && (
           <div className="flex flex-col gap-8">
             <TopMembers />
 
@@ -253,12 +277,7 @@ export default function Home() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* New Row: Blurbs and Comments */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          <RecentBlurbs />
-          <RecentComments />
+          )}
         </div>
       </div>
     </div>
