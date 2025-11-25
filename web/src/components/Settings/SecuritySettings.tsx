@@ -309,7 +309,7 @@ export default function SecuritySettings() {
                                     value={verificationCode}
                                     onChange={(e) => setVerificationCode(e.target.value.slice(0, 6))}
                                     placeholder="000000"
-                                    maxLength="6"
+                                    maxLength={6}
                                     className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] rounded text-center text-2xl tracking-widest"
                                 />
                                 <button
