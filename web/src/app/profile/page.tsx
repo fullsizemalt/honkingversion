@@ -47,6 +47,7 @@ export default function ProfilePage() {
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
     const [lists, setLists] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [activityFilter, setActivityFilter] = useState('all');
 
     useEffect(() => {
         if (status === 'unauthenticated') {
@@ -78,6 +79,25 @@ export default function ProfilePage() {
             console.error('Failed to fetch profile data:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchActivity = async (username: string, filter: string) => {
+        try {
+            const res = await fetch(getApiEndpoint(`/profile/${username}/activity?filter=${filter}`));
+            if (res.ok) {
+                const data = await res.json();
+                setProfileData(prev => prev ? { ...prev, recent_activity: data } : null);
+            }
+        } catch (error) {
+            console.error('Failed to fetch activity:', error);
+        }
+    };
+
+    const handleFilterChange = (filter: string) => {
+        setActivityFilter(filter);
+        if (profileData?.user?.username) {
+            fetchActivity(profileData.user.username, filter);
         }
     };
 
@@ -128,6 +148,8 @@ export default function ProfilePage() {
                         <ActivityFeed
                             activities={profileData.recent_activity}
                             title="Your Recent Activity"
+                            currentFilter={activityFilter}
+                            onFilterChange={handleFilterChange}
                         />
                     </div>
 

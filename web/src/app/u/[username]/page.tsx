@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import ProfileHeader from "@/components/ProfileHeader";
-import ActivityFeed from "@/components/ActivityFeed";
+import PublicActivityFeed from "@/components/PublicActivityFeed";
 import ListCard from "@/components/ListCard";
 import BadgeShowcase from "@/components/BadgeShowcase";
 import { getApiEndpoint } from '@/lib/api';
@@ -105,7 +105,11 @@ export default async function PublicProfilePage({ params }: PageProps) {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">
-                        <ActivityFeed activities={reviews} title={`${user.username}'s Activity`} />
+                        <PublicActivityFeed
+                            initialActivities={reviews}
+                            username={user.username}
+                            title={`${user.username}'s Activity`}
+                        />
                     </div >
 
                     <div className="lg:col-span-1">
