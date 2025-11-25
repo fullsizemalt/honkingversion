@@ -68,6 +68,10 @@ export default function Home() {
   const { data: session } = useSession();
   const [trendingPerformances, setTrendingPerformances] = useState<TrendingPerformance[]>([]);
   const [topPerformances, setTopPerformances] = useState<TopPerformance[]>([]);
+  const [topSongs, setTopSongs] = useState<StatsResponse["top_songs"]>([]);
+  const [topVenues, setTopVenues] = useState<StatsResponse["top_venues"]>([]);
+  const [recentComments, setRecentComments] = useState<NonNullable<StatsResponse["recent_comments"]>>([]);
+  const [newSubmissions, setNewSubmissions] = useState<NonNullable<StatsResponse["new_submissions"]>>([]);
   const [loading, setLoading] = useState(true);
   const [maxTrendingVotes, setMaxTrendingVotes] = useState(1);
   const [visibleWidgets, setVisibleWidgets] = useState<Record<WidgetKey, boolean>>(DEFAULT_WIDGETS);
@@ -84,6 +88,10 @@ export default function Home() {
           if (trending.length > 0) {
             setMaxTrendingVotes(Math.max(...trending.map(p => p.votes_last_30d)));
           }
+          setTopSongs(stats.top_songs || []);
+          setTopVenues(stats.top_venues || []);
+          setRecentComments(stats.recent_comments || []);
+          setNewSubmissions(stats.new_submissions || []);
         }
 
         // Fetch all performances for top-rated
@@ -216,8 +224,75 @@ export default function Home() {
               </div>
             ) : (
               <p className="text-[#707070] text-sm">No trending performances yet</p>
+        )}
+        </div>
+
+        {/* Secondary widgets */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
+          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_20px_35px_rgba(17,17,26,0.08)]">
+            <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.3em] mb-4">
+              Top Songs
+            </h3>
+            {loading ? (
+              <p className="text-[var(--text-tertiary)] text-sm">Loading...</p>
+            ) : topSongs.length > 0 ? (
+              <ul className="space-y-2">
+                {topSongs.slice(0, 6).map((song) => (
+                  <li key={song.slug} className="flex items-center justify-between text-sm">
+                    <Link href={`/songs/${song.slug}`} className="text-[var(--text-primary)] hover:text-[var(--accent-primary)] truncate">
+                      {song.name}
+                    </Link>
+                    <span className="text-[var(--text-tertiary)] text-xs">{song.plays} plays</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[var(--text-tertiary)] text-sm">No song stats yet</p>
             )}
           </div>
+
+          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_20px_35px_rgba(17,17,26,0.08)]">
+            <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.3em] mb-4">
+              Top Venues
+            </h3>
+            {loading ? (
+              <p className="text-[var(--text-tertiary)] text-sm">Loading...</p>
+            ) : topVenues.length > 0 ? (
+              <ul className="space-y-2">
+                {topVenues.slice(0, 6).map((venue, idx) => (
+                  <li key={`${venue.venue}-${idx}`} className="flex items-center justify-between text-sm">
+                    <span className="text-[var(--text-primary)] truncate">{venue.venue}</span>
+                    <span className="text-[var(--text-tertiary)] text-xs">{venue.show_count} shows</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[var(--text-tertiary)] text-sm">No venue stats yet</p>
+            )}
+          </div>
+
+          <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6 shadow-[0_20px_35px_rgba(17,17,26,0.08)]">
+            <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-[var(--text-primary)] uppercase tracking-[0.3em] mb-4">
+              Recent Comments
+            </h3>
+            {loading ? (
+              <p className="text-[var(--text-tertiary)] text-sm">Loading...</p>
+            ) : recentComments.length > 0 ? (
+              <div className="space-y-3">
+                {recentComments.slice(0, 6).map((cmt, idx) => (
+                  <div key={`${cmt.username}-${idx}`} className="border border-[var(--border-subtle)] bg-[var(--bg-muted)]/60 p-3">
+                    <p className="text-[var(--text-primary)] text-sm line-clamp-2">{cmt.blurb}</p>
+                    <p className="text-[var(--text-tertiary)] text-[11px] mt-2 uppercase tracking-[0.2em]">
+                      {cmt.username} • {cmt.song_name} • {cmt.show_date}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[var(--text-tertiary)] text-sm">No comments yet</p>
+            )}
+          </div>
+        </div>
           )}
 
           {/* Column 2: Top Rated Performances */}
