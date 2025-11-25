@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
@@ -25,7 +26,9 @@ export default function RootLayout({
           {children}
           <Footer />
           <DevUserSwitcher />
-          <AnalyticsListener />
+          <Suspense fallback={null}>
+            <AnalyticsListener />
+          </Suspense>
           <CookieConsent />
         </Providers>
       </body>
