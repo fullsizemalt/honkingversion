@@ -20,7 +20,7 @@ export default function PerformancesPage() {
 
                 const endpoint = sortBy === 'rated'
                     ? '/api/hv/performances/top-rated?limit=100'
-                    : '/api/hv/performances?limit=100';
+                    : '/api/hv/performances/?limit=100';
 
                 const response = await fetch(endpoint, {
                     credentials: 'include'
