@@ -1,6 +1,7 @@
 import React from 'react'
 import { Performance } from '@/types'
 import PerformanceVoteControl from './PerformanceVoteControl'
+import HonkingVersionBadge from './HonkingVersionBadge'
 
 interface TopVersionsProps {
     performances: Performance[]
@@ -69,19 +70,36 @@ export default function TopVersions({ performances, maxVersions = 5 }: TopVersio
                                 </div>
                             </div>
 
-                            {/* Rating Display */}
-                            <div className="text-right flex-shrink-0">
+                            {/* Rating Display and Honking Badge */}
+                            <div className="text-right flex-shrink-0 space-y-2">
                                 <div className="text-4xl font-bold text-[var(--accent-tertiary)]">
                                     {perf.avg_rating?.toFixed(1)}
                                 </div>
-                                <p className="text-xs text-[var(--text-tertiary)] mt-1">
+                                <p className="text-xs text-[var(--text-tertiary)]">
                                     {perf.vote_count} {perf.vote_count === 1 ? 'vote' : 'votes'}
                                 </p>
+                                {perf.is_honking_version && (
+                                    <HonkingVersionBadge
+                                        compact={true}
+                                        isHonkingVersion={true}
+                                        honkingVoteCount={perf.honking_vote_count}
+                                    />
+                                )}
                             </div>
                         </div>
 
-                        {/* Vote Control */}
-                        <div className="pt-4 border-t border-[var(--border-subtle)]">
+                        {/* Honking Version Info or Vote Control */}
+                        <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3">
+                            {perf.is_honking_version && (
+                                <div className="p-3 bg-[var(--accent-primary)] bg-opacity-10 border border-[var(--accent-primary)] border-opacity-30 rounded text-center">
+                                    <p className="text-xs font-bold text-[var(--accent-primary)] uppercase tracking-wider">
+                                        🦆 THE HONKING VERSION
+                                    </p>
+                                    <p className="text-xs text-[var(--text-secondary)] mt-1">
+                                        {perf.honking_vote_count ?? 0} {perf.honking_vote_count === 1 ? 'person' : 'people'} voted this as "the one"
+                                    </p>
+                                </div>
+                            )}
                             <PerformanceVoteControl
                                 performanceId={perf.id}
                                 songName={perf.song?.name || 'Performance'}

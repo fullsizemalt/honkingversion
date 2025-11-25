@@ -1,5 +1,6 @@
 import React from 'react';
 import PerformanceVoteControl from '@/components/PerformanceVoteControl';
+import HonkingVersionBadge from '@/components/HonkingVersionBadge';
 import PerformanceTags from './PerformanceTags';
 
 interface PerformanceRowProps {
@@ -7,6 +8,8 @@ interface PerformanceRowProps {
         id: number;
         avg_rating?: number | null;
         vote_count?: number;
+        honking_vote_count?: number;
+        is_honking_version?: boolean;
         song?: { name: string };
         show: { date: string; venue: string; location: string };
         position?: number;
@@ -16,7 +19,7 @@ interface PerformanceRowProps {
 }
 
 export default function PerformanceRow({ performance }: PerformanceRowProps) {
-    const { id, avg_rating, vote_count, song, show, position, set_number, notes } = performance;
+    const { id, avg_rating, vote_count, honking_vote_count, is_honking_version, song, show, position, set_number, notes } = performance;
 
     // Determine quality badge
     let qualityBadge = null;
@@ -69,7 +72,7 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
                 {/* Right Side: Rating and Badge */}
                 <div className="text-right flex-shrink-0 space-y-2">
                     {/* Rating */}
-                    {avg_rating !== null && (
+                    {avg_rating !== null && avg_rating !== undefined && (
                         <div>
                             <div className="text-2xl font-bold text-[var(--accent-tertiary)]">
                                 {avg_rating.toFixed(1)}
@@ -86,11 +89,30 @@ export default function PerformanceRow({ performance }: PerformanceRowProps) {
                             {qualityBadge.label}
                         </div>
                     )}
+
+                    {/* Honking Version Badge */}
+                    {is_honking_version && (
+                        <HonkingVersionBadge
+                            compact={true}
+                            isHonkingVersion={true}
+                            honkingVoteCount={honking_vote_count}
+                        />
+                    )}
                 </div>
             </div>
 
-            {/* Vote Control */}
-            <div className="pt-3 border-t border-[var(--border-subtle)]">
+            {/* Honking Version Info or Vote Control */}
+            <div className="pt-3 border-t border-[var(--border-subtle)] space-y-3">
+                {is_honking_version && (
+                    <div className="p-3 bg-[var(--accent-primary)] bg-opacity-10 border border-[var(--accent-primary)] border-opacity-30 rounded text-center">
+                        <p className="text-xs font-bold text-[var(--accent-primary)] uppercase tracking-wider">
+                            🦆 THE HONKING VERSION
+                        </p>
+                        <p className="text-xs text-[var(--text-secondary)] mt-1">
+                            {honking_vote_count ?? 0} {honking_vote_count === 1 ? 'person' : 'people'} voted this as "the one"
+                        </p>
+                    </div>
+                )}
                 <PerformanceVoteControl performanceId={id} songName={song?.name || 'Performance'} />
             </div>
         </div>

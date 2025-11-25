@@ -343,3 +343,5 @@ class SynopsisHistory(SQLModel, table=True):
 
     synopsis: Synopsis = Relationship()
     edited_by: User = Relationship()
+
+SQLModel.update_forward_refs()

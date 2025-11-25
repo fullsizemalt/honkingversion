@@ -48,7 +48,7 @@ from routes import (
     votes,
     synopsis,
 )
-from database import create_db_and_tables
+from .database import create_db_and_tables
 
 # ... (previous code)
 

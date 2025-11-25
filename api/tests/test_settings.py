@@ -1,12 +1,18 @@
+import sys
+from pathlib import Path
+import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select, SQLModel
-from models import User
-from routes.auth import get_current_user
-import pytest
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from api.models import User
+from api.routes.auth import get_current_user
 
 @pytest.fixture(name="client_with_user")
-def client_with_user_fixture(session: Session):
-    from main import app
+def client_with_user_fixture(session: Session, client: TestClient):
     user = User(username="testuser", email="test@example.com", hashed_password="hashedpassword")
     session.add(user)
     session.commit()
@@ -14,13 +20,14 @@ def client_with_user_fixture(session: Session):
 
     def get_current_user_override():
         # Fetch a fresh instance of the user from the database
-        # This ensures the user object is properly managed by the current session for the request
-        return session.exec(select(User).where(User.username == "testuser")).first()
+        user_from_db = session.exec(select(User).where(User.username == "testuser")).first()
+        if user_from_db:
+            session.expunge(user_from_db) # Detach the user from the session
+        return user_from_db
 
-    app.dependency_overrides[get_current_user] = get_current_user_override
-    client = TestClient(app)
+    client.app.dependency_overrides[get_current_user] = get_current_user_override
     yield client
-    app.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
 def test_get_profile_settings(client_with_user: TestClient):
@@ -40,15 +47,9 @@ def test_update_profile_settings(client_with_user: TestClient):
 
 def test_update_profile_settings_too_long(client_with_user: TestClient):
     response = client_with_user.put("/settings/profile", json={"display_name": "a" * 51})
-    if response.status_code != 422:
-        print("Response JSON (test_update_profile_settings_too_long display_name):", response.json())
-        print("Response text (test_update_profile_settings_too_long display_name):", response.text)
     assert response.status_code == 422
     assert "Display name must be 50 characters or less" in response.text
     response = client_with_user.put("/settings/profile", json={"bio": "a" * 501})
-    if response.status_code != 422:
-        print("Response JSON (test_update_profile_settings_too_long bio):", response.json())
-        print("Response text (test_update_profile_settings_too_long bio):", response.text)
     assert response.status_code == 422
     assert "Bio must be 500 characters or less" in response.text
 
@@ -75,7 +76,4 @@ def test_update_privacy_settings(client_with_user: TestClient):
 
 def test_update_privacy_settings_invalid(client_with_user: TestClient):
     response = client_with_user.put("/settings/privacy", json={"profile_visibility": "invalid"})
-    if response.status_code != 422:
-        print("Response JSON (test_update_privacy_settings_invalid):", response.json())
-        print("Response text (test_update_privacy_settings_invalid):", response.text)
     assert response.status_code == 422
