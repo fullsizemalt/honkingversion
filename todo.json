@@ -14,8 +14,8 @@
   {
     "id": "2",
     "description": "Phase 2: Follow system UI + lists CRUD (claim/unfollow buttons, followers/following pages, create/edit lists)",
-    "status": "in-progress",
-    "agent": "Antigravity"
+    "status": "completed",
+    "agent": "codex"
   },
   {
     "id": "3",
@@ -50,8 +50,8 @@
   {
     "id": "8",
     "description": "Performance comparisons: UI scaffold for side-by-side comparison",
-    "status": "pending",
-    "agent": null
+    "status": "in-progress",
+    "agent": "codex"
   },
   {
     "id": "9",
@@ -62,13 +62,13 @@
   {
     "id": "10",
     "description": "Help needed with failing tests in api/tests/test_settings.py",
-    "status": "pending",
-    "agent": null
+    "status": "completed",
+    "agent": "codex"
   },
   {
     "id": "11",
     "description": "Fix dummy seed data not persisting in testing",
-    "status": "in-progress",
-    "agent": "Gemini"
+    "status": "completed",
+    "agent": "codex"
   }
 ]

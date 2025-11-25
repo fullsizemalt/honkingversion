@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from database import get_session
-from models import User, UserRead
-from routes.auth import get_current_user
+from api.database import get_session
+from api.models import User, UserRead
+from api.routes.auth import get_current_user
 from datetime import datetime
-from shared_models.settings import ProfileUpdate, EmailChangeRequest, PasswordChangeRequest, PrivacyPreferences
+from api.shared_models.settings import ProfileUpdate, EmailChangeRequest, PasswordChangeRequest, PrivacyPreferences
 
 router = APIRouter(prefix="/settings", tags=["settings"])
 
@@ -34,14 +34,15 @@ def update_profile_settings(
     if profile_update.bio is not None:
         current_user.bio = profile_update.bio
 
-    session.add(current_user)
+    # Use merge to attach even if current_user came from another session (e.g., testing overrides)
+    merged_user = session.merge(current_user)
     session.commit()
-    session.refresh(current_user)
+    session.refresh(merged_user)
 
     return {
-        "display_name": current_user.display_name or "",
-        "bio": current_user.bio or "",
-        "profile_picture_url": current_user.profile_picture_url,
+        "display_name": merged_user.display_name or "",
+        "bio": merged_user.bio or "",
+        "profile_picture_url": merged_user.profile_picture_url,
     }
 
 
@@ -78,7 +79,7 @@ def change_email(
     current_user.email = email_request.new_email
     current_user.email_verified = False  # Require re-verification
 
-    session.add(current_user)
+    session.merge(current_user)
     session.commit()
     session.refresh(current_user)
 
@@ -144,19 +145,19 @@ def update_privacy_settings(
     current_user.show_stats = privacy_prefs.show_stats
     current_user.indexable = privacy_prefs.indexable
 
-    session.add(current_user)
+    merged_user = session.merge(current_user)
     session.commit()
-    session.refresh(current_user)
+    session.refresh(merged_user)
 
     return {
         "message": "Privacy settings updated successfully",
         "settings": {
-            "profile_visibility": current_user.profile_visibility,
-            "activity_visibility": current_user.activity_visibility,
-            "show_attendance_public": current_user.show_attendance_public,
-            "allow_follows": current_user.allow_follows,
-            "allow_messages": current_user.allow_messages,
-            "show_stats": current_user.show_stats,
-            "indexable": current_user.indexable,
+            "profile_visibility": merged_user.profile_visibility,
+            "activity_visibility": merged_user.activity_visibility,
+            "show_attendance_public": merged_user.show_attendance_public,
+            "allow_follows": merged_user.allow_follows,
+            "allow_messages": merged_user.allow_messages,
+            "show_stats": merged_user.show_stats,
+            "indexable": merged_user.indexable,
         },
     }

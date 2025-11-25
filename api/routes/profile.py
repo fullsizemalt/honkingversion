@@ -2,7 +2,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func, SQLModel
 from database import get_session
-from models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance
+from models import User, UserTitle, UserBadge, Vote, UserList, ListFollow, UserShowAttendance, UserFollow
 from routes.auth import get_current_user_optional, get_current_user
 from services.badges import get_all_system_badges
 import json
@@ -42,15 +42,23 @@ def get_user_profile(
         select(func.count(UserShowAttendance.show_id))
         .where(UserShowAttendance.user_id == user.id)
     ).one()
-    
+
     total_votes = session.exec(
         select(func.count(Vote.id))
         .where(Vote.user_id == user.id)
     ).one()
-    
+
     lists_created = session.exec(
         select(func.count(UserList.id))
         .where(UserList.user_id == user.id)
+    ).one()
+
+    followers_count = session.exec(
+        select(func.count(UserFollow.id)).where(UserFollow.followed_id == user.id)
+    ).one()
+
+    following_count = session.exec(
+        select(func.count(UserFollow.id)).where(UserFollow.follower_id == user.id)
     ).one()
     
     # Get selected title
@@ -70,6 +78,16 @@ def get_user_profile(
     ).order_by(Vote.created_at.desc()).limit(20)
     recent_activity = session.exec(activity_statement).all()
     
+    # Check if current_user follows this profile
+    is_following = False
+    if current_user:
+        is_following = session.exec(
+            select(UserFollow).where(
+                UserFollow.follower_id == current_user.id,
+                UserFollow.followed_id == user.id,
+            )
+        ).first() is not None
+
     # Parse social links
     social_links = {}
     if user.social_links:
@@ -105,9 +123,10 @@ def get_user_profile(
             "shows_attended": shows_attended,
             "total_votes": total_votes,
             "lists_created": lists_created,
-            "followers": 0,  # TODO: implement followers
-            "following": 0   # TODO: implement following
+            "followers": followers_count,
+            "following": following_count
         },
+        "is_following": is_following,
         "selected_title": selected_title_dict,
         "badges": badges,
         "recent_activity": recent_activity

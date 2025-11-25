@@ -2,24 +2,23 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select, func
 from datetime import datetime
 from typing import List, Optional
-from api.database import get_session
-from api.models import HonkingVersion, Song, SongPerformance, User
-from api.auth import get_current_user
+from pydantic import BaseModel
+from ..database import get_session
+from ..models import HonkingVersion, Song, SongPerformance, User
+from ..routes.auth import get_current_user
 
 router = APIRouter(prefix="/honking-versions", tags=["honking-versions"])
 
-class HonkingVersionRead:
-    def __init__(self, id: int, user_id: int, song_id: int, performance_id: int, created_at: datetime, updated_at: datetime):
-        self.id = id
-        self.user_id = user_id
-        self.song_id = song_id
-        self.performance_id = performance_id
-        self.created_at = created_at
-        self.updated_at = updated_at
+class HonkingVersionRead(BaseModel):
+    id: int
+    user_id: int
+    song_id: int
+    performance_id: int
+    created_at: datetime
+    updated_at: datetime
 
-class HonkingVersionCreate:
-    def __init__(self, performance_id: int):
-        self.performance_id = performance_id
+class HonkingVersionCreate(BaseModel):
+    performance_id: int
 
 @router.get("/song/{song_id}")
 def get_honking_version_for_song(

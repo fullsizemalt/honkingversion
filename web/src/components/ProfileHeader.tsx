@@ -5,6 +5,7 @@ import { User } from '@/types';
 import Link from 'next/link';
 import { Edit, Cloud, Instagram, Link as LinkIcon } from 'lucide-react';
 import EditProfileModal from './EditProfileModal';
+import FollowButton from './FollowButton';
 
 interface ProfileHeaderProps {
     user: {
@@ -19,6 +20,7 @@ interface ProfileHeaderProps {
             instagram?: string;
             custom_url?: string;
         };
+        is_following?: boolean;
     };
     selectedTitle?: {
         title_name: string;
@@ -93,6 +95,9 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                                                 Edit Profile
                                             </span>
                                         </button>
+                                    )}
+                                    {!isCurrentUser && (
+                                        <FollowButton username={user.username} initialIsFollowing={user.is_following} />
                                     )}
                                 </div>
 
