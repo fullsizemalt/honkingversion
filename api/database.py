@@ -13,10 +13,7 @@ def ensure_vote_is_featured_column(connection):
             "ALTER TABLE vote ADD COLUMN is_featured BOOLEAN NOT NULL DEFAULT 0"
         )
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql+psycopg2://honking:honking@postgres:5432/honkingversion",
-)
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./database.db")
 
 if DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from api.database import get_session
 from api.models import Feedback, User
-from api.routes.auth import get_current_user, get_current_user_optional
+from api.routes.auth import get_current_user, get_current_user_optional, get_admin_user
 
 router = APIRouter(prefix="/feedback", tags=["feedback"])
 
@@ -34,8 +34,8 @@ def create_feedback(
 @router.get("/", response_model=List[Feedback])
 def list_feedback(
     session: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    admin_user: User = Depends(get_admin_user)
 ):
-    # TODO: Add admin check here
+    """List all feedback (admin only)."""
     statement = select(Feedback).order_by(Feedback.created_at.desc())
     return session.exec(statement).all()

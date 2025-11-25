@@ -12,10 +12,16 @@ from api.models import User
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 # --- Security Configuration ---
-# TODO: Move these to environment variables for production
-SECRET_KEY = "supersecretkey" 
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+import os
+
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-key-change-in-production")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+
+# Validate production configuration
+if os.getenv("ENVIRONMENT", "development") == "production":
+    if SECRET_KEY == "dev-key-change-in-production":
+        raise ValueError("FATAL: SECRET_KEY not set in production. Set via environment variable.")
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -68,10 +74,20 @@ async def get_current_user_optional(token: Annotated[str | None, Depends(oauth2_
             return None
     except JWTError:
         return None
-        
+
     statement = select(User).where(User.username == username)
     user = session.exec(statement).first()
     return user
+
+
+async def get_admin_user(current_user: Annotated[User, Depends(get_current_user)]) -> User:
+    """Ensure current user is an admin (admin, mod, or superadmin)."""
+    if current_user.role not in ["admin", "mod", "superadmin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges required for this action"
+        )
+    return current_user
 
 # --- Routes ---
 

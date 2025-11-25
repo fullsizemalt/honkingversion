@@ -6,7 +6,7 @@ from datetime import datetime
 
 from api.database import get_session
 from api.models import ChangelogEntry, User, UserRead
-from api.routes.auth import get_current_user
+from api.routes.auth import get_current_user, get_admin_user
 
 router = APIRouter(prefix="/changelog", tags=["changelog"])
 
@@ -34,9 +34,9 @@ def get_changelog(session: Session = Depends(get_session)):
 def create_changelog_entry(
     entry_data: ChangelogCreate,
     session: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    admin_user: User = Depends(get_admin_user)
 ):
-    # TODO: Add admin check here
+    """Create a changelog entry (admin only)."""
     entry = ChangelogEntry(
         title=entry_data.title,
         description=entry_data.description,
