@@ -7,6 +7,7 @@ import PageHeader from '@/components/PageHeader';
 import { getApiEndpoint } from '@/lib/api';
 import TagBadge from '@/components/TagBadge';
 import { Sparkline } from '@/components/charts/Sparkline';
+import PerformanceReviews from '@/components/PerformanceReviews';
 import ExternalLinks from '@/components/ExternalLinks';
 
 interface PerformanceDetail {
@@ -171,6 +172,11 @@ export default function PerformanceDetailPage() {
               View show details
             </Link>
           </div>
+        </div>
+
+        <div className="border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
+          <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-[var(--text-primary)] mb-4">Reviews</h2>
+          <PerformanceReviews performanceId={Number(performance.id)} />
         </div>
       </div>
     </div>
