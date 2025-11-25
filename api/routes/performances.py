@@ -10,6 +10,7 @@ from api.routes.auth import get_current_user
 router = APIRouter(prefix="/performances", tags=["performances"])
 
 @router.get("/")
+@router.get("")  # handle trailing-slash-less requests to avoid redirects
 def list_performances(
     limit: int = 20,
     session: Session = Depends(get_session)
