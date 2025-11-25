@@ -59,7 +59,7 @@ export interface User {
     profile_picture_url?: string;
     role?: string;
     social_links?: {
-        twitter?: string;
+        bluesky?: string;
         instagram?: string;
         custom_url?: string;
     };

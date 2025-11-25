@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { User } from '@/types';
 import Link from 'next/link';
-import { Edit, Twitter, Instagram, Link as LinkIcon } from 'lucide-react';
+import { Edit, Cloud, Instagram, Link as LinkIcon } from 'lucide-react';
 import EditProfileModal from './EditProfileModal';
 
 interface ProfileHeaderProps {
