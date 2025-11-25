@@ -1,8 +1,22 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: honking
+      POSTGRES_PASSWORD: honking
+      POSTGRES_DB: honkingversion
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - honkingversion
+    restart: unless-stopped
+
   api:
     build: ./api
-    volumes:
-      - ./database.db:/app/database.db
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://honking:honking@postgres:5432/honkingversion
+    depends_on:
+      - postgres
     networks:
       - honkingversion
       - traefik
@@ -42,3 +56,6 @@ networks:
   honkingversion:
   traefik:
     external: true
+
+volumes:
+  postgres-data:

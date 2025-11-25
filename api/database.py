@@ -1,6 +1,11 @@
+import os
 from sqlmodel import SQLModel, create_engine, Session
 
 def ensure_vote_is_featured_column(connection):
+    # This is SQLite specific, skip for Postgres
+    if "sqlite" not in str(connection.engine.url):
+        return
+        
     result = connection.exec_driver_sql("PRAGMA table_info('vote')")
     columns = {row[1] for row in result}
     if "is_featured" not in columns:
@@ -8,11 +13,17 @@ def ensure_vote_is_featured_column(connection):
             "ALTER TABLE vote ADD COLUMN is_featured BOOLEAN NOT NULL DEFAULT 0"
         )
 
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql+psycopg2://honking:honking@postgres:5432/honkingversion",
+)
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+else:
+    connect_args = {}
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args, pool_pre_ping=True)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
