@@ -143,7 +143,7 @@
   {
     "id": "23",
     "description": "QUICK WIN: CSV export of favorite performances and voting history",
-    "status": "in-progress",
+    "status": "completed",
     "agent": "Claude Code",
     "category": "Export/Integration",
     "effort": "1-2 hours",
