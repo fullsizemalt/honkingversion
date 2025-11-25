@@ -36,6 +36,7 @@ export default async function FollowersPage({ params }: Props) {
         <div className="min-h-screen bg-[var(--bg-primary)] pb-20">
             <PageHeader
                 title={`Followers of ${username}`}
+                description="See who is following this user"
                 breadcrumbs={[
                     { label: 'Home', href: '/' },
                     { label: username, href: `/u/${username}` },
