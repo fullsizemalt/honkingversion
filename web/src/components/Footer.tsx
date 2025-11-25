@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import FeedbackModal from './FeedbackModal';
-import { ExternalLink, Wrench, Check } from 'lucide-react';
+import { ExternalLink, Wrench, Check, Github, Mail } from 'lucide-react';
 
 export default function Footer() {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -149,31 +149,78 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-8 border-t border-[var(--border-subtle)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div className="flex flex-col gap-4">
-                        <div className="flex flex-wrap gap-6 text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wide text-[var(--text-tertiary)]">
-                            <Link href="/updates" className="hover:text-[var(--text-primary)] transition-colors">
-                                Updates
-                            </Link>
-                            <button onClick={() => setIsFeedbackOpen(true)} className="hover:text-[var(--text-primary)] transition-colors">
-                                Report Issue
-                            </button>
-                            <Link href="/attribution" className="hover:text-[var(--text-primary)] transition-colors">
-                                Attribution
-                            </Link>
+                <div className="pt-8 border-t border-[var(--border-subtle)]">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                        {/* Left: Main Links */}
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider text-[var(--text-primary)] font-bold">About</h4>
+                            <ul className="space-y-2 text-sm">
+                                <li>
+                                    <Link href="/about" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        About Us
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/attribution" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        Attribution
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/updates" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        Updates
+                                    </Link>
+                                </li>
+                            </ul>
                         </div>
+
+                        {/* Middle: Policies */}
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider text-[var(--text-primary)] font-bold">Legal</h4>
+                            <ul className="space-y-2 text-sm">
+                                <li>
+                                    <Link href="/privacy" className="text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        Privacy Policy
+                                    </Link>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/runfoo/honkingversion" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        <Github className="w-4 h-4" /> GitHub
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Right: Contact */}
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-xs font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-wider text-[var(--text-primary)] font-bold">Contact</h4>
+                            <ul className="space-y-2 text-sm">
+                                <li>
+                                    <button onClick={() => setIsFeedbackOpen(true)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        <Mail className="w-4 h-4" /> Send Feedback
+                                    </button>
+                                </li>
+                                <li>
+                                    <a href="mailto:hello@runfoo.run" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-tertiary)] transition-colors">
+                                        <Mail className="w-4 h-4" /> Email
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="border-t border-[var(--border-subtle)] pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                         <p className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] text-[var(--text-tertiary)] italic normal-case tracking-normal max-w-md">
                             Honkingversion loves Goose but is in no way affiliated with The Organization or affiliated enterprises.
                         </p>
-                    </div>
 
-                    <div className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-[0.2em] text-[var(--text-tertiary)] text-right">
-                        <p className="mb-2">
-                            Data provided by <a href="https://elgoose.net" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline">El Goose</a>
-                        </p>
-                        <p>
-                            © {new Date().getFullYear()} Honkingversion.runfoo.run
-                        </p>
+                        <div className="text-[10px] font-[family-name:var(--font-ibm-plex-mono)] uppercase tracking-[0.2em] text-[var(--text-tertiary)] text-right">
+                            <p className="mb-2">
+                                Data provided by <a href="https://elgoose.net" target="_blank" rel="noopener noreferrer" className="text-[var(--accent-primary)] hover:underline">El Goose</a>
+                            </p>
+                            <p>
+                                © {new Date().getFullYear()} Honkingversion.runfoo.run
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

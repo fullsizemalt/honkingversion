@@ -161,8 +161,8 @@
   {
     "id": "25",
     "description": "QUICK WIN: Keyboard shortcuts documentation and implementation (?, j/k navigation)",
-    "status": "pending",
-    "agent": null,
+    "status": "in-progress",
+    "agent": "Antigravity",
     "category": "Community Features",
     "effort": "1-2 hours",
     "dependencies": []
@@ -179,8 +179,8 @@
   {
     "id": "27",
     "description": "QUICK WIN: Footer with links (About, Privacy, GitHub, Contact)",
-    "status": "pending",
-    "agent": null,
+    "status": "in-progress",
+    "agent": "Claude Code",
     "category": "Community Features",
     "effort": "1 hour",
     "dependencies": []
