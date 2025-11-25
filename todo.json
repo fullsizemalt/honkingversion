@@ -130,5 +130,356 @@
     "description": "Codebase Optimization: Centralized API Client",
     "status": "completed",
     "agent": "fullsizemalt"
+  },
+  {
+    "id": "22",
+    "description": "QUICK WIN: Add search box to header with song/artist autocomplete",
+    "status": "pending",
+    "agent": null,
+    "category": "Search & Discovery",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "23",
+    "description": "QUICK WIN: CSV export of favorite performances and voting history",
+    "status": "pending",
+    "agent": null,
+    "category": "Export/Integration",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "24",
+    "description": "QUICK WIN: Toast notifications for user actions (vote, follow, add to list)",
+    "status": "pending",
+    "agent": null,
+    "category": "Mobile UX",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "25",
+    "description": "QUICK WIN: Keyboard shortcuts documentation and implementation (?, j/k navigation)",
+    "status": "pending",
+    "agent": null,
+    "category": "Community Features",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "26",
+    "description": "QUICK WIN: Help documentation page with FAQ and getting started guide",
+    "status": "pending",
+    "agent": null,
+    "category": "Community Features",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "27",
+    "description": "QUICK WIN: Footer with links (About, Privacy, GitHub, Contact)",
+    "status": "pending",
+    "agent": null,
+    "category": "Community Features",
+    "effort": "1 hour",
+    "dependencies": []
+  },
+  {
+    "id": "28",
+    "description": "QUICK WIN: Dark mode toggle in settings with system preference detection",
+    "status": "pending",
+    "agent": null,
+    "category": "Mobile UX",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "29",
+    "description": "QUICK WIN: Add quick filters to show list (by year, decade, venue type)",
+    "status": "pending",
+    "agent": null,
+    "category": "Search & Discovery",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "30",
+    "description": "QUICK WIN: Mobile-responsive navigation improvements (hamburger menu for small screens)",
+    "status": "pending",
+    "agent": null,
+    "category": "Mobile UX",
+    "effort": "1-2 hours",
+    "dependencies": []
+  },
+  {
+    "id": "31",
+    "description": "QUICK WIN: Improve performance badge styling and animations across app",
+    "status": "pending",
+    "agent": null,
+    "category": "Analytics & Insights",
+    "effort": "1 hour",
+    "dependencies": []
+  },
+  {
+    "id": "32",
+    "description": "CORE: Full-text search implementation for songs/artists (frontend + API integration)",
+    "status": "pending",
+    "agent": null,
+    "category": "Search & Discovery",
+    "effort": "4-8 hours",
+    "dependencies": ["22"]
+  },
+  {
+    "id": "33",
+    "description": "CORE: Advanced filtering UI (date range, venue, decade, attendance, tags)",
+    "status": "pending",
+    "agent": null,
+    "category": "Search & Discovery",
+    "effort": "4-8 hours",
+    "dependencies": ["32"]
+  },
+  {
+    "id": "34",
+    "description": "CORE: User profile enrichment (stats dashboard with voting patterns, favorite songs/venues)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "4-8 hours",
+    "dependencies": []
+  },
+  {
+    "id": "35",
+    "description": "CORE: Playlist/collection creation UI (create, edit, share public/private playlists)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "4-8 hours",
+    "dependencies": []
+  },
+  {
+    "id": "36",
+    "description": "CORE: Social sharing buttons (Twitter, Facebook, copy link with vote info)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "2-4 hours",
+    "dependencies": []
+  },
+  {
+    "id": "37",
+    "description": "CORE: Personalized recommendations (songs/performances based on user votes and follows)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "6-10 hours",
+    "dependencies": ["34"]
+  },
+  {
+    "id": "38",
+    "description": "CORE: Performance reviews/comments system (add text reviews, moderation flags)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "4-8 hours",
+    "dependencies": []
+  },
+  {
+    "id": "39",
+    "description": "CORE: Data import from external APIs (Spotify, Setlist.fm, MusicBrainz)",
+    "status": "pending",
+    "agent": null,
+    "category": "Data Enhancements",
+    "effort": "8-12 hours",
+    "dependencies": []
+  },
+  {
+    "id": "40",
+    "description": "CORE: JSON/XML export of voting data and user collections",
+    "status": "pending",
+    "agent": null,
+    "category": "Export/Integration",
+    "effort": "2-4 hours",
+    "dependencies": ["23"]
+  },
+  {
+    "id": "41",
+    "description": "CORE: Mobile responsive polish (touch-friendly buttons, readable fonts, viewport optimization)",
+    "status": "pending",
+    "agent": null,
+    "category": "Mobile UX",
+    "effort": "4-6 hours",
+    "dependencies": ["30"]
+  },
+  {
+    "id": "42",
+    "description": "CORE: Performance optimization (lazy loading images, code splitting, caching strategy)",
+    "status": "pending",
+    "agent": null,
+    "category": "Performance Optimization",
+    "effort": "4-8 hours",
+    "dependencies": []
+  },
+  {
+    "id": "43",
+    "description": "CORE: User content moderation tools (flag inappropriate content, admin dashboard)",
+    "status": "pending",
+    "agent": null,
+    "category": "Content Moderation",
+    "effort": "6-10 hours",
+    "dependencies": []
+  },
+  {
+    "id": "44",
+    "description": "CORE: Achievement badges system (milestones: 10 votes, 100 votes, first follow, etc)",
+    "status": "pending",
+    "agent": null,
+    "category": "Gamification",
+    "effort": "4-8 hours",
+    "dependencies": []
+  },
+  {
+    "id": "45",
+    "description": "CORE: Trend analysis visualization (voting trends over time, emerging songs)",
+    "status": "pending",
+    "agent": null,
+    "category": "Analytics & Insights",
+    "effort": "4-8 hours",
+    "dependencies": []
+  },
+  {
+    "id": "46",
+    "description": "CORE: Related songs recommendations sidebar (songs by same artist, similar genres, same tour)",
+    "status": "pending",
+    "agent": null,
+    "category": "Data Enhancements",
+    "effort": "3-6 hours",
+    "dependencies": []
+  },
+  {
+    "id": "47",
+    "description": "CORE: Leaderboard system (top voters, most voted performances, trending this week)",
+    "status": "pending",
+    "agent": null,
+    "category": "Gamification",
+    "effort": "4-8 hours",
+    "dependencies": []
+  },
+  {
+    "id": "48",
+    "description": "CORE: Watch list feature (save performances to watch later, notifications for updates)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "2-4 hours",
+    "dependencies": []
+  },
+  {
+    "id": "49",
+    "description": "CORE: User activity timeline (show user's voting history, follows, and reviews)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "3-4 hours",
+    "dependencies": []
+  },
+  {
+    "id": "50",
+    "description": "CORE: Rate limiting and API key system for external integrations",
+    "status": "pending",
+    "agent": null,
+    "category": "Performance Optimization",
+    "effort": "4-6 hours",
+    "dependencies": []
+  },
+  {
+    "id": "51",
+    "description": "STRATEGIC: Mobile app (React Native) with offline support and push notifications",
+    "status": "pending",
+    "agent": null,
+    "category": "Mobile UX",
+    "effort": "40-60 hours",
+    "dependencies": ["50"]
+  },
+  {
+    "id": "52",
+    "description": "STRATEGIC: Collaborative voting sessions (real-time multiplayer voting, voting parties)",
+    "status": "pending",
+    "agent": null,
+    "category": "Social Features",
+    "effort": "40-60 hours",
+    "dependencies": ["48"]
+  },
+  {
+    "id": "53",
+    "description": "STRATEGIC: Concert discovery engine (from votes, suggest concerts user might attend)",
+    "status": "pending",
+    "agent": null,
+    "category": "Community Features",
+    "effort": "20-30 hours",
+    "dependencies": ["39"]
+  },
+  {
+    "id": "54",
+    "description": "STRATEGIC: Audio fingerprinting integration (identify songs from audio, connect performances)",
+    "status": "pending",
+    "agent": null,
+    "category": "Data Enhancements",
+    "effort": "30-40 hours",
+    "dependencies": []
+  },
+  {
+    "id": "55",
+    "description": "STRATEGIC: ML-powered recommendations (collaborative filtering, content-based recommendations)",
+    "status": "pending",
+    "agent": null,
+    "category": "Analytics & Insights",
+    "effort": "40-60 hours",
+    "dependencies": ["37"]
+  },
+  {
+    "id": "56",
+    "description": "STRATEGIC: Multi-language support (i18n, translations for major languages)",
+    "status": "pending",
+    "agent": null,
+    "category": "Community Features",
+    "effort": "20-30 hours",
+    "dependencies": []
+  },
+  {
+    "id": "57",
+    "description": "STRATEGIC: Offline support (ServiceWorker, local caching, sync when online)",
+    "status": "pending",
+    "agent": null,
+    "category": "Mobile UX",
+    "effort": "20-30 hours",
+    "dependencies": ["51"]
+  },
+  {
+    "id": "58",
+    "description": "STRATEGIC: Advanced analytics dashboard (heatmaps, cohort analysis, user segments)",
+    "status": "pending",
+    "agent": null,
+    "category": "Analytics & Insights",
+    "effort": "30-40 hours",
+    "dependencies": ["45"]
+  },
+  {
+    "id": "59",
+    "description": "STRATEGIC: Community moderation system (moderator roles, abuse reporting, content policies)",
+    "status": "pending",
+    "agent": null,
+    "category": "Content Moderation",
+    "effort": "30-40 hours",
+    "dependencies": ["43"]
+  },
+  {
+    "id": "60",
+    "description": "STRATEGIC: Live voting events (real-time voting sessions, leaderboards, announcements)",
+    "status": "pending",
+    "agent": null,
+    "category": "Community Features",
+    "effort": "40-60 hours",
+    "dependencies": ["52"]
   }
 ]
