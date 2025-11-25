@@ -11,7 +11,7 @@ export default function EditListPage() {
     const { data: session } = useSession();
     const router = useRouter();
     const params = useParams();
-    const listId = params.list_id;
+    const listId = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
