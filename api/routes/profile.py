@@ -229,3 +229,47 @@ def update_selected_title(
     session.refresh(current_user)
     
     return {"success": True, "selected_title_id": title_id}
+    return {"success": True, "selected_title_id": title_id}
+
+class ProfileUpdate(SQLModel):
+    bio: Optional[str] = None
+    social_links: Optional[dict] = None
+
+@router.put("/{username}")
+def update_profile(
+    username: str,
+    profile_update: ProfileUpdate,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    """Update user profile (bio, social links)"""
+    if not current_user or current_user.username != username:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # Update fields
+    if profile_update.bio is not None:
+        current_user.bio = profile_update.bio
+        
+    if profile_update.social_links is not None:
+        # Validate and clean social links
+        current_links = {}
+        if current_user.social_links:
+            try:
+                current_links = json.loads(current_user.social_links)
+            except:
+                current_links = {}
+        
+        # Merge updates
+        for key, value in profile_update.social_links.items():
+            if value:
+                current_links[key] = value
+            elif key in current_links:
+                del current_links[key]
+                
+        current_user.social_links = json.dumps(current_links)
+    
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
+    
+    return {"success": True}

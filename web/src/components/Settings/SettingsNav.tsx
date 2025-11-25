@@ -1,4 +1,4 @@
-type SettingsSection = 'profile' | 'account' | 'privacy' | 'preferences' | 'sessions';
+type SettingsSection = 'profile' | 'account' | 'privacy' | 'preferences' | 'sessions' | 'security' | 'connections' | 'data';
 
 interface SettingsNavProps {
   activeSection: SettingsSection;
@@ -11,6 +11,9 @@ const sections: { key: SettingsSection; label: string; description: string }[] =
   { key: 'privacy', label: 'Privacy', description: 'Visibility and notification settings' },
   { key: 'preferences', label: 'Preferences', description: 'Theme, language, timezone' },
   { key: 'sessions', label: 'Sessions', description: 'Active login sessions and devices' },
+  { key: 'security', label: 'Security', description: 'Two-factor authentication' },
+  { key: 'connections', label: 'Connections', description: 'Connected apps and accounts' },
+  { key: 'data', label: 'Data', description: 'Export and delete your data' },
 ];
 
 export default function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps) {
