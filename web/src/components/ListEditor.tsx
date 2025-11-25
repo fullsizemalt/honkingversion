@@ -259,10 +259,9 @@ export default function ListEditor({ isOpen, onClose, onListSaved, editList }: L
                             placeholder="Optional description..."
                         />
                     </div>
+                </div>
 
-                        </div>
-                        
-                        {listType === 'shows' && (
+                {listType === 'shows' && (
                             <>
                                 <label className="block font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)] mb-2 uppercase tracking-[0.35em]">
                                     Add Show by Date (YYYY-MM-DD)

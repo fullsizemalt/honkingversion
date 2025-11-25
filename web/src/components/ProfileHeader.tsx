@@ -101,8 +101,9 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                                     )}
                                 </div>
 
-                                @{user.username}
-                            </p>
+                                <p className="font-[family-name:var(--font-ibm-plex-mono)] text-sm text-[var(--text-secondary)]">
+                                    @{user.username}
+                                </p>
 
                             {/* Followers/Following Links */}
                             <div className="flex items-center gap-4 text-sm font-[family-name:var(--font-ibm-plex-mono)]">
