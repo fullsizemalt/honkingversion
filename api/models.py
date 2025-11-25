@@ -86,7 +86,12 @@ class Song(SQLModel, table=True):
     current_honking_vote_count: int = Field(default=0)
     honking_version_updated_at: Optional[datetime] = None
 
-    performances: List["SongPerformance"] = Relationship(back_populates="song")
+    performances: List["SongPerformance"] = Relationship(
+        back_populates="song",
+        sa_relationship_kwargs={
+            "foreign_keys": "SongPerformance.song_id"
+        }
+    )
     honking_versions: List["HonkingVersion"] = Relationship(back_populates="song")
     tags: List["SongTag"] = Relationship(back_populates="song")
     current_honking_performance: Optional["SongPerformance"] = Relationship(
@@ -108,7 +113,12 @@ class SongPerformance(SQLModel, table=True):
     honking_vote_count: int = Field(default=0, index=True)
     honking_votes_updated_at: Optional[datetime] = None
 
-    song: Song = Relationship(back_populates="performances")
+    song: Song = Relationship(
+        back_populates="performances",
+        sa_relationship_kwargs={
+            "foreign_keys": "SongPerformance.song_id"
+        }
+    )
     show: Show = Relationship(back_populates="performances")
     votes: List["Vote"] = Relationship(back_populates="performance")
     honking_votes: List["HonkingVersion"] = Relationship(back_populates="performance")

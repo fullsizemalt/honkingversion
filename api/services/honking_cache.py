@@ -17,7 +17,7 @@ The cache is maintained transactionally whenever votes are created/updated/delet
 from sqlmodel import Session, select, func
 from datetime import datetime
 from typing import Optional, Tuple
-from ..models import HonkingVersion, Song, SongPerformance
+from api.models import HonkingVersion, Song, SongPerformance
 import logging
 
 logger = logging.getLogger(__name__)

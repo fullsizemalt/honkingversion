@@ -18,7 +18,8 @@ from datetime import datetime
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
-from models import Show, Song, SongPerformance
+from api.models import Show, Song, SongPerformance
+from api.services.cache_manager import CacheManager
 
 logger = logging.getLogger(__name__)
 

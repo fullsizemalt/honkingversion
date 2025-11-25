@@ -4,13 +4,11 @@ from typing import List, Optional
 from pydantic import BaseModel
 from sqlalchemy import func, Integer
 
-from database import get_session
-from database import get_session
-from models import User, Vote, Show, UserRead
-from routes.auth import get_current_user
-from datetime import datetime
-from services.notifications import create_notification
-from models import UserFollow
+from api.database import get_session
+from api.models import User, Vote, Show, UserRead, UserFollow
+from api.routes.auth import get_current_user
+from api.services.notifications import create_notification
+from api.models import SongPerformance, PerformanceTag, ShowTag, Tag, Song
 
 router = APIRouter(prefix="/votes", tags=["votes"])
 

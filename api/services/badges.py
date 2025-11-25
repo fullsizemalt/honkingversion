@@ -1,5 +1,5 @@
 from typing import List, Dict, Optional
-from models import UserBadge
+from api.models import UserBadge
 
 class SystemBadge:
     def __init__(self, id: str, name: str, description: str, icon: str, criteria: str):
