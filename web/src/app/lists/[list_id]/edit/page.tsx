@@ -33,7 +33,7 @@ export default function EditListPage() {
                     const list: UserList = await res.json();
                     setTitle(list.title);
                     setDescription(list.description || '');
-                    setIsPublic(list.is_public);
+                    setIsPublic(Boolean(list.is_public));
                 } else {
                     setError('Failed to fetch list data.');
                 }
