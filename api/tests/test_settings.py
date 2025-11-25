@@ -40,9 +40,15 @@ def test_update_profile_settings(client_with_user: TestClient):
 
 def test_update_profile_settings_too_long(client_with_user: TestClient):
     response = client_with_user.put("/settings/profile", json={"display_name": "a" * 51})
+    if response.status_code != 422:
+        print("Response JSON (test_update_profile_settings_too_long display_name):", response.json())
+        print("Response text (test_update_profile_settings_too_long display_name):", response.text)
     assert response.status_code == 422
     assert "Display name must be 50 characters or less" in response.text
     response = client_with_user.put("/settings/profile", json={"bio": "a" * 501})
+    if response.status_code != 422:
+        print("Response JSON (test_update_profile_settings_too_long bio):", response.json())
+        print("Response text (test_update_profile_settings_too_long bio):", response.text)
     assert response.status_code == 422
     assert "Bio must be 500 characters or less" in response.text
 
@@ -69,4 +75,7 @@ def test_update_privacy_settings(client_with_user: TestClient):
 
 def test_update_privacy_settings_invalid(client_with_user: TestClient):
     response = client_with_user.put("/settings/privacy", json={"profile_visibility": "invalid"})
+    if response.status_code != 422:
+        print("Response JSON (test_update_privacy_settings_invalid):", response.json())
+        print("Response text (test_update_privacy_settings_invalid):", response.text)
     assert response.status_code == 422

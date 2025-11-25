@@ -25,9 +25,9 @@ export default function ActivityFeedSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [feedType, session?.user?.accessToken]);
 
-  const fetchFeed = async (reset = false) => {
+  const fetchFeed = async (reset = false, offsetOverride?: number) => {
     if (feedType === 'following' && !session) return;
-    const offset = reset ? 0 : page * PAGE_SIZE;
+    const offset = offsetOverride !== undefined ? offsetOverride : reset ? 0 : page * PAGE_SIZE;
     if (reset) setLoadingInitial(true);
     setLoadingFeed(true);
     try {
@@ -43,8 +43,7 @@ export default function ActivityFeedSection() {
       const res = await fetch(getApiEndpoint(endpoint), { headers });
       if (res.ok) {
         const data = await res.json();
-        const newItems = reset ? data : [...feedActivities, ...data];
-        setFeedActivities(newItems);
+        setFeedActivities((prev) => (reset ? data : [...prev, ...data]));
         setHasMore(data.length === PAGE_SIZE);
       }
     } catch (error) {
@@ -58,7 +57,7 @@ export default function ActivityFeedSection() {
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    fetchFeed();
+    fetchFeed(false, nextPage * PAGE_SIZE);
   };
 
   return (

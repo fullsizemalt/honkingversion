@@ -6,41 +6,78 @@ interface SongCardProps {
 }
 
 export default function SongCard({ song }: SongCardProps) {
+    const isCover = song.is_cover && song.original_artist;
+
     return (
         <Link
             href={`/songs/${song.slug}`}
-            className="block group"
+            className="block group h-full"
         >
-            <div className="border border-[#333] bg-[#1a1a1a] p-4 hover:bg-[#252525] transition-colors h-full">
-                {/* Song name - big and bold */}
-                <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[#f5f5f5] group-hover:text-[#ff6b35] transition-colors mb-3 uppercase tracking-tight">
-                    {song.name}
-                </h3>
+            <div className="border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-5 hover:bg-[var(--bg-muted)] hover:border-[var(--accent-tertiary)] transition-all h-full space-y-4">
+                {/* Header with Song Name and Badge */}
+                <div className="space-y-2">
+                    <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-tertiary)] transition-colors uppercase tracking-tight">
+                        {song.name}
+                    </h3>
 
-                {/* Cover badge if applicable */}
-                {song.is_cover && song.original_artist && (
-                    <div className="inline-block px-2 py-1 bg-[#b565d8] font-[family-name:var(--font-ibm-plex-mono)] text-[9px] font-bold uppercase mb-3">
-                        {song.original_artist}
-                    </div>
-                )}
-
-                {/* Stats in monospace */}
-                <div className="font-[family-name:var(--font-ibm-plex-mono)] text-[11px] text-[#a0a0a0] space-y-1.5">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[#ff6b35]">▸</span>
-                        <span>Played {song.times_played} {song.times_played === 1 ? 'time' : 'times'}</span>
-                    </div>
-                    {song.avg_rating && (
-                        <div className="flex items-center gap-2">
-                            <span className="text-[#ffd700]">★</span>
-                            <span>Avg rating: {song.avg_rating.toFixed(1)}</span>
+                    {/* Cover Badge */}
+                    {isCover && (
+                        <div className="inline-flex items-center gap-1">
+                            <div className="inline-block px-2.5 py-1 bg-[var(--accent-primary)] text-[var(--text-inverse)] font-[family-name:var(--font-ibm-plex-mono)] text-[10px] font-bold uppercase tracking-wider">
+                                Cover
+                            </div>
+                            <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-secondary)]">
+                                {song.original_artist}
+                            </p>
                         </div>
                     )}
                 </div>
 
+                {/* Artist Attribution for Originals */}
+                {!isCover && song.artist && (
+                    <p className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] uppercase tracking-[0.2em]">
+                        By {song.artist}
+                    </p>
+                )}
+
+                {/* Stats */}
+                <div className="space-y-2 pt-2 border-t border-[var(--border-subtle)]">
+                    {/* Times Played */}
+                    <div className="flex items-center justify-between">
+                        <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
+                            Played
+                        </span>
+                        <span className="font-bold text-[var(--text-primary)]">
+                            {song.times_played ?? 0}
+                        </span>
+                    </div>
+
+                    {/* Rating */}
+                    {song.avg_rating !== null && song.avg_rating !== undefined ? (
+                        <div className="flex items-center justify-between">
+                            <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
+                                Avg Rating
+                            </span>
+                            <span className="font-bold text-[var(--accent-tertiary)]">
+                                {song.avg_rating.toFixed(1)}/10
+                            </span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-between">
+                            <span className="font-[family-name:var(--font-ibm-plex-mono)] text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
+                                Rating
+                            </span>
+                            <span className="text-xs text-[var(--text-tertiary)]">No ratings</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Debut Date Footer */}
                 {song.debut_date && (
-                    <div className="mt-3 pt-3 border-t border-[#333] font-[family-name:var(--font-ibm-plex-mono)] text-[10px] text-[#707070] uppercase tracking-wider">
-                        Debut: {song.debut_date}
+                    <div className="pt-2 border-t border-[var(--border-subtle)]">
+                        <p className="font-[family-name:var(--font-ibm-plex-mono)] text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">
+                            Debut: {new Date(song.debut_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
+                        </p>
                     </div>
                 )}
             </div>
