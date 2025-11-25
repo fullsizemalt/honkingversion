@@ -15,7 +15,7 @@ interface ProfileHeaderProps {
         profile_picture_url?: string;
         role?: string;
         social_links?: {
-            twitter?: string;
+            bluesky?: string;
             instagram?: string;
             custom_url?: string;
         };
@@ -124,14 +124,14 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                             {/* Social Links */}
                             {user.social_links && Object.keys(user.social_links).length > 0 && (
                                 <div className="flex items-center gap-3">
-                                    {user.social_links.twitter && (
+                                    {user.social_links.bluesky && (
                                         <a
-                                            href={`https://twitter.com/${user.social_links.twitter}`}
+                                            href={`https://bsky.app/profile/${user.social_links.bluesky.replace(/^@/, '')}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="p-2 border border-[var(--border)] hover:border-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/5 transition-all duration-200"
                                         >
-                                            <Twitter className="w-4 h-4 text-[var(--text-secondary)]" />
+                                            <Cloud className="w-4 h-4 text-[var(--text-secondary)]" />
                                         </a>
                                     )}
                                     {user.social_links.instagram && (
@@ -158,16 +158,7 @@ export default function ProfileHeader({ user, selectedTitle, isCurrentUser }: Pr
                             )}
                         </div>
 
-                        {/* Edit Button (if current user) */}
-                        {isCurrentUser && (
-                            <Link
-                                href="/profile/edit"
-                                className="flex items-center gap-2 px-4 py-2 border border-[var(--border)] hover:border-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/5 transition-all duration-200 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] font-[family-name:var(--font-ibm-plex-mono)] text-xs uppercase tracking-wider"
-                            >
-                                <Edit className="w-4 h-4" />
-                                Edit Profile
-                            </Link>
-                        )}
+
                     </div>
                 </div>
             </div>
