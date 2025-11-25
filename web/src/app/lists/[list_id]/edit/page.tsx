@@ -85,7 +85,7 @@ export default function EditListPage() {
 
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
-            <PageHeader title="Edit List" />
+            <PageHeader title="Edit List" description="Update your list title, description, and visibility." />
 
             <div className="max-w-2xl mx-auto px-4 py-12">
                 <form onSubmit={handleSubmit} className="space-y-6">
