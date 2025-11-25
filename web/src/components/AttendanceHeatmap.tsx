@@ -68,13 +68,13 @@ export default function AttendanceHeatmap({ username }: AttendanceHeatmapProps) 
                         startDate={startDate}
                         endDate={today}
                         values={data}
-                        classForValue={(value) => {
+                        classForValue={(value: HeatmapData | null) => {
                             if (!value) {
                                 return 'color-empty';
                             }
                             return `color-scale-${Math.min(value.count, 4)}`;
                         }}
-                        tooltipDataAttrs={(value: any) => {
+                        tooltipDataAttrs={(value: HeatmapData | null) => {
                             if (!value || !value.date) {
                                 return null;
                             }
@@ -83,7 +83,7 @@ export default function AttendanceHeatmap({ username }: AttendanceHeatmapProps) 
                                 'data-tooltip-content': `${value.date}: ${value.venue}`,
                             };
                         }}
-                        onClick={(value) => {
+                        onClick={(value: HeatmapData | null) => {
                             if (value && value.show_id) {
                                 router.push(`/shows/${value.date}`);
                             }
