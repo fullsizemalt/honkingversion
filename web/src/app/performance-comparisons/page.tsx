@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getApiEndpoint } from '@/lib/api';
+import TagBadge from '@/components/TagBadge';
+import { Tag } from '@/types/tag';
 
 interface Performance {
     id: number;
@@ -26,13 +28,14 @@ interface Performance {
     avg_rating: number | null;
 }
 
-export default function PerformanceComparisonsPage() {
+function PerformanceComparisonsContent() {
     const searchParams = useSearchParams();
     const initialIds = searchParams.get('ids') || '';
     const [perfIds, setPerfIds] = useState<string>(initialIds);
     const [performances, setPerformances] = useState<Performance[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [perfTags, setPerfTags] = useState<Record<number, Tag[]>>({});
 
     useEffect(() => {
         if (initialIds) {
@@ -51,9 +54,11 @@ export default function PerformanceComparisonsPage() {
         setLoading(true);
         setError(null);
         setPerformances([]);
+        setPerfTags({});
 
         const ids = raw.split(',').map(id => id.trim()).filter(Boolean);
         const fetched: Performance[] = [];
+        const tagMap: Record<number, Tag[]> = {};
 
         for (const id of ids) {
             try {
@@ -61,6 +66,10 @@ export default function PerformanceComparisonsPage() {
                 if (response.ok) {
                     const data = await response.json();
                     fetched.push(data);
+                    const tagsRes = await fetch(getApiEndpoint(`/tags/performance/${id}`));
+                    if (tagsRes.ok) {
+                        tagMap[Number(id)] = await tagsRes.json();
+                    }
                 } else {
                     setError(`Performance ${id} not found`);
                 }
@@ -72,6 +81,7 @@ export default function PerformanceComparisonsPage() {
 
         if (fetched.length > 0) {
             setPerformances(fetched);
+            setPerfTags(tagMap);
         } else {
             setError('No performances found');
         }
@@ -185,6 +195,16 @@ export default function PerformanceComparisonsPage() {
                                 ))}
                             </tr>
 
+                            {/* Votes */}
+                            <tr className="border-b border-[#a0a0a0]">
+                                <td className="bg-[#1a1a1a] text-[#f5f5f5] font-bold p-3">Votes</td>
+                                {performances.map(perf => (
+                                    <td key={perf.id} className="bg-[#2a2a2a] text-[#a0a0a0] p-3 border-l border-[#a0a0a0]">
+                                        {perf.vote_count ?? 0}
+                                    </td>
+                                ))}
+                            </tr>
+
                             {/* Location */}
                             <tr className="border-b border-[#a0a0a0]">
                                 <td className="bg-[#1a1a1a] text-[#f5f5f5] font-bold p-3">Location</td>
@@ -242,6 +262,26 @@ export default function PerformanceComparisonsPage() {
                                 ))}
                             </tr>
 
+                            {/* Tags */}
+                            <tr className="border-b border-[#a0a0a0] align-top">
+                                <td className="bg-[#1a1a1a] text-[#f5f5f5] font-bold p-3">Tags</td>
+                                {performances.map(perf => (
+                                    <td
+                                        key={perf.id}
+                                        className="bg-[#2a2a2a] text-[#a0a0a0] p-3 border-l border-[#a0a0a0]"
+                                    >
+                                        <div className="flex flex-wrap gap-1">
+                                            {(perfTags[perf.id] || []).map((tag) => (
+                                                <TagBadge key={tag.id} tag={tag} />
+                                            ))}
+                                            {(!perfTags[perf.id] || perfTags[perf.id].length === 0) && (
+                                                <span className="text-xs text-[#6b7280]">No tags</span>
+                                            )}
+                                        </div>
+                                    </td>
+                                ))}
+                            </tr>
+
                             {/* Notes */}
                             {performances.some(p => p.notes) && (
                                 <tr className="border-b border-[#a0a0a0]">
@@ -271,5 +311,13 @@ export default function PerformanceComparisonsPage() {
                 </ol>
             </div>
         </div>
+    );
+}
+
+export default function PerformanceComparisonsPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-[#a0a0a0]">Loading...</div>}>
+            <PerformanceComparisonsContent />
+        </Suspense>
     );
 }

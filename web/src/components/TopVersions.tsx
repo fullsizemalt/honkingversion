@@ -20,6 +20,8 @@ export default function TopVersions({ performances, maxVersions = 5 }: TopVersio
         return null
     }
 
+    const topTwoIds = ratedPerfs.slice(0, 2).map((p) => p.id)
+
     return (
         <div className="space-y-6">
             <div className="pb-3 border-b border-[var(--border)]">
@@ -29,6 +31,14 @@ export default function TopVersions({ performances, maxVersions = 5 }: TopVersio
                 <p className="text-sm text-[var(--text-secondary)] mt-1">
                     Highest-rated performances of this song
                 </p>
+                {topTwoIds.length === 2 && (
+                    <Link
+                        href={`/performance-comparisons?ids=${topTwoIds.join(',')}`}
+                        className="text-xs text-[var(--accent-primary)] font-[family-name:var(--font-ibm-plex-mono)] hover:underline"
+                    >
+                        Compare top 2
+                    </Link>
+                )}
             </div>
 
             <div className="grid gap-4">
